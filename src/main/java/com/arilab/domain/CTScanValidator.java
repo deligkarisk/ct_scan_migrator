@@ -20,7 +20,21 @@ public class CTScanValidator {
     DBTool dBTool = new DBTool();
 
 
-    public Boolean isValid(CTScan ctScan) {
+    // returns the number of scans passing the validation
+    public int validateInputData(List ctScanList) {
+        int validCount = 0;
+
+        Iterator<CTScan> ctScanIterator = ctScanList.iterator();
+        while (ctScanIterator.hasNext()) {
+            CTScan ctScan = ctScanIterator.next();
+            logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
+            validateInputData(ctScan);
+            if (ctScan.getInputDataIsValid()) {validCount += 1;}
+        }
+        return validCount;
+    }
+
+    public void validateInputData(CTScan ctScan) {
         ctScan.setSpecimenCodeExists(dBTool.specimenCodeExists(ctScan.getSpecimenCode()));
         ctScan.setScanExistsInBucket(scanExistsInBucket(ctScan));
         ctScan.setWetDryCombinationIsCorrect(wetDryCombinationIsCorrect(ctScan));
@@ -28,21 +42,35 @@ public class CTScanValidator {
         ctScan.setBodypartIsCorrect(bodypartCheck(ctScan));
         ctScan.setDicomFolderExists(dicomFolderInBucket(ctScan));
         ctScan.setFolderCreationTimeExists(creationDateIsNotNull(ctScan));
-        ctScan.setCanMigrate(allValidationsPassed(ctScan));
-        return ctScan.getCanMigrate();
+        ctScan.setInputDataIsValid(allInputDataValidationsPassed(ctScan));
     }
 
-    // returns the number of scans passing the validation
-    public int validate(List ctScanList) {
+    public int validateDerivedData(List ctScanList) {
         int validCount = 0;
-
         Iterator<CTScan> ctScanIterator = ctScanList.iterator();
         while (ctScanIterator.hasNext()) {
             CTScan ctScan = ctScanIterator.next();
-            logger.info("Validating scan" + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
-            if (isValid(ctScan)) {validCount += 1;}
+            logger.info("Validating derived data of " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
+            validateDerivedData(ctScan);
+            if (ctScan.getDerivedDataIsValid()) { validCount += 1;}
         }
         return validCount;
+    }
+
+    public void validateDerivedData(CTScan ctScan) {
+        ctScan.setNewFolderPathAvailable(isNewFolderAvailable(ctScan));
+        ctScan.setDerivedDataIsValid(allDerivedDataValidationsPassed(ctScan));
+    }
+
+
+    public Boolean isNewFolderAvailable(CTScan ctScan) {
+        Boolean folderExists = Files.exists(Paths.get(ctScan.getNewFolderPath()));
+        if (folderExists) {
+            logger.error("New folder path already exists, unable to migrate data. " + ctScan.getNewFolderPath());
+            System.exit(1);
+        }
+
+        return !folderExists;
     }
 
 
@@ -51,12 +79,12 @@ public class CTScanValidator {
     }
 
     public Boolean scanExistsInBucket(CTScan ctScan) {
-        Path scanPath = Paths.get(settingsReader.getPrependBucketString(), ctScan.getFolderLocation());
+        Path scanPath = Paths.get(ctScan.getFolderLocation());
         return Files.exists(scanPath);
     }
 
     public Boolean dicomFolderInBucket(CTScan ctScan) {
-        Path dicomPath = Paths.get(settingsReader.getPrependBucketString(), ctScan.getDicomFolderLocation());
+        Path dicomPath = Paths.get(ctScan.getDicomFolderLocation());
         return Files.exists(dicomPath);
     }
 
@@ -95,13 +123,17 @@ public class CTScanValidator {
         return false;
     }
 
-    public Boolean allValidationsPassed(CTScan ctScan) {
+    public Boolean allInputDataValidationsPassed(CTScan ctScan) {
         if (ctScan.getSpecimenCodeExists() && ctScan.getScanExistsInBucket() && ctScan.getWetDryCombinationIsCorrect() &&
                 ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect() && ctScan.getDicomFolderExists()
         && ctScan.getFolderCreationTimeExists()) {
             return true;
         }
         return false;
+    }
+
+    public Boolean allDerivedDataValidationsPassed(CTScan ctScan) {
+        return (ctScan.getNewFolderPathAvailable());
     }
 
 

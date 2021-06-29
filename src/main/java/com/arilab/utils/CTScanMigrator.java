@@ -10,6 +10,7 @@ import java.util.List;
 public class CTScanMigrator {
 
     SettingsReader settingsReader = new SettingsReader();
+    CTScanUtils ctScanUtils = new CTScanUtils();
 
 
     public void migrateScans(List scanList) {
@@ -23,8 +24,7 @@ public class CTScanMigrator {
     public void migrateScan(CTScan ctScan) {
 
         // Set new folder names for location folder and dicom folder
-        Path newFolder = Paths.get(settingsReader.getPrependBucketString(),ctScan.getModel())
-        String newFolderName = ctScan.getSpecimenCode()
+
 
         // Rename scan folder
 

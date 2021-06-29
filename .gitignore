@@ -3,3 +3,6 @@
 *.log
 *.iml
 target/
+
+*.pass
+*.settings

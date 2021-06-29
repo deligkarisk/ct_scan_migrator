@@ -26,70 +26,58 @@ public class DBTool {
     }
 
 
-    public Boolean specimenCodeExists(String specimenCode)  {
-        Boolean exists = null;
-        ResultSet resultSet = runSQLQueryOnSpecimenCode(selectAllSpecimens, specimenCode);
-        try {
-            exists = resultSet.isBeforeFirst();
+    public Boolean specimenCodeExists(String specimenCode) {
+        try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
+                                                                 settingsReader.credentials.get(0),
+                                                                 settingsReader.credentials.get(1));
+             PreparedStatement preparedStatement = connection.prepareStatement(selectAllSpecimens)) {
+            preparedStatement.setString(1, specimenCode);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.isBeforeFirst();
+            }
         } catch (SQLException exception) {
-            logger.error("SQL Exception: " + exception.toString());
+            logger.error("SQL Exception: " + exception);
+            System.exit(1);
         }
-        return exists;
+        return false;
     }
 
+
     public String getGenusFromSpecimenCode(String specimenCode) {
-        String genus;
-        ResultSet resultSet = runSQLQueryOnSpecimenCode(selectGenus, specimenCode);
-        genus = getStringFromResultSet(resultSet, "genus");
-        return genus;
+        return runSQLQueryOnSpecimenCode(selectGenus, specimenCode, "genus_name");
     }
 
     public String getSpeciesNameFromSpecimenCode(String specimenCode) {
-        String speciesName;
-        ResultSet resultSet = runSQLQueryOnSpecimenCode(selectSpeciesName, specimenCode);
-        speciesName = getStringFromResultSet(resultSet, "species_name");
-        return speciesName;
+        return runSQLQueryOnSpecimenCode(selectSpeciesName, specimenCode, "species_name");
     }
 
     public String getSubspeciesFromSpecimenCode(String specimenCode) {
-        String subspecies;
-        ResultSet resultSet = runSQLQueryOnSpecimenCode(selectSubspecies, specimenCode);
-        subspecies = getStringFromResultSet(resultSet, "subspecies");
-        return subspecies;
+        return runSQLQueryOnSpecimenCode(selectSubspecies, specimenCode, "subspecies");
     }
 
     public String getMorphoCodeFromSpecimenCode(String specimenCode) {
-        String morphoCode;
-        ResultSet resultSet = runSQLQueryOnSpecimenCode(selectMorphoCode, specimenCode);
-        morphoCode = getStringFromResultSet(resultSet, "morpho_code");
-        return morphoCode;
+        return runSQLQueryOnSpecimenCode(selectMorphoCode, specimenCode, "morpho_code");
     }
 
-    private String getStringFromResultSet(ResultSet resultSet, String string) {
-        String extractedValue = null;
-        try {
-            extractedValue = resultSet.getString(string);
-        } catch (SQLException exception) {
-            logger.error("SQL Exception: " + exception);
-        }
-        return extractedValue;
 
-    }
-
-    public ResultSet runSQLQueryOnSpecimenCode(String query, String specimenCode) {
+    public String runSQLQueryOnSpecimenCode(String query, String specimenCode, String columnName) {
         try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
                                                                  settingsReader.credentials.get(0),
                                                                  settingsReader.credentials.get(1));
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, specimenCode);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                return resultSet;
+                resultSet.next();
+                return resultSet.getString(columnName);
             }
         } catch (SQLException exception) {
-            logger.error("SQL Exception: " + exception.toString());
+            logger.error("SQL Exception: " + exception);
         }
         return null;
     }
+
+
+
 
 
 }

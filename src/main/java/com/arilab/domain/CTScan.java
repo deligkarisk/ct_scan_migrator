@@ -41,7 +41,6 @@ public class CTScan {
     @CsvBindByName(column = "antscan")
     private String antscan;
 
-
     @CsvBindByName(column = "antscan_code")
     private String antscanCode;
 
@@ -81,10 +80,29 @@ public class CTScan {
     @CsvBindByName(column = "folder_creation_time_exists")
     private Boolean folderCreationTimeExists;
 
-    @CsvBindByName(column = "can_migrate")
-    private Boolean canMigrate;
+    @CsvBindByName(column = "input_data_valid")
+    private Boolean inputDataIsValid;
 
+    @CsvBindByName(column = "derived_data_valid")
+    private Boolean derivedDataIsValid;
+
+    @CsvBindByName(column = "new_folder_path")
     private String newFolderPath;
+
+    @CsvBindByName(column = "new_folder_is_available")
+    private Boolean newFolderPathAvailable;
+
+
+    @CsvBindByName(column = "timestamp")
+    private String timestamp;
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public Boolean getSpecimenCodeExists() {
         return specimenCodeExists;
@@ -255,12 +273,12 @@ public class CTScan {
         this.bodypartIsCorrect = bodypartIsCorrect;
     }
 
-    public Boolean getCanMigrate() {
-        return canMigrate;
+    public Boolean getInputDataIsValid() {
+        return inputDataIsValid;
     }
 
-    public void setCanMigrate(Boolean canMigrate) {
-        this.canMigrate = canMigrate;
+    public void setInputDataIsValid(Boolean inputDataIsValid) {
+        this.inputDataIsValid = inputDataIsValid;
     }
 
     public String getDicomFolderLocation() {
@@ -304,4 +322,19 @@ public class CTScan {
     }
 
 
+    public Boolean getDerivedDataIsValid() {
+        return derivedDataIsValid;
+    }
+
+    public void setDerivedDataIsValid(Boolean derivedDataIsValid) {
+        this.derivedDataIsValid = derivedDataIsValid;
+    }
+
+    public Boolean getNewFolderPathAvailable() {
+        return newFolderPathAvailable;
+    }
+
+    public void setNewFolderPathAvailable(Boolean newFolderPathAvailable) {
+        this.newFolderPathAvailable = newFolderPathAvailable;
+    }
 }
