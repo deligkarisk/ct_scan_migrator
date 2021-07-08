@@ -1,6 +1,6 @@
 package com.arilab.utils;
 
-import com.arilab.domain.CTScan;
+import com.arilab.domain.CtScan;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -27,7 +27,7 @@ public class FileUtils {
     public  List getScansFromFile(String file) {
         try {
             Reader fileReader = Files.newBufferedReader(Path.of(file));
-            List csvToBean = new CsvToBeanBuilder(fileReader).withType(CTScan.class).withIgnoreLeadingWhiteSpace(
+            List csvToBean = new CsvToBeanBuilder(fileReader).withType(CtScan.class).withIgnoreLeadingWhiteSpace(
                     true).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build().parse();
             logger.info("Found " + csvToBean.size() + " scans");
             return csvToBean;
@@ -38,7 +38,7 @@ public class FileUtils {
     }
 
 
-    public void writeBeansToFile(List<CTScan> ctScans, String filePath) {
+    public void writeBeansToFile(List<CtScan> ctScans, String filePath) {
         try {
             Writer writer = new FileWriter(filePath);
             StatefulBeanToCsv statefulBeanToCsv = new StatefulBeanToCsvBuilder(writer).build();

@@ -1,6 +1,8 @@
 package com.arilab;
 
-import com.arilab.domain.CTScanValidator;
+import com.arilab.domain.CtScanValidator;
+import com.arilab.service.CtScanUtilsService;
+import com.arilab.service.CtScanValidatorService;
 import com.arilab.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,20 +16,22 @@ public class Main {
 
     private static final String DATA_LABEL = "CongsData";
     private static final String FILE_TO_WRITE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
+    private static final String FAILED_FILE_TO_WRITE = "./MigrationOutputFAILED" + "_" + DATA_LABEL + ".csv";
     private static final String CTSCAN_DATA_FILE = "./data/CTScansForUploadDev.csv";
 
-            /*"/home/kosmas-deligkaris/repositories/arilabdb" +
-            "/202106_Add_Congs_data/SourcesFromPaco" +
-            "/CTScansForUpload.csv";
+    /*"/home/kosmas-deligkaris/repositories/arilabdb" +
+    "/202106_Add_Congs_data/SourcesFromPaco" +
+    "/CTScansForUpload.csv";
 */
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final CTScanValidator validator = new CTScanValidator();
+    private static final CtScanValidator validator = new CtScanValidator();
+    private static final CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
     private static final FileUtils fileUtils = new FileUtils();
-    private static final CTScanUtils ctScanUtils = new CTScanUtils();
-    private static final CTScanUtilsService ctScanUtilsService = new CTScanUtilsService();
-    private static final CTScanMigrator ctScanMigrator = new CTScanMigrator();
+    private static final CtScanUtils ctScanUtils = new CtScanUtils();
+    private static final CtScanUtilsService ctScanUtilsService = new CtScanUtilsService();
+    private static final CtScanMigrator ctScanMigrator = new CtScanMigrator();
     private static final SettingsReader settingsReader = new SettingsReader();
-    private static final DBTool dbTool = new DBTool();
+    private static final DbUtil dbUtil = new DbUtil();
 
     public static void main(String[] args) {
 
@@ -36,66 +40,56 @@ public class Main {
         if (!preliminaryChecksPassed()) {
             logger.error("Preliminary checks failed, aborting operation...");
             System.exit(1);
-        };
-
+        }
 
         List scansList = fileUtils.getScansFromFile(CTSCAN_DATA_FILE);
-        prepareScans(scansList);
+        ctScanUtilsService.fixScans(scansList);
+        ctScanValidatorService.validateScanData(scansList, FAILED_FILE_TO_WRITE);
+        ctScanUtilsService.findStandardizedFolderNames(scansList);
+        ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_FILE_TO_WRITE);
+
+        fileUtils.writeBeansToFile(scansList, FILE_TO_WRITE);
         ctScanMigrator.migrateScans(scansList);
 
 
+        logger.info("************************** Finished Execution **************************");
     }
 
-    private static void prepareScans(List scansList) {
-        int validScans;
-        ctScanUtilsService.fixScans(scansList); // standardizes folder locations, among others.
 
-        validScans = validator.validateInputData(scansList); // validates if scans can be migrated, all info is correct.
-        if (validScans != scansList.size()) {
-            logger.error("Not all scans passed validation of input data, migration will not proceed.");
-            System.exit(1);
-        }
-
-        ctScanUtilsService.findNewFolderNames(scansList);
-        validScans = validator.validateDerivedData(scansList);
-        if (validScans != scansList.size()) {
-            logger.error("Not all scans passed validation of derived data, migration will not proceed.");
-            System.exit(1);
-        }
-
-
-        logger.info("All scans passed validation, with both old and new data, continuing operations...");
-        fileUtils.writeBeansToFile(scansList, FILE_TO_WRITE);
-    }
 
     private static Boolean preliminaryChecksPassed() {
         return checkBucketConnectivity() && checkDBConnectivity();
     }
 
     private static Boolean checkBucketConnectivity() {
-        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringOld()));
-        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringNew()));
-
-        if (!(oldBucketFolderIsMounted && newBucketFolderIsMounted)) {
+        if (!bucketIsMounted()) {
             logger.error("Bucket folders are not mounted, aborting operations...");
             System.exit(1);
         }
 
-
-        Boolean canWriteToNewFolderLocation = false;
         try {
-            Files.deleteIfExists(Paths.get("./testFile"));
-            Files.createFile(Paths.get("./testFile"));
-            canWriteToNewFolderLocation = true;
+            Boolean canWriteToNewFolderLocation = canWriteToBucket();
         } catch (IOException exception) {
             logger.error("Cannot write to new bucket location, aborting..." + exception);
             System.exit(1);
         }
-        return (oldBucketFolderIsMounted && newBucketFolderIsMounted && canWriteToNewFolderLocation);
+        return true;
+    }
+
+    private static Boolean bucketIsMounted() {
+        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringOld()));
+        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringNew()));
+        return ((oldBucketFolderIsMounted && newBucketFolderIsMounted));
+    }
+    private static Boolean canWriteToBucket() throws IOException {
+        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(),"testFile"));
+        Files.createFile(Paths.get(settingsReader.getPrependBucketStringNew(),"testFile"));
+        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(),"testFile"));
+        return true;
     }
 
     private static Boolean checkDBConnectivity() {
-        return !(dbTool.specimenCodeExists("TEST"));
+        return !(dbUtil.specimenCodeExists("TEST"));
     }
 
 

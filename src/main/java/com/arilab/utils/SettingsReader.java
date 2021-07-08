@@ -1,6 +1,6 @@
 package com.arilab.utils;
 
-import com.arilab.domain.CTScanValidator;
+import com.arilab.domain.CtScanValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +19,7 @@ public class SettingsReader {
     public String prependBucketStringNew;
 
 
-    private Logger logger = LoggerFactory.getLogger(CTScanValidator.class);
+    private Logger logger = LoggerFactory.getLogger(CtScanValidator.class);
 
     private String CREDENTIALS_FILE = "./username.pass";
     private String DATABASE_HOST_FILE = "./dbhost.settings";

@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 
-public class DBTool {
+public class DbUtil {
 
     String selectAllSpecimens = "SELECT * FROM public.specimen WHERE specimen_code = ?";
     String selectGenus = "SELECT species.genus_name FROM public.specimen LEFT JOIN species USING(taxon_code) WHERE " +
@@ -17,11 +17,11 @@ public class DBTool {
     String selectMorphoCode = "SELECT species.morpho_code FROM public.specimen LEFT JOIN species USING(taxon_code) " +
             "WHERE " + "specimen.specimen_code = ?";
 
-    Logger logger = LoggerFactory.getLogger(DBTool.class);
+    Logger logger = LoggerFactory.getLogger(DbUtil.class);
 
     SettingsReader settingsReader;
 
-    public DBTool() {
+    public DbUtil() {
         settingsReader = new SettingsReader();
     }
 

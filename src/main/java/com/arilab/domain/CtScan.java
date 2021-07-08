@@ -4,7 +4,7 @@ import com.opencsv.bean.CsvBindByName;
 import lombok.ToString;
 
 @ToString
-public class CTScan {
+public class CtScan {
     @CsvBindByName(column = "specimen_code")
     private  String specimenCode;
 
@@ -59,9 +59,6 @@ public class CTScan {
     @CsvBindByName(column = "specimen_code_exists")
     private Boolean specimenCodeExists;
 
-    @CsvBindByName(column = "scan_exists_in_bucket")
-    private Boolean scanExistsInBucket;
-
     @CsvBindByName(column = "wet_dry_comb_correct")
     private Boolean wetDryCombinationIsCorrect;
 
@@ -70,15 +67,6 @@ public class CTScan {
 
     @CsvBindByName(column = "body_part_correct")
     private Boolean bodypartIsCorrect;
-
-    @CsvBindByName(column = "dicom_folder_exists")
-    private Boolean dicomFolderExists;
-
-    @CsvBindByName(column = "folder_creation_time")
-    private String folderCreationTime;
-
-    @CsvBindByName(column = "folder_creation_time_exists")
-    private Boolean folderCreationTimeExists;
 
     @CsvBindByName(column = "input_data_valid")
     private Boolean inputDataIsValid;
@@ -92,9 +80,15 @@ public class CTScan {
     @CsvBindByName(column = "new_folder_is_available")
     private Boolean newFolderPathAvailable;
 
-
     @CsvBindByName(column = "timestamp")
     private String timestamp;
+
+
+
+
+
+
+
 
     public String getTimestamp() {
         return timestamp;
@@ -110,14 +104,6 @@ public class CTScan {
 
     public void setSpecimenCodeExists(Boolean specimenCodeExists) {
         this.specimenCodeExists = specimenCodeExists;
-    }
-
-    public Boolean getScanExistsInBucket() {
-        return scanExistsInBucket;
-    }
-
-    public void setScanExistsInBucket(Boolean scanExistsInBucket) {
-        this.scanExistsInBucket = scanExistsInBucket;
     }
 
     public Boolean getWetDryCombinationIsCorrect() {
@@ -289,14 +275,6 @@ public class CTScan {
         this.dicomFolderLocation = dicomFolderLocation;
     }
 
-    public Boolean getDicomFolderExists() {
-        return dicomFolderExists;
-    }
-
-    public void setDicomFolderExists(Boolean dicomFolderExists) {
-        this.dicomFolderExists = dicomFolderExists;
-    }
-
     public String getScanDate() {
         return scanDate;
     }
@@ -304,23 +282,6 @@ public class CTScan {
     public void setScanDate(String scanDate) {
         this.scanDate = scanDate;
     }
-
-    public String getFolderCreationTime() {
-        return folderCreationTime;
-    }
-
-    public void setFolderCreationTime(String folderCreationTime) {
-        this.folderCreationTime = folderCreationTime;
-    }
-
-    public Boolean getFolderCreationTimeExists() {
-        return folderCreationTimeExists;
-    }
-
-    public void setFolderCreationTimeExists(Boolean folderCreationTimeExists) {
-        this.folderCreationTimeExists = folderCreationTimeExists;
-    }
-
 
     public Boolean getDerivedDataIsValid() {
         return derivedDataIsValid;

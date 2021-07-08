@@ -1,27 +1,25 @@
 package com.arilab.utils;
 
-import com.arilab.domain.CTScan;
+import com.arilab.domain.CtScan;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
 
-public class CTScanMigrator {
+public class CtScanMigrator {
 
     SettingsReader settingsReader = new SettingsReader();
-    CTScanUtils ctScanUtils = new CTScanUtils();
+    CtScanUtils ctScanUtils = new CtScanUtils();
 
 
     public void migrateScans(List scanList) {
-        Iterator<CTScan> ctScanIterator = scanList.iterator();
+        Iterator<CtScan> ctScanIterator = scanList.iterator();
         while (ctScanIterator.hasNext()) {
-            CTScan ctScan = ctScanIterator.next();
+            CtScan ctScan = ctScanIterator.next();
             migrateScan(ctScan);
         }
     }
 
-    public void migrateScan(CTScan ctScan) {
+    public void migrateScan(CtScan ctScan) {
 
         // Set new folder names for location folder and dicom folder
 
