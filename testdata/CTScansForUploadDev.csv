@@ -1,4 +1,4 @@
-specimen_code,ct_scan_note,special_identifier,scan_reason,prep_note,folder_location,Note,caste,scan_user ,scan_date,body_part,wet,staining,ethanol_conc,antscan,antscan_code,model,dry_method,Exposure Time (s),Magnification,Source Distance (mm),Detector Distance (mm),Power (W),Voltage(kV),Amperage(uA),Note
-CASENT0790671,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,w,congliu,2018-10-32,Whole_body,No,No staining,,No,,Ants,Pin,1.5,4,11,22,3.54,45.24,78.33,
-CASENT0185655,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.basiliska_CASENT0185655/S.basiliska_CASENT0185655_2018-07-01_143914,,w,francisco-hitagarcia,2018,Whole_body,No,No staining,,No,,Ants,Pin,0.5,4,11.0018,19.0015,6.01,70.24,85.59,
-CASENT0751180,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.lanuginosa_CASENT0751180,,w,test-user,2000-03-09,Head,Yes,Iodine,99%,No,,Ants,,,,,,,,,
+specimen_code,ct_scan_note,special_identifier,scan_reason,prep_note,folder_location,Note,scan_user ,scan_date,body_part,wet,staining,ethanol_conc,antscan,antscan_code,model,dry_method
+CASENT0790671,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-32,Whole_body,No,No staining,,No,,Ants,Pin
+CASENT0185655,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.basiliska_CASENT0185655/S.basiliska_CASENT0185655_2018-07-01_143914,,francisco-hitagarcia,2018,Whole_body,No,No staining,,No,,Ants,Pin
+CASENT0185699,,,,,/bucket/EconomoU/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.tumida_CASENT00185699/S.tumida_CASENT00185699_2018-06-30_113210,,test-user,2019,Whole_body,No,No staining,,No,,Ants,Pin

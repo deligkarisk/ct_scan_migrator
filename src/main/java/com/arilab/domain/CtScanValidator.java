@@ -76,7 +76,8 @@ public class CtScanValidator {
     }
 
     public Boolean validateStandardizedFolder(CtScan ctScan) {
-        return pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
+        // New folders should not exist already
+        return !pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
     }
 
 }

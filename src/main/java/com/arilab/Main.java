@@ -17,7 +17,7 @@ public class Main {
     private static final String DATA_LABEL = "CongsData";
     private static final String FILE_TO_WRITE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
     private static final String FAILED_FILE_TO_WRITE = "./MigrationOutputFAILED" + "_" + DATA_LABEL + ".csv";
-    private static final String CTSCAN_DATA_FILE = "./data/CTScansForUploadDev.csv";
+    private static final String CTSCAN_DATA_FILE = "./testdata/CTScansForUploadDev.csv";
 
     /*"/home/kosmas-deligkaris/repositories/arilabdb" +
     "/202106_Add_Congs_data/SourcesFromPaco" +

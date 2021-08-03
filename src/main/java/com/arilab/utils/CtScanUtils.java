@@ -77,9 +77,10 @@ public class CtScanUtils {
         logger.info("Checking standardized folder: \n" + newFolder + "\n for ct scan: \n " + ctScan.getFolderLocation());
         if (Files.exists(newFolder)) {
             logger.error("standardized folder already exists, aborting operation.");
-            ctScan.setNewFolderPath(newFolder.toString());
         } else {
             logger.info("standardized folder available, OK");
+            ctScan.setNewFolderPath(newFolder.toString());
+            ctScan.setNewFolderPathAvailable(true);
         }
     }
 
