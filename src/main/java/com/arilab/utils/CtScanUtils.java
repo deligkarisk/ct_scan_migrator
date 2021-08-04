@@ -1,7 +1,7 @@
 package com.arilab.utils;
 
 import com.arilab.domain.CtScan;
-import com.arilab.service.DbService;
+import com.arilab.service.DbUtilService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +16,7 @@ public class CtScanUtils {
     private static Logger logger = LoggerFactory.getLogger(CtScanUtils.class);
     private static SettingsReader settingsReader = new SettingsReader();
     private static DbUtil dbUtil = new DbUtil();
-    private static DbService dbService = new DbService();
+    private static DbUtilService dbUtilService = new DbUtilService();
     private static CtScanUtils ctScanUtils = new CtScanUtils();
     private static PathUtils pathUtils = new PathUtils();
 
@@ -69,8 +69,8 @@ public class CtScanUtils {
 
 
     public void findStandardizedFolderName(CtScan ctScan) {
-        String genus = dbService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
-        String speciesMorphoCode = dbService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
+        String genus = dbUtilService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
+        String speciesMorphoCode = dbUtilService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
         Path newFolder = Paths.get(settingsReader.getPrependBucketStringNew(), ctScan.getModel(), genus,
                                    speciesMorphoCode, uniqueFolderID);

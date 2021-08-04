@@ -83,12 +83,28 @@ public class CtScan {
     @CsvBindByName(column = "timestamp")
     private String timestamp;
 
+    @CsvBindByName(column = "migrated")
+    private Boolean migrated;
+
+    @CsvBindByName(column = "migration_exception")
+    private String migrationException;
+
+    public Boolean getMigrated() {
+        return migrated;
+    }
+
+    public void setMigrated(Boolean migrated) {
+        this.migrated = migrated;
+    }
 
 
+    public String getMigrationException() {
+        return migrationException;
+    }
 
-
-
-
+    public void setMigrationException(String migrationException) {
+        this.migrationException = migrationException;
+    }
 
     public String getTimestamp() {
         return timestamp;

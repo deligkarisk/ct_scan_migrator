@@ -11,10 +11,7 @@ import com.opencsv.exceptions.CsvRequiredFieldEmptyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -53,7 +50,11 @@ public class FileUtils {
             logger.error("CSV data type mismatch exception" + e.toString());
             e.printStackTrace();
         }
+    }
 
-
+    public void migrateFolder(CtScan ctScan) throws IOException {
+        File srcDir = new File(ctScan.getFolderLocation());
+        File destinationDir = new File(ctScan.getNewFolderPath());
+        org.apache.commons.io.FileUtils.moveDirectoryToDirectory(srcDir, destinationDir, true);
     }
 }

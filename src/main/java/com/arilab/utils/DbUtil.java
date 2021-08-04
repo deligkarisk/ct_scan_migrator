@@ -1,5 +1,6 @@
 package com.arilab.utils;
 
+import com.arilab.domain.CtScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ public class DbUtil {
             "WHERE " + "specimen.specimen_code = ?";
     String selectMorphoCode = "SELECT species.morpho_code FROM public.specimen LEFT JOIN species USING(taxon_code) " +
             "WHERE " + "specimen.specimen_code = ?";
+    String selectFolder = "SELECT folder_location FROM public.ctscans WHERE folder_location = ?";
 
     Logger logger = LoggerFactory.getLogger(DbUtil.class);
 
@@ -41,6 +43,25 @@ public class DbUtil {
         }
         return false;
     }
+
+
+    public Boolean ctScanFolderExists(String folder) {
+        Boolean folderExists = null;
+        try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
+                settingsReader.credentials.get(0),
+                settingsReader.credentials.get(1));
+             PreparedStatement preparedStatement = connection.prepareStatement(selectFolder)) {
+            setStringWrapper(1, folder, preparedStatement);
+            folderExists = preparedStatement.execute();
+        } catch (SQLException sqlException) {
+            logger.error("SQL Exception: " + sqlException);
+            System.exit(1);
+        }
+
+        return folderExists;
+
+    }
+
 
 
     public String getGenusFromSpecimenCode(String specimenCode) {
@@ -75,6 +96,58 @@ public class DbUtil {
         }
         return null;
     }
+
+
+    public void executeInsertSqlCommand(PreparedStatement preparedStatement){
+        try {
+            logger.info("Running command {}", preparedStatement);
+            Boolean insertSucessfully = preparedStatement.execute();
+
+            if (insertSucessfully) {
+                logger.info("Insert successfully completed");
+            }
+
+            if (!insertSucessfully) {
+                logger.info("Insert could not be executed");
+                System.exit(1);
+            }
+
+        } catch (SQLException ex) {
+            logger.error("Exception caught during insert statement: {}", ex.toString());
+            System.exit(1);
+        }
+    }
+
+
+    public void setIntWrapper (Integer paramSeq, Integer value, PreparedStatement preparedStatement ) throws
+            SQLException {
+        if (value == null) {
+            preparedStatement.setNull(paramSeq, java.sql.Types.NULL);
+            return;
+        }
+        preparedStatement.setInt(paramSeq, value);
+    }
+
+
+    public void setStringWrapper (Integer paramSeq, String value, PreparedStatement preparedStatement ) throws
+            SQLException {
+        if (value == null) {
+            preparedStatement.setNull(paramSeq, java.sql.Types.NULL);
+            return;
+        }
+        preparedStatement.setString(paramSeq, value);
+    }
+
+
+    public void setFloatWrapper (Integer paramSeq, Float value, PreparedStatement preparedStatement ) throws
+            SQLException {
+        if (value == null) {
+            preparedStatement.setNull(paramSeq, java.sql.Types.NULL);
+            return;
+        }
+        preparedStatement.setFloat(paramSeq, value);
+    }
+
 
 
 

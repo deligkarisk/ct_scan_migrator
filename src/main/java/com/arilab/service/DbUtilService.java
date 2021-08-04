@@ -4,11 +4,10 @@ import com.arilab.utils.DbUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class DbService {
+public class DbUtilService {
 
     DbUtil dbUtil = new DbUtil();
-    private static Logger logger = LoggerFactory.getLogger(DbService.class);
-
+    private static Logger logger = LoggerFactory.getLogger(DbUtilService.class);
 
 
     public Boolean specimenCodeExists(String specimenCode) {
@@ -17,6 +16,11 @@ public class DbService {
             logger.error("Specimen code does not exist: " + specimenCode);
         }
         return specimenCodeExists;
+    }
+
+    public Boolean ctScanFolderExists(String folder) {
+        Boolean ctScanFolderExists = dbUtil.ctScanFolderExists(folder);
+        return ctScanFolderExists;
     }
 
 

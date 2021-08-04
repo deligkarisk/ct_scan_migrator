@@ -1,6 +1,7 @@
 package com.arilab;
 
 import com.arilab.domain.CtScanValidator;
+import com.arilab.service.CTScanMigratorService;
 import com.arilab.service.CtScanUtilsService;
 import com.arilab.service.CtScanValidatorService;
 import com.arilab.utils.*;
@@ -17,7 +18,10 @@ public class Main {
     private static final String DATA_LABEL = "CongsData";
     private static final String FILE_TO_WRITE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
     private static final String FAILED_FILE_TO_WRITE = "./MigrationOutputFAILED" + "_" + DATA_LABEL + ".csv";
-    private static final String CTSCAN_DATA_FILE = "./testdata/CTScansForUploadDev.csv";
+    //private static final String CTSCAN_DATA_FILE = "./testdata/CTScansForUploadDev.csv";
+    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFail.csv";
+
+    private static final Boolean EXECUTE_MIGRATION = false;
 
     /*"/home/kosmas-deligkaris/repositories/arilabdb" +
     "/202106_Add_Congs_data/SourcesFromPaco" +
@@ -29,7 +33,7 @@ public class Main {
     private static final FileUtils fileUtils = new FileUtils();
     private static final CtScanUtils ctScanUtils = new CtScanUtils();
     private static final CtScanUtilsService ctScanUtilsService = new CtScanUtilsService();
-    private static final CtScanMigrator ctScanMigrator = new CtScanMigrator();
+    private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService();
     private static final SettingsReader settingsReader = new SettingsReader();
     private static final DbUtil dbUtil = new DbUtil();
 
@@ -47,9 +51,11 @@ public class Main {
         ctScanValidatorService.validateScanData(scansList, FAILED_FILE_TO_WRITE);
         ctScanUtilsService.findStandardizedFolderNames(scansList);
         ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_FILE_TO_WRITE);
-
         fileUtils.writeBeansToFile(scansList, FILE_TO_WRITE);
-        ctScanMigrator.migrateScans(scansList);
+
+        if (EXECUTE_MIGRATION) {
+            ctScanMigratorService.migrateScans(scansList);
+        }
 
 
         logger.info("************************** Finished Execution **************************");
