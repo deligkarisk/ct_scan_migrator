@@ -26,6 +26,9 @@ public class CtScan {
     @CsvBindByName(column = "folder_location")
     private String folderLocation;
 
+    @CsvBindByName(column = "folder_location_exists")
+    private Boolean folderLocationExists;
+
     @CsvBindByName(column = "dicom_folder_location")
     private String dicomFolderLocation;
 
@@ -69,7 +72,7 @@ public class CtScan {
     private Boolean bodypartIsCorrect;
 
     @CsvBindByName(column = "input_data_valid")
-    private Boolean inputDataIsValid;
+    private Boolean AllinputDataIsValid;
 
     @CsvBindByName(column = "derived_data_valid")
     private Boolean derivedDataIsValid;
@@ -275,12 +278,12 @@ public class CtScan {
         this.bodypartIsCorrect = bodypartIsCorrect;
     }
 
-    public Boolean getInputDataIsValid() {
-        return inputDataIsValid;
+    public Boolean getAllinputDataIsValid() {
+        return AllinputDataIsValid;
     }
 
-    public void setInputDataIsValid(Boolean inputDataIsValid) {
-        this.inputDataIsValid = inputDataIsValid;
+    public void setAllinputDataIsValid(Boolean allinputDataIsValid) {
+        this.AllinputDataIsValid = allinputDataIsValid;
     }
 
     public String getDicomFolderLocation() {
@@ -313,5 +316,13 @@ public class CtScan {
 
     public void setNewFolderPathAvailable(Boolean newFolderPathAvailable) {
         this.newFolderPathAvailable = newFolderPathAvailable;
+    }
+
+    public Boolean getFolderLocationExists() {
+        return folderLocationExists;
+    }
+
+    public void setFolderLocationExists(Boolean folderLocationExists) {
+        this.folderLocationExists = folderLocationExists;
     }
 }

@@ -29,9 +29,11 @@ public class CTScanMigratorService {
             while (ctScanIterator.hasNext()) {
                 CtScan ctScan = ctScanIterator.next();
                 ctScanMigrator.migrateScan(ctScan, connection);
+                fileUtils.writeBeansToFile(scansList, FILE_TO_WRITE); //TODO: Fix this as well.
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
+            //TODO: if it fails, including for SQL or IO exceptio
         }
 
     }

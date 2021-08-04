@@ -19,7 +19,7 @@ public class Main {
     private static final String FILE_TO_WRITE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
     private static final String FAILED_FILE_TO_WRITE = "./MigrationOutputFAILED" + "_" + DATA_LABEL + ".csv";
     //private static final String CTSCAN_DATA_FILE = "./testdata/CTScansForUploadDev.csv";
-    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFail.csv";
+    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFailOnDBInsert.csv";
 
     private static final Boolean EXECUTE_MIGRATION = false;
 
@@ -47,7 +47,7 @@ public class Main {
         }
 
         List scansList = fileUtils.getScansFromFile(CTSCAN_DATA_FILE);
-        ctScanUtilsService.fixScans(scansList);
+        ctScanUtilsService.preProcessScans(scansList);
         ctScanValidatorService.validateScanData(scansList, FAILED_FILE_TO_WRITE);
         ctScanUtilsService.findStandardizedFolderNames(scansList);
         ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_FILE_TO_WRITE);

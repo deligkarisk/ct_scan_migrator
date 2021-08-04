@@ -35,10 +35,6 @@ public class CtScanUtils {
 
     public void updateScanFolderLocation(CtScan ctScan) {
         Path newLocation = pathUtils.getCorrectScanFolderLocation(ctScan.getFolderLocation());
-        if (!Files.exists(newLocation)) {
-            logger.error("Folder lcoation does not exist: " + newLocation);
-            System.exit(1);
-        }
         logger.info("Replacing old folder location with " + newLocation);
         ctScan.setFolderLocation(newLocation.toString());
     }

@@ -7,6 +7,8 @@ import com.arilab.utils.SettingsReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +28,9 @@ public class CtScanValidator {
         ctScan.setWetDryCombinationIsCorrect(wetDryCombinationIsCorrect(ctScan));
         ctScan.setDryMethodIsCorrect(dryMethodCheck(ctScan));
         ctScan.setBodypartIsCorrect(bodypartCheck(ctScan));
-        ctScan.setInputDataIsValid(allInputDataValidationsPassed(ctScan));
-        return ctScan.getInputDataIsValid();
+        ctScan.setFolderLocationExists(folderLocationExists(ctScan));
+        ctScan.setAllinputDataIsValid(allInputDataValidationsPassed(ctScan));
+        return ctScan.getAllinputDataIsValid();
     }
 
 
@@ -68,7 +71,7 @@ public class CtScanValidator {
 
     public Boolean allInputDataValidationsPassed(CtScan ctScan) {
         if (ctScan.getSpecimenCodeExists() && ctScan.getWetDryCombinationIsCorrect() &&
-                ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect()) {
+                ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect() && ctScan.getFolderLocationExists()) {
             return true;
         }
         return false;
@@ -80,6 +83,15 @@ public class CtScanValidator {
         Boolean noDatabaseEntryWithSameFolderExists = !dbUtilService.ctScanFolderExists(ctScan.getNewFolderPath());
         return (folderIsAvailable && noDatabaseEntryWithSameFolderExists);
     }
+
+    private Boolean folderLocationExists(CtScan ctScan) {
+        Path location = Paths.get(ctScan.getFolderLocation());
+        return Files.exists(location);
+    }
+
+
+
+
 
 }
 

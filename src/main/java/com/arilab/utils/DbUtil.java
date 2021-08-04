@@ -52,7 +52,7 @@ public class DbUtil {
                 settingsReader.credentials.get(1));
              PreparedStatement preparedStatement = connection.prepareStatement(selectFolder)) {
             setStringWrapper(1, folder, preparedStatement);
-            folderExists = preparedStatement.execute();
+            folderExists = preparedStatement.executeQuery().isBeforeFirst();
         } catch (SQLException sqlException) {
             logger.error("SQL Exception: " + sqlException);
             System.exit(1);

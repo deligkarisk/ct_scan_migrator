@@ -21,7 +21,7 @@ public class CtScanUtilsService {
 
 
 
-    public void fixScans(List<CtScan> scanList) {
+    public void preProcessScans(List<CtScan> scanList) {
         Iterator<CtScan> ctScanIterator = scanList.iterator();
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
