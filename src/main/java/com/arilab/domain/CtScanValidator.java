@@ -29,17 +29,40 @@ public class CtScanValidator {
         ctScan.setDryMethodIsCorrect(dryMethodCheck(ctScan));
         ctScan.setBodypartIsCorrect(bodypartCheck(ctScan));
         ctScan.setFolderLocationExists(folderLocationExists(ctScan));
+        ctScan.setModelIsCorrect(modelIsAnts(ctScan));
+        ctScan.setStainingIsCorrect(stainingIsCorrect(ctScan));
+        ctScan.setEthanolConcIsCorrect(ethanolConcIsCorrect(ctScan));
+        ctScan.setAntscanCodingIsCorrect(antscanIsCorrect(ctScan));
         ctScan.setAllinputDataIsValid(allInputDataValidationsPassed(ctScan));
         return ctScan.getAllinputDataIsValid();
     }
 
+
+    public Boolean antscanIsCorrect(CtScan ctScan) {
+        Boolean isCorrect = ((ctScan.getAntscan().equals("No") && ctScan.getAntscanCode() == null) || (ctScan.getAntscan().equals("Yes") && ctScan.getAntscanCode() != null));
+        return isCorrect;
+    }
+
+    public Boolean stainingIsCorrect(CtScan ctScan) {
+        List<String> stainingValues = Arrays.asList("Iodine", "PTA", "Osmium", "No staining");
+        return stainingValues.contains(ctScan.getStaining());
+    }
+
+    public Boolean ethanolConcIsCorrect(CtScan ctScan) {
+        List<String> ethanolConcValues = Arrays.asList("No ethanol used", "70%", "95%", "99%", "Not known");
+        return ethanolConcValues.contains(ctScan.getEthanolConcentration());
+    }
+
+    public Boolean modelIsAnts(CtScan ctScan) {
+        return ctScan.getModel().equals("Ants");
+    }
 
     public Boolean wetDryCombinationIsCorrect(CtScan ctScan) {
         if (ctScan.getWet().equals(
                 "Yes") && ctScan.getDryMethod() == null && ctScan.getEthanolConcentration() != null) {
             return true;
         }
-        if (ctScan.getWet().equals("No") && ctScan.getDryMethod() != null && ctScan.getEthanolConcentration() == null) {
+        if (ctScan.getWet().equals("No") && ctScan.getDryMethod() != null && ctScan.getEthanolConcentration().equals("No ethanol used")) {
             return true;
         }
         return false;
@@ -71,7 +94,9 @@ public class CtScanValidator {
 
     public Boolean allInputDataValidationsPassed(CtScan ctScan) {
         if (ctScan.getSpecimenCodeExists() && ctScan.getWetDryCombinationIsCorrect() &&
-                ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect() && ctScan.getFolderLocationExists()) {
+                ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect() && ctScan.getFolderLocationExists()
+        & ctScan.getModelIsCorrect() && ctScan.getEthanolConcIsCorrect() && ctScan.getStainingIsCorrect()
+        && ctScan.getAntscanCodingIsCorrect() && ctScan.getScanDateCorrect()) {
             return true;
         }
         return false;
@@ -80,7 +105,9 @@ public class CtScanValidator {
     public Boolean validateStandardizedFolder(CtScan ctScan) {
         // New folders should not exist already
         Boolean folderIsAvailable = !pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
+        ctScan.setNewFolderPathAvailable(folderIsAvailable);
         Boolean noDatabaseEntryWithSameFolderExists = !dbUtilService.ctScanFolderExists(ctScan.getNewFolderPath());
+        ctScan.setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
         return (folderIsAvailable && noDatabaseEntryWithSameFolderExists);
     }
 

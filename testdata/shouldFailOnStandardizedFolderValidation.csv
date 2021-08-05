@@ -1,0 +1,2 @@
+specimen_code,ct_scan_note,special_identifier,scan_reason,prep_note,folder_location,Note,scan_user ,scan_date,body_part,wet,staining,ethanol_conc,antscan,antscan_code,model,dry_method,fail_reason
+CASENT0185655,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.basiliska_CASENT0185655/S.basiliska_CASENT0185655_2018-07-01_143919,,francisco-hitagarcia,2018,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin, New standardized folder already exists

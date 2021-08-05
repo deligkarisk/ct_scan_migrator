@@ -40,25 +40,40 @@ public class CtScanUtils {
     }
 
     public String findTimestampFromFolderName(CtScan ctScan) {
-        return pathUtils.extractTimestamp(ctScan.getFolderLocation());
+        String timestamp = pathUtils.extractTimestamp(ctScan.getFolderLocation());
+        if (timestamp != null) {
+            ctScan.setScanDateCorrect(true);
+        }
+        return timestamp;
     }
 
     public String createTimestampFromScanDate(CtScan ctScan) {
         String timestamp = null;
         try {
-            SimpleDateFormat sdf = convertToSimpleDateFormat(ctScan.getScanDate());
+            SimpleDateFormat sdf = convertToSimpleDateFormat("yyyy-mm-dd");
             timestamp = sdf.format(sdf.parse(ctScan.getScanDate()));
+            ctScan.setScanDateCorrect(true);
         } catch (ParseException exception) {
-            logger.error("Could not parse scan date, exiting...");
-            System.exit(1);
+            try {
+                SimpleDateFormat sdf = convertToSimpleDateFormat("yyyy-mm");
+                timestamp = sdf.format(sdf.parse(ctScan.getScanDate()));
+                ctScan.setScanDateCorrect(true);
+            } catch (ParseException e) {
+                try {
+                    SimpleDateFormat sdf = convertToSimpleDateFormat("yyyy");
+                    timestamp = sdf.format(sdf.parse(ctScan.getScanDate()));
+                    ctScan.setScanDateCorrect(true);
+                } catch (ParseException parseException) {
+                    ctScan.setScanDateCorrect(false);
+                }
+            }
         }
         return timestamp;
     }
 
 
-
-    private SimpleDateFormat convertToSimpleDateFormat(String scanDate) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat convertToSimpleDateFormat(String format) {
+        SimpleDateFormat sdf = new SimpleDateFormat(format);
         sdf.setLenient(false);
         return sdf;
     }
@@ -69,15 +84,8 @@ public class CtScanUtils {
         String speciesMorphoCode = dbUtilService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
         Path newFolder = Paths.get(settingsReader.getPrependBucketStringNew(), ctScan.getModel(), genus,
-                                   speciesMorphoCode, uniqueFolderID);
-        logger.info("Checking standardized folder: \n" + newFolder + "\n for ct scan: \n " + ctScan.getFolderLocation());
-        if (Files.exists(newFolder)) {
-            logger.error("standardized folder already exists, aborting operation.");
-        } else {
-            logger.info("standardized folder available, OK");
-            ctScan.setNewFolderPath(newFolder.toString());
-            ctScan.setNewFolderPathAvailable(true);
-        }
+                speciesMorphoCode, uniqueFolderID);
+        ctScan.setNewFolderPath(newFolder.toString());
     }
 
     private String createUniqueFolderId(CtScan ctScan, String genus) {
@@ -85,12 +93,12 @@ public class CtScanUtils {
         if (ctScan.getSpecialIdentifier() == null) {
             uniqueFolderID =
                     ctScan.getSpecimenCode() + "_" + genus.substring(0,
-                                                                     3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getTimestamp();
+                            3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getTimestamp();
 
         } else {
             uniqueFolderID =
                     ctScan.getSpecimenCode() + "_" + genus.substring(0,
-                                                                     3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getSpecialIdentifier() + "_" + ctScan.getTimestamp();
+                            3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getSpecialIdentifier() + "_" + ctScan.getTimestamp();
         }
 
         return uniqueFolderID;

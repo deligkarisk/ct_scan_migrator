@@ -14,6 +14,9 @@ public class CtScan {
     @CsvBindByName(column = "ethanol_conc")
     private String ethanolConcentration;
 
+    @CsvBindByName(column = "ethanol_correct")
+    private Boolean ethanolConcIsCorrect;
+
     @CsvBindByName(column = "wet")
     private String wet;
 
@@ -38,8 +41,14 @@ public class CtScan {
     @CsvBindByName(column = "scan_date")
     private String scanDate;
 
+    @CsvBindByName(column = "scanDateCorrect")
+    private Boolean scanDateCorrect;
+
     @CsvBindByName(column = "staining")
     private String staining;
+
+    @CsvBindByName(column = "staining_correct")
+    private Boolean stainingIsCorrect;
 
     @CsvBindByName(column = "antscan")
     private String antscan;
@@ -47,8 +56,14 @@ public class CtScan {
     @CsvBindByName(column = "antscan_code")
     private String antscanCode;
 
+    @CsvBindByName(column = "antscanCorrect")
+    private Boolean antscanCodingIsCorrect;
+
     @CsvBindByName(column = "model")
     private String model;
+
+    @CsvBindByName(column = "model_correct")
+    private Boolean modelIsCorrect;
 
     @CsvBindByName(column = "dry_method")
     private String dryMethod;
@@ -80,8 +95,11 @@ public class CtScan {
     @CsvBindByName(column = "new_folder_path")
     private String newFolderPath;
 
-    @CsvBindByName(column = "new_folder_is_available")
+    @CsvBindByName(column = "new_folder_available_on_bucket")
     private Boolean newFolderPathAvailable;
+
+    @CsvBindByName(column = "new_folder_available_in_db")
+    private Boolean newFolderPathAvailableIntheDatabase;
 
     @CsvBindByName(column = "timestamp")
     private String timestamp;
@@ -324,5 +342,53 @@ public class CtScan {
 
     public void setFolderLocationExists(Boolean folderLocationExists) {
         this.folderLocationExists = folderLocationExists;
+    }
+
+    public Boolean getModelIsCorrect() {
+        return modelIsCorrect;
+    }
+
+    public void setModelIsCorrect(Boolean modelIsCorrect) {
+        this.modelIsCorrect = modelIsCorrect;
+    }
+
+    public Boolean getEthanolConcIsCorrect() {
+        return ethanolConcIsCorrect;
+    }
+
+    public void setEthanolConcIsCorrect(Boolean ethanolConcIsCorrect) {
+        this.ethanolConcIsCorrect = ethanolConcIsCorrect;
+    }
+
+    public Boolean getStainingIsCorrect() {
+        return stainingIsCorrect;
+    }
+
+    public void setStainingIsCorrect(Boolean stainingIsCorrect) {
+        this.stainingIsCorrect = stainingIsCorrect;
+    }
+
+    public Boolean getAntscanCodingIsCorrect() {
+        return antscanCodingIsCorrect;
+    }
+
+    public void setAntscanCodingIsCorrect(Boolean antscanCodingIsCorrect) {
+        this.antscanCodingIsCorrect = antscanCodingIsCorrect;
+    }
+
+    public Boolean getNewFolderPathAvailableIntheDatabase() {
+        return newFolderPathAvailableIntheDatabase;
+    }
+
+    public void setNewFolderPathAvailableIntheDatabase(Boolean newFolderPathAvailableIntheDatabase) {
+        this.newFolderPathAvailableIntheDatabase = newFolderPathAvailableIntheDatabase;
+    }
+
+    public Boolean getScanDateCorrect() {
+        return scanDateCorrect;
+    }
+
+    public void setScanDateCorrect(Boolean scanDateCorrect) {
+        this.scanDateCorrect = scanDateCorrect;
     }
 }

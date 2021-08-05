@@ -26,12 +26,15 @@ public class CtScanMigrator {
     CtScanUtils ctScanUtils = new CtScanUtils();
 
 
-    public void migrateScan(CtScan ctScan, Connection connection)  {
+    public void migrateScan(CtScan ctScan, Connection connection, Boolean dummyMigrationFlag)  {
         try {
             PreparedStatement preparedStatement = connection.prepareStatement(insertSql);
             assignScanValuesToPreparedStatement(preparedStatement, ctScan);
-            preparedStatement.execute();
-            fileUtils.migrateFolder(ctScan);
+            logger.info("Executing SQL statement: " + preparedStatement.toString());
+            if (!dummyMigrationFlag) {
+                preparedStatement.execute();
+            }
+            fileUtils.migrateFolder(ctScan, dummyMigrationFlag);
             ctScan.setMigrated(true);
         } catch (SQLException | IOException exception) {
             logger.error("Exception caught during migration: {}", exception.toString());

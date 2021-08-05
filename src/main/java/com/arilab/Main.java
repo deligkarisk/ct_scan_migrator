@@ -16,12 +16,11 @@ import java.util.List;
 public class Main {
 
     private static final String DATA_LABEL = "CongsData";
-    private static final String FILE_TO_WRITE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
-    private static final String FAILED_FILE_TO_WRITE = "./MigrationOutputFAILED" + "_" + DATA_LABEL + ".csv";
-    //private static final String CTSCAN_DATA_FILE = "./testdata/CTScansForUploadDev.csv";
-    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFailOnDBInsert.csv";
-
-    private static final Boolean EXECUTE_MIGRATION = false;
+    private static final String OUTPUT_FILE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
+    private static final String FAILED_VALIDATION_OUTPUT = "./ValidationFailed" + "_" + DATA_LABEL + ".csv";
+    //private static final String CTSCAN_DATA_FILE = "./testdata/shouldPass.csv";
+    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFailOnValidation.csv";
+    private static Boolean DUMMY_EXECUTION = true;
 
     /*"/home/kosmas-deligkaris/repositories/arilabdb" +
     "/202106_Add_Congs_data/SourcesFromPaco" +
@@ -48,19 +47,15 @@ public class Main {
 
         List scansList = fileUtils.getScansFromFile(CTSCAN_DATA_FILE);
         ctScanUtilsService.preProcessScans(scansList);
-        ctScanValidatorService.validateScanData(scansList, FAILED_FILE_TO_WRITE);
+        ctScanValidatorService.validateScanData(scansList, FAILED_VALIDATION_OUTPUT);
         ctScanUtilsService.findStandardizedFolderNames(scansList);
-        ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_FILE_TO_WRITE);
-        fileUtils.writeBeansToFile(scansList, FILE_TO_WRITE);
-
-        if (EXECUTE_MIGRATION) {
-            ctScanMigratorService.migrateScans(scansList);
-        }
+        ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_VALIDATION_OUTPUT);
+        fileUtils.writeBeansToFile(scansList, OUTPUT_FILE);
+        ctScanMigratorService.migrateScans(scansList, OUTPUT_FILE, DUMMY_EXECUTION);
 
 
         logger.info("************************** Finished Execution **************************");
     }
-
 
 
     private static Boolean preliminaryChecksPassed() {
@@ -87,10 +82,11 @@ public class Main {
         Boolean newBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringNew()));
         return ((oldBucketFolderIsMounted && newBucketFolderIsMounted));
     }
+
     private static Boolean canWriteToBucket() throws IOException {
-        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(),"testFile"));
-        Files.createFile(Paths.get(settingsReader.getPrependBucketStringNew(),"testFile"));
-        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(),"testFile"));
+        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(), "testFile"));
+        Files.createFile(Paths.get(settingsReader.getPrependBucketStringNew(), "testFile"));
+        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(), "testFile"));
         return true;
     }
 

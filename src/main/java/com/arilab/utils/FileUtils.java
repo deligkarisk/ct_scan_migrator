@@ -52,9 +52,23 @@ public class FileUtils {
         }
     }
 
-    public void migrateFolder(CtScan ctScan) throws IOException {
+    public void migrateFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
         File srcDir = new File(ctScan.getFolderLocation());
         File destinationDir = new File(ctScan.getNewFolderPath());
-        org.apache.commons.io.FileUtils.moveDirectoryToDirectory(srcDir, destinationDir, true);
+        logger.info("Moving folder " + srcDir.toString() + " to " + destinationDir.toString());
+        if (!dummyMigrationFlag) {
+            org.apache.commons.io.FileUtils.moveDirectoryToDirectory(srcDir, destinationDir, true);
+        }
+        logger.info("Moving of raw/main data folder completed");
+
+        if (ctScan.getDicomFolderLocation() != null) {
+            File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
+            File dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom");
+            logger.info("Moving dicom folder " + dicomSrcDir.toString() + " to " + dicomDestinationDir.toString());
+            if (!dummyMigrationFlag) {
+                org.apache.commons.io.FileUtils.moveDirectoryToDirectory(dicomSrcDir, dicomDestinationDir, true);
+            }
+            logger.info("Moving of the dicom folder completed");
+        }
     }
 }

@@ -17,14 +17,14 @@ public class CtScanValidatorService {
     FileUtils fileUtils = new FileUtils();
 
 
-    public void validateStandardizedFolderNames(List<CtScan> ctScanList, String FAILED_FILE_TO_WRITE) {
+    public void validateStandardizedFolderNames(List<CtScan> ctScanList, String failedValidationFileOutput) {
         int validScans;
         validScans = validateStandardizedFolderNames(ctScanList);
         if (validScans != ctScanList.size()) {
             logger.error("Not all scans passed validation of new standardized folder, migration will not proceed. " +
                                  "Please see the" +
-                                 "file " + FAILED_FILE_TO_WRITE + " for further details.");
-            fileUtils.writeBeansToFile(ctScanList, FAILED_FILE_TO_WRITE );
+                                 "file " + failedValidationFileOutput + " for further details.");
+            fileUtils.writeBeansToFile(ctScanList, failedValidationFileOutput );
             System.exit(1);
         }
     }
@@ -42,14 +42,14 @@ public class CtScanValidatorService {
     }
 
 
-    public void validateScanData(List<CtScan> scansList, String FAILED_FILE_TO_WRITE) {
+    public void validateScanData(List<CtScan> scansList, String failedValidationFileOutput) {
         int validScans;
         validScans = validateScanData(scansList); // validates if scans can be migrated, all
         // info is correct.
         if (validScans != scansList.size()) {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
-                                 "file " + FAILED_FILE_TO_WRITE + " for further details.");
-            fileUtils.writeBeansToFile(scansList, FAILED_FILE_TO_WRITE );
+                                 " file " + failedValidationFileOutput + " for further details.");
+            fileUtils.writeBeansToFile(scansList, failedValidationFileOutput );
             System.exit(1);
         }
     }

@@ -1,5 +1,9 @@
 specimen_code,ct_scan_note,special_identifier,scan_reason,prep_note,folder_location,Note,scan_user ,scan_date,body_part,wet,staining,ethanol_conc,antscan,antscan_code,model,dry_method,fail_reason
-0000000,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-28,Whole_body,No,No staining,,No,,Ants,Pin,CASENT not in db
-CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/Random_folder,,congliu,2018-10-29,Whole_body,No,No staining,,No,,Ants,Pin,folder location not present
-CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-12,erroneous,No,No staining,,No,,Ants,Pin,Body part is wrong
-CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-22,Whole_body,No,No staining,,Yes,,Ants,Pin,DB insert error
+0000000,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-28,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,CASENT not in db
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/Random_folder,,congliu,2018-10-29,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,folder location not present
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-12,erroneous,No,No staining,No ethanol used,No,,Ants,Pin,Body part is wrong
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-22,Whole_body,No,No staining,No ethanol used,Yes,,Ants,Pin,DB insert error
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-12,Whole_body,No,No staining,No ethanol used,No,,nts22,Pin,Model is wrong
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-12,Whole_body,No,Some staining,No ethanol used,No,,Ants,Pin,Staining is wrong
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-12,Whole_body,No,No staining,No ethanol used,Maybe,,Ants,Pin,Antscan is wrong value
+CASENT0185699,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-35,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,Date is wrong
