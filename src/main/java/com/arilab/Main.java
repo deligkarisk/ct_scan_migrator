@@ -40,6 +40,10 @@ public class Main {
 
         logger.info("************************** Starting app **************************");
 
+        Config config = Config.getInstance();
+        System.out.println(config.dbhost);
+        // TODO: Implement configuration management
+
         if (!preliminaryChecksPassed()) {
             logger.error("Preliminary checks failed, aborting operation...");
             System.exit(1);
