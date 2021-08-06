@@ -12,9 +12,15 @@ public class Config {
 
     private static Config configInstance;
     private static String PROPERTIES_FILE = "./config.properties";
+    private static String CREDENTIALS_FILE = "./credentials.properties";
     private static Logger logger = LoggerFactory.getLogger(Config.class);
 
     public String dbhost;
+    public String sourceDirectory;
+    public String targetDirectory;
+
+    public String username;
+    public String password;
 
 
     private Config() {
@@ -22,6 +28,15 @@ public class Config {
         try {
             Configuration configuration =  configurations.properties(new File(PROPERTIES_FILE));
             dbhost = configuration.getString("database.host");
+            sourceDirectory = configuration.getString("source.directory");
+            targetDirectory = configuration.getString("target.directory");
+
+            Configuration configurationCredentials = configurations.properties(new File(CREDENTIALS_FILE));
+            username = configurationCredentials.getString("username");
+            password = configurationCredentials.getString("password");
+
+
+
         } catch (ConfigurationException e) {
             logger.error("Could not load configuration settings, aborting operation.");
             System.exit(1);

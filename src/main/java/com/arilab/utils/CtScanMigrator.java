@@ -4,13 +4,10 @@ import com.arilab.domain.CtScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.List;
 
 public class CtScanMigrator {
 
@@ -21,9 +18,6 @@ public class CtScanMigrator {
     private static String insertSql = "INSERT INTO public.ctscans (specimen_code, ct_scan_note, ethanol_conc, wet, body_part, " +
             "special_identifier, folder_location, scan_user, scan_reason, staining, " +
             "antscan, antscan_code, model, dry_method, scan_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
-
-    SettingsReader settingsReader = new SettingsReader();
-    CtScanUtils ctScanUtils = new CtScanUtils();
 
 
     public void migrateScan(CtScan ctScan, Connection connection, Boolean dummyMigrationFlag)  {

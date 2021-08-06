@@ -21,17 +21,16 @@ public class DbUtil {
 
     Logger logger = LoggerFactory.getLogger(DbUtil.class);
 
-    SettingsReader settingsReader;
+    private Config config = Config.getInstance();
 
     public DbUtil() {
-        settingsReader = new SettingsReader();
     }
 
 
     public Boolean specimenCodeExists(String specimenCode) {
-        try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
-                                                                 settingsReader.credentials.get(0),
-                                                                 settingsReader.credentials.get(1));
+        try (Connection connection = DriverManager.getConnection(config.dbhost,
+                                                                 config.username,
+                                                                 config.password);
              PreparedStatement preparedStatement = connection.prepareStatement(selectAllSpecimens)) {
             preparedStatement.setString(1, specimenCode);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -47,9 +46,9 @@ public class DbUtil {
 
     public Boolean ctScanFolderExists(String folder) {
         Boolean folderExists = null;
-        try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
-                settingsReader.credentials.get(0),
-                settingsReader.credentials.get(1));
+        try (Connection connection = DriverManager.getConnection(config.dbhost,
+                config.username,
+                config.password);
              PreparedStatement preparedStatement = connection.prepareStatement(selectFolder)) {
             setStringWrapper(1, folder, preparedStatement);
             folderExists = preparedStatement.executeQuery().isBeforeFirst();
@@ -82,9 +81,9 @@ public class DbUtil {
 
 
     public String runSQLQueryOnSpecimenCode(String query, String specimenCode, String columnName) {
-        try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
-                                                                 settingsReader.credentials.get(0),
-                                                                 settingsReader.credentials.get(1));
+        try (Connection connection = DriverManager.getConnection(config.dbhost,
+                                                                 config.username,
+                                                                 config.password);
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, specimenCode);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

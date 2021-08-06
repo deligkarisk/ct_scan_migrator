@@ -12,9 +12,7 @@ import java.util.regex.Pattern;
 public class PathUtils {
 
     private static Logger logger = LoggerFactory.getLogger(PathUtils.class);
-
-    SettingsReader settingsReader = new SettingsReader();
-
+    private Config config = Config.getInstance();
 
     public Boolean folderExists(Path folder) {
         return Files.exists(folder);
@@ -22,7 +20,7 @@ public class PathUtils {
 
     public Path getCorrectScanFolderLocation(String currentLocation) {
         String newLocation = currentLocation.split("CT_Scan_2017-2019")[1];
-        Path newLocationPath = Paths.get(settingsReader.getPrependBucketStringOld(), newLocation);
+        Path newLocationPath = Paths.get(config.sourceDirectory, newLocation);
         return newLocationPath;
     }
 

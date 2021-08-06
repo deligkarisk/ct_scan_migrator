@@ -3,7 +3,6 @@ package com.arilab.domain;
 import com.arilab.service.DbUtilService;
 import com.arilab.utils.DbUtil;
 import com.arilab.utils.PathUtils;
-import com.arilab.utils.SettingsReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,8 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 
 public class CtScanValidator {
-
-    SettingsReader settingsReader = new SettingsReader();
 
     private static Logger logger = LoggerFactory.getLogger(CtScanValidator.class);
     DbUtil dbUtil = new DbUtil();

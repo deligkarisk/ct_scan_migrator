@@ -14,11 +14,11 @@ import java.text.SimpleDateFormat;
 public class CtScanUtils {
 
     private static Logger logger = LoggerFactory.getLogger(CtScanUtils.class);
-    private static SettingsReader settingsReader = new SettingsReader();
     private static DbUtil dbUtil = new DbUtil();
     private static DbUtilService dbUtilService = new DbUtilService();
     private static CtScanUtils ctScanUtils = new CtScanUtils();
     private static PathUtils pathUtils = new PathUtils();
+    private Config config = Config.getInstance();
 
 
     public void findDicomFolderLocation(CtScan ctScan, int levelsBack, String appendString) {
@@ -83,7 +83,7 @@ public class CtScanUtils {
         String genus = dbUtilService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
         String speciesMorphoCode = dbUtilService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
-        Path newFolder = Paths.get(settingsReader.getPrependBucketStringNew(), ctScan.getModel(), genus,
+        Path newFolder = Paths.get(config.targetDirectory, ctScan.getModel(), genus,
                 speciesMorphoCode, uniqueFolderID);
         ctScan.setNewFolderPath(newFolder.toString());
     }

@@ -1,9 +1,9 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
+import com.arilab.utils.Config;
 import com.arilab.utils.CtScanMigrator;
 import com.arilab.utils.FileUtils;
-import com.arilab.utils.SettingsReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,15 +20,15 @@ public class CTScanMigratorService {
 
     private CtScanMigrator ctScanMigrator = new CtScanMigrator();
     private static final Logger logger = LoggerFactory.getLogger(CTScanMigratorService.class);
-    SettingsReader settingsReader = new SettingsReader();
+    Config config = Config.getInstance();
 
 
     public void migrateScans(List<CtScan> scanList, String fileOutput, Boolean dummyMigrationFlag) {
         Iterator<CtScan> ctScanIterator = scanList.iterator();
 
-        try (Connection connection = DriverManager.getConnection(settingsReader.dbHost,
-                settingsReader.credentials.get(0),
-                settingsReader.credentials.get(1));) {
+        try (Connection connection = DriverManager.getConnection(config.dbhost,
+                config.username,
+                config.password)) {
             while (ctScanIterator.hasNext()) {
                 CtScan ctScan = ctScanIterator.next();
                 ctScanMigrator.migrateScan(ctScan, connection, dummyMigrationFlag);

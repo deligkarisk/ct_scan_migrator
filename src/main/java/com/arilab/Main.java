@@ -33,14 +33,14 @@ public class Main {
     private static final CtScanUtils ctScanUtils = new CtScanUtils();
     private static final CtScanUtilsService ctScanUtilsService = new CtScanUtilsService();
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService();
-    private static final SettingsReader settingsReader = new SettingsReader();
     private static final DbUtil dbUtil = new DbUtil();
+    private static final Config config = Config.getInstance();
+
 
     public static void main(String[] args) {
 
         logger.info("************************** Starting app **************************");
 
-        Config config = Config.getInstance();
         System.out.println(config.dbhost);
         // TODO: Implement configuration management
 
@@ -82,15 +82,15 @@ public class Main {
     }
 
     private static Boolean bucketIsMounted() {
-        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringOld()));
-        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(settingsReader.getPrependBucketStringNew()));
+        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(config.sourceDirectory));
+        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(config.targetDirectory));
         return ((oldBucketFolderIsMounted && newBucketFolderIsMounted));
     }
 
     private static Boolean canWriteToBucket() throws IOException {
-        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(), "testFile"));
-        Files.createFile(Paths.get(settingsReader.getPrependBucketStringNew(), "testFile"));
-        Files.deleteIfExists(Paths.get(settingsReader.getPrependBucketStringNew(), "testFile"));
+        Files.deleteIfExists(Paths.get(config.targetDirectory, "testFile"));
+        Files.createFile(Paths.get(config.targetDirectory, "testFile"));
+        Files.deleteIfExists(Paths.get(config.targetDirectory, "testFile"));
         return true;
     }
 
