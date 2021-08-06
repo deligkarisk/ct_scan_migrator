@@ -19,7 +19,7 @@ public class Main {
     private static final String OUTPUT_FILE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
     private static final String FAILED_VALIDATION_OUTPUT = "./ValidationFailed" + "_" + DATA_LABEL + ".csv";
     //private static final String CTSCAN_DATA_FILE = "./testdata/shouldPass.csv";
-    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFailOnValidation.csv";
+    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFailUniquenessTest.csv";
     private static Boolean DUMMY_EXECUTION = true;
 
     /*"/home/kosmas-deligkaris/repositories/arilabdb" +
@@ -54,6 +54,8 @@ public class Main {
         ctScanValidatorService.validateScanData(scansList, FAILED_VALIDATION_OUTPUT);
         ctScanUtilsService.findStandardizedFolderNames(scansList);
         ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_VALIDATION_OUTPUT);
+        ctScanValidatorService.validateUniquenessOfFolders(scansList, FAILED_VALIDATION_OUTPUT);
+
         fileUtils.writeBeansToFile(scansList, OUTPUT_FILE);
         ctScanMigratorService.migrateScans(scansList, OUTPUT_FILE, DUMMY_EXECUTION);
 

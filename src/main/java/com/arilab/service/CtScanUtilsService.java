@@ -2,6 +2,7 @@ package com.arilab.service;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
+import com.arilab.utils.Config;
 import com.arilab.utils.CtScanUtils;
 import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
@@ -12,10 +13,11 @@ import java.util.List;
 
 public class CtScanUtilsService {
 
-    CtScanUtils ctScanUtils = new CtScanUtils();
-    CtScanValidator ctScanValidator = new CtScanValidator();
-    FileUtils fileUtils = new FileUtils();
-    CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
+    private CtScanUtils ctScanUtils = new CtScanUtils();
+    private CtScanValidator ctScanValidator = new CtScanValidator();
+    private FileUtils fileUtils = new FileUtils();
+    private CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
+    private Config config = Config.getInstance();
 
     private static final Logger logger = LoggerFactory.getLogger(CtScanUtilsService.class);
 
@@ -27,7 +29,7 @@ public class CtScanUtilsService {
             CtScan ctScan = ctScanIterator.next();
             logger.info("Fixing scan: " + ctScan.getFolderLocation());
             ctScanUtils.updateScanFolderLocation(ctScan);
-            ctScanUtils.findDicomFolderLocation(ctScan, 1, "_OUT");
+            ctScanUtils.findDicomFolderLocation(ctScan, config.dicomLevelsUp, config.dicomAppendString);
             ctScanUtils.updateTimestamp(ctScan);
         }
     }

@@ -18,9 +18,15 @@ public class Config {
     public String dbhost;
     public String sourceDirectory;
     public String targetDirectory;
+    public int dicomLevelsUp;
+    public String dicomAppendString;
+
+
 
     public String username;
     public String password;
+
+
 
 
     private Config() {
@@ -30,6 +36,8 @@ public class Config {
             dbhost = configuration.getString("database.host");
             sourceDirectory = configuration.getString("source.directory");
             targetDirectory = configuration.getString("target.directory");
+            dicomLevelsUp = configuration.getInt("dicom.levelsup");
+            dicomAppendString = configuration.getString("dicom.append.string");
 
             Configuration configurationCredentials = configurations.properties(new File(CREDENTIALS_FILE));
             username = configurationCredentials.getString("username");
