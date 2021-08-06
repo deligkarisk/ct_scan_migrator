@@ -15,17 +15,12 @@ import java.util.List;
 
 public class Main {
 
-    private static final String DATA_LABEL = "CongsData";
-    private static final String OUTPUT_FILE = "./MigrationOutput" + "_" + DATA_LABEL + ".csv";
-    private static final String FAILED_VALIDATION_OUTPUT = "./ValidationFailed" + "_" + DATA_LABEL + ".csv";
-    //private static final String CTSCAN_DATA_FILE = "./testdata/shouldPass.csv";
-    private static final String CTSCAN_DATA_FILE = "./testdata/shouldFailUniquenessTest.csv";
+    private static  String dataLabel;
+    private static String outputFile;
+    private static  String failedValidationOutput;
+
     private static Boolean DUMMY_EXECUTION = true;
 
-    /*"/home/kosmas-deligkaris/repositories/arilabdb" +
-    "/202106_Add_Congs_data/SourcesFromPaco" +
-    "/CTScansForUpload.csv";
-*/
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final CtScanValidator validator = new CtScanValidator();
     private static final CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
@@ -40,9 +35,34 @@ public class Main {
     public static void main(String[] args) {
 
         logger.info("************************** Starting app **************************");
+        if (args.length < 2) {
+            System.out.println("Please enter the file name to read from, as well as a label for the outputs.");
+            System.exit(1);
+        }
 
-        System.out.println(config.dbhost);
-        // TODO: Implement configuration management
+        String CTSCAN_DATA_FILE = args[0];
+        dataLabel = args[1];
+        outputFile = "./MigrationOutput" + "_" + dataLabel + ".csv";
+        failedValidationOutput = "./ValidationFailed" + "_" + dataLabel + ".csv";
+
+
+
+        if (args.length >= 3) {
+            if (args[2].equals("--do-migration")) {
+                DUMMY_EXECUTION = false;
+            } else {
+                System.out.println("Erroneous third argument, exiting." + args[1]);
+                System.exit(1);
+            }
+        }
+
+
+
+
+
+
+        logger.info("Reading data from: " + CTSCAN_DATA_FILE);
+
 
         if (!preliminaryChecksPassed()) {
             logger.error("Preliminary checks failed, aborting operation...");
@@ -51,13 +71,12 @@ public class Main {
 
         List scansList = fileUtils.getScansFromFile(CTSCAN_DATA_FILE);
         ctScanUtilsService.preProcessScans(scansList);
-        ctScanValidatorService.validateScanData(scansList, FAILED_VALIDATION_OUTPUT);
+        ctScanValidatorService.validateScanData(scansList, failedValidationOutput);
         ctScanUtilsService.findStandardizedFolderNames(scansList);
-        ctScanValidatorService.validateStandardizedFolderNames(scansList, FAILED_VALIDATION_OUTPUT);
-        ctScanValidatorService.validateUniquenessOfFolders(scansList, FAILED_VALIDATION_OUTPUT);
-
-        fileUtils.writeBeansToFile(scansList, OUTPUT_FILE);
-        ctScanMigratorService.migrateScans(scansList, OUTPUT_FILE, DUMMY_EXECUTION);
+        ctScanValidatorService.validateStandardizedFolderNames(scansList, failedValidationOutput);
+        ctScanValidatorService.validateUniquenessOfFolders(scansList, failedValidationOutput);
+        fileUtils.writeBeansToFile(scansList, outputFile);
+        ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
 
 
         logger.info("************************** Finished Execution **************************");

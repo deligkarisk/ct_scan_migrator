@@ -37,7 +37,7 @@ public class DbUtil {
                 return resultSet.isBeforeFirst();
             }
         } catch (SQLException exception) {
-            logger.error("SQL Exception: " + exception);
+            logger.error("SQL Exception: " + exception.getMessage());
             System.exit(1);
         }
         return false;

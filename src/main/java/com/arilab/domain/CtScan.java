@@ -1,32 +1,34 @@
 package com.arilab.domain;
 
 import com.opencsv.bean.CsvBindByName;
+import lombok.NonNull;
 import lombok.ToString;
 
 @ToString
 public class CtScan {
-    @CsvBindByName(column = "specimen_code")
+    @CsvBindByName(column = "specimen_code", required = true)
     private  String specimenCode;
 
     @CsvBindByName(column = "ct_scan_note")
     private String ctScanNote;
 
-    @CsvBindByName(column = "ethanol_conc")
+
+    @CsvBindByName(column = "ethanol_conc", required = true)
     private String ethanolConcentration;
 
     @CsvBindByName(column = "ethanol_correct")
     private Boolean ethanolConcIsCorrect;
 
-    @CsvBindByName(column = "wet")
+    @CsvBindByName(column = "wet", required = true)
     private String wet;
 
-    @CsvBindByName(column = "body_part")
+    @CsvBindByName(column = "body_part", required = true)
     private String bodyPart;
 
     @CsvBindByName(column = "special_identifier")
     private String specialIdentifier;
 
-    @CsvBindByName(column = "folder_location")
+    @CsvBindByName(column = "folder_location", required = true)
     private String folderLocation;
 
     @CsvBindByName(column = "folder_location_exists")
@@ -35,7 +37,7 @@ public class CtScan {
     @CsvBindByName(column = "dicom_folder_location")
     private String dicomFolderLocation;
 
-    @CsvBindByName(column = "scan_user")
+    @CsvBindByName(column = "scan_user", required = true)
     private String scanUser;
 
     @CsvBindByName(column = "scan_date")
@@ -44,13 +46,13 @@ public class CtScan {
     @CsvBindByName(column = "scanDateCorrect")
     private Boolean scanDateCorrect;
 
-    @CsvBindByName(column = "staining")
+    @CsvBindByName(column = "staining", required = true)
     private String staining;
 
     @CsvBindByName(column = "staining_correct")
     private Boolean stainingIsCorrect;
 
-    @CsvBindByName(column = "antscan")
+    @CsvBindByName(column = "antscan", required = true)
     private String antscan;
 
     @CsvBindByName(column = "antscan_code")
@@ -59,13 +61,13 @@ public class CtScan {
     @CsvBindByName(column = "antscanCorrect")
     private Boolean antscanCodingIsCorrect;
 
-    @CsvBindByName(column = "model")
+    @CsvBindByName(column = "model", required = true)
     private String model;
 
     @CsvBindByName(column = "model_correct")
     private Boolean modelIsCorrect;
 
-    @CsvBindByName(column = "dry_method")
+    @CsvBindByName(column = "dry_method", required = true)
     private String dryMethod;
 
     @CsvBindByName(column = "scan_reason")

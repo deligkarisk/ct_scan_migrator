@@ -6,10 +6,7 @@ import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CtScanValidatorService {
@@ -23,8 +20,10 @@ public class CtScanValidatorService {
     public void validateUniquenessOfFolders(List<CtScan> ctScanList, String failedValidationFileOutput) {
         // Ensure that migrated folders, and dicom folders are all unique inside the fill list of scans.
         List<String> ctScanFolders = ctScanList.stream().map(CtScan::getNewFolderPath).collect(Collectors.toList());
+        ctScanFolders.removeAll(Collections.singleton(null));
         Set<String> setCtScanFolders = new HashSet<String>(ctScanFolders);
         List<String> ctScanDicomFolders = ctScanList.stream().map(CtScan::getDicomFolderLocation).collect(Collectors.toList());
+        ctScanDicomFolders.removeAll(Collections.singleton(null));
         Set<String> setCtScanDicomFolders = new HashSet<String>(ctScanDicomFolders);
 
         if ((ctScanFolders.size() != setCtScanFolders.size()) || (ctScanDicomFolders.size() != setCtScanDicomFolders.size())) {

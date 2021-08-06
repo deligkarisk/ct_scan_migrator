@@ -45,7 +45,7 @@ public class CtScanMigrator {
         dbUtil.setStringWrapper(4, ctScan.getWet(), preparedStatement);
         dbUtil.setStringWrapper(5, ctScan.getBodyPart(), preparedStatement);
         dbUtil.setStringWrapper(6, ctScan.getSpecialIdentifier(), preparedStatement);
-        dbUtil.setStringWrapper(7, ctScan.getNewFolderPath(), preparedStatement);
+        dbUtil.setStringWrapper(7, stripFirstPart(ctScan.getNewFolderPath()), preparedStatement);
         dbUtil.setStringWrapper(8, ctScan.getScanUser(), preparedStatement);
         dbUtil.setStringWrapper(9, ctScan.getScanReason(), preparedStatement);
         dbUtil.setStringWrapper(10, ctScan.getStaining(), preparedStatement);
@@ -57,4 +57,9 @@ public class CtScanMigrator {
     }
 
 
+    private String stripFirstPart(String folderPath) {
+        // Removes the /mnt/bucket part of the folder to leave the standardized one, starting with CTScans/...
+        int index = folderPath.indexOf("CTScans");
+        return folderPath.substring(index);
+    }
 }
