@@ -50,7 +50,7 @@ public class DbUtil {
                 config.username,
                 config.password);
              PreparedStatement preparedStatement = connection.prepareStatement(selectFolder)) {
-            setStringWrapper(1, folder, preparedStatement);
+            setStringWrapper(1, stripFirstPart(folder), preparedStatement);
             folderExists = preparedStatement.executeQuery().isBeforeFirst();
         } catch (SQLException sqlException) {
             logger.error("SQL Exception: " + sqlException);
@@ -61,6 +61,11 @@ public class DbUtil {
 
     }
 
+    private String stripFirstPart(String folderPath) {
+        // Removes the /mnt/bucket part of the folder to leave the standardized one, starting with CTScans/...
+        int index = folderPath.indexOf("CTScans");
+        return folderPath.substring(index);
+    }
 
 
     public String getGenusFromSpecimenCode(String specimenCode) {

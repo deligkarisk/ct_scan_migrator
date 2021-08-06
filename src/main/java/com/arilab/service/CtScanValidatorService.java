@@ -22,11 +22,18 @@ public class CtScanValidatorService {
         List<String> ctScanFolders = ctScanList.stream().map(CtScan::getNewFolderPath).collect(Collectors.toList());
         ctScanFolders.removeAll(Collections.singleton(null));
         Set<String> setCtScanFolders = new HashSet<String>(ctScanFolders);
+
         List<String> ctScanDicomFolders = ctScanList.stream().map(CtScan::getDicomFolderLocation).collect(Collectors.toList());
         ctScanDicomFolders.removeAll(Collections.singleton(null));
         Set<String> setCtScanDicomFolders = new HashSet<String>(ctScanDicomFolders);
 
-        if ((ctScanFolders.size() != setCtScanFolders.size()) || (ctScanDicomFolders.size() != setCtScanDicomFolders.size())) {
+        List<String> ctScanOldFolders = ctScanList.stream().map(CtScan::getFolderLocation).collect(Collectors.toList());
+        ctScanOldFolders.removeAll(Collections.singleton(null));
+        Set<String> setCtScanOldFolders = new HashSet<String>(ctScanOldFolders);
+
+
+        if ((ctScanFolders.size() != setCtScanFolders.size()) || (ctScanDicomFolders.size() != setCtScanDicomFolders.size())
+        || (ctScanOldFolders.size() != setCtScanOldFolders.size())) {
             fileUtils.writeBeansToFile(ctScanList, failedValidationFileOutput);
             logger.error("Scan folders not unique, exiting application.");
             System.exit(1);
