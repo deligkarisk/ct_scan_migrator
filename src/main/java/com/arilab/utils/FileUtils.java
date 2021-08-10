@@ -57,7 +57,7 @@ public class FileUtils {
         File destinationDir = new File(ctScan.getNewFolderPath());
         logger.info("Moving folder " + srcDir.toString() + " to " + destinationDir.toString());
         if (!dummyMigrationFlag) {
-            org.apache.commons.io.FileUtils.moveDirectoryToDirectory(srcDir, destinationDir, true);
+            org.apache.commons.io.FileUtils.moveDirectory(srcDir, destinationDir);
         }
         logger.info("Moving of raw/main data folder completed");
 
@@ -66,7 +66,7 @@ public class FileUtils {
             File dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom");
             logger.info("Moving dicom folder " + dicomSrcDir.toString() + " to " + dicomDestinationDir.toString());
             if (!dummyMigrationFlag) {
-                org.apache.commons.io.FileUtils.moveDirectoryToDirectory(dicomSrcDir, dicomDestinationDir, true);
+                org.apache.commons.io.FileUtils.moveDirectory(dicomSrcDir, dicomDestinationDir);
             }
             logger.info("Moving of the dicom folder completed");
         }

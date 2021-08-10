@@ -22,15 +22,20 @@ public class CtScanUtils {
 
 
     public void findDicomFolderLocation(CtScan ctScan, int levelsBack, String appendString) {
-        logger.info("Attempting to automatically find the dicom folder.");
-        String folderLocation = ctScan.getFolderLocation();
-        String dicomFolderLocation = pathUtils.findDicomFolderLocation(folderLocation, levelsBack, appendString);
-        if (Files.exists(Paths.get(dicomFolderLocation))) {
-            ctScan.setDicomFolderLocation(dicomFolderLocation);
-            logger.info("Dicom folder found, using this: " + dicomFolderLocation);
+        if (ctScan.getDicomFolderLocation() == null) {
+            logger.info("Attempting to automatically find the dicom folder.");
+            String folderLocation = ctScan.getFolderLocation();
+            String dicomFolderLocation = pathUtils.findDicomFolderLocation(folderLocation, levelsBack, appendString);
+            if (Files.exists(Paths.get(dicomFolderLocation))) {
+                ctScan.setDicomFolderLocation(dicomFolderLocation);
+                logger.info("Dicom folder found, using this: " + dicomFolderLocation);
+            } else {
+                logger.info("Dicom folder not found, using null instead of dicom folder location: " + dicomFolderLocation);
+            }
         } else {
-            logger.info("Dicom folder not found, using null instead of dicom folder location: " + dicomFolderLocation);
+            logger.info("Dicom folder already inputted, skipping automatic finding of dicom folder: " + ctScan.getDicomFolderLocation());
         }
+
     }
 
     public void updateScanFolderLocation(CtScan ctScan) {

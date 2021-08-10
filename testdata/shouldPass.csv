@@ -1,5 +1,5 @@
-specimen_code,ct_scan_note,special_identifier,scan_reason,prep_note,folder_location,Note,scan_user,scan_date,body_part,wet,staining,ethanol_conc,antscan,antscan_code,model,dry_method
-CASENT0790671,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-25,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin
-CASENT0185655,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.basiliska_CASENT0185655/S.basiliska_CASENT0185655_2018-07-01_143914,,francisco-hitagarcia,2018,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin
-CASENT0185699,,,,,/bucket/EconomoU/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.tumida_CASENT00185699/S.tumida_CASENT00185699_2018-06-30_113210,,test-user,2019,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin
-CASENT0790671,,SpecialID,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671_Head,,congliu,2020,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin
+specimen_code,ct_scan_note,special_identifier,scan_reason,prep_note,folder_location,Note,scan_user,scan_date,body_part,wet,staining,ethanol_conc,antscan,antscan_code,model,dry_method,dicom_folder_location
+CASENT0790671,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671/P_zhaoi_CASENT0790671_2017-08-21_111749,,congliu,2018-10-25,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,
+CASENT0185655,,,,,/bucket/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.basiliska_CASENT0185655/S.basiliska_CASENT0185655_2018-07-01_143914,,francisco-hitagarcia,2018,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,
+CASENT0185699,,,,,/bucket/EconomoU/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.tumida_CASENT00185699/S.tumida_CASENT00185699_2018-06-30_113210,,test-user,2019,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,
+CASENT0790671,,SpecialID,,,/bucket/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671_Head,,congliu,2020,Whole_body,No,No staining,No ethanol used,No,,Ants,Pin,/mnt/bucket_dev/CT_Scan_2017-2019/Ants/Genus Proceratium/P.zhaoi_CASENT0790671_Head_DICOM
