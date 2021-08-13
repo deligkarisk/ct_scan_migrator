@@ -33,7 +33,7 @@ public class CtScanUtils {
                 logger.info("Dicom folder not found, using null instead of dicom folder location: " + dicomFolderLocation);
             }
         } else {
-            logger.info("Dicom folder already inputted, skipping automatic finding of dicom folder: " + ctScan.getDicomFolderLocation());
+            logger.info("Dicom folder already inputted, nothing to add: " + ctScan.getDicomFolderLocation());
         }
 
     }
@@ -42,6 +42,12 @@ public class CtScanUtils {
         Path newLocation = pathUtils.getCorrectScanFolderLocation(ctScan.getFolderLocation());
         logger.info("Replacing old folder location with " + newLocation);
         ctScan.setFolderLocation(newLocation.toString());
+
+        if (ctScan.getDicomFolderLocation() != null) {
+            Path newDicomFolder = pathUtils.getCorrectScanFolderLocation(ctScan.getDicomFolderLocation());
+            logger.info("Replacing old dicom folder location with " + newDicomFolder);
+            ctScan.setDicomFolderLocation(newDicomFolder.toString());
+        }
     }
 
     public String findTimestampFromFolderName(CtScan ctScan) {

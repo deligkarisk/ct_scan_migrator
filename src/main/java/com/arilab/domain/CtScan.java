@@ -37,6 +37,9 @@ public class CtScan {
     @CsvBindByName(column = "dicom_folder_location")
     private String dicomFolderLocation;
 
+    @CsvBindByName(column = "dicom_folder_not_inside_main")
+    private Boolean dicomFolderNotAChildOfMain;
+
     @CsvBindByName(column = "scan_user", required = true)
     private String scanUser;
 
@@ -392,5 +395,13 @@ public class CtScan {
 
     public void setScanDateCorrect(Boolean scanDateCorrect) {
         this.scanDateCorrect = scanDateCorrect;
+    }
+
+    public Boolean getDicomFolderNotAChildOfMain() {
+        return dicomFolderNotAChildOfMain;
+    }
+
+    public void setDicomFolderNotAChildOfMain(Boolean dicomFolderNotAChildOfMain) {
+        this.dicomFolderNotAChildOfMain = dicomFolderNotAChildOfMain;
     }
 }

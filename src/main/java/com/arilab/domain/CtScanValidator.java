@@ -30,10 +30,31 @@ public class CtScanValidator {
         ctScan.setStainingIsCorrect(stainingIsCorrect(ctScan));
         ctScan.setEthanolConcIsCorrect(ethanolConcIsCorrect(ctScan));
         ctScan.setAntscanCodingIsCorrect(antscanIsCorrect(ctScan));
+        ctScan.setDicomFolderNotAChildOfMain(dicomFolderNotInMainFolder(ctScan));
         ctScan.setAllinputDataIsValid(allInputDataValidationsPassed(ctScan));
         return ctScan.getAllinputDataIsValid();
     }
 
+
+    private Boolean dicomFolderNotInMainFolder(CtScan ctScan) {
+        Boolean returnValue = true;
+
+        if (ctScan.getDicomFolderLocation() != null) {
+            Path dicomPath = Paths.get(ctScan.getDicomFolderLocation());
+            Path mainDataPath = Paths.get(ctScan.getFolderLocation());
+
+            if (!Files.exists(dicomPath)) {
+                logger.error("Dicom path does not exist, exiting... :" + dicomPath.toString());
+                System.exit(1);
+            }
+
+            returnValue = !dicomPath.startsWith(mainDataPath);
+
+        }
+
+        return returnValue;
+
+    }
 
     public Boolean antscanIsCorrect(CtScan ctScan) {
         Boolean isCorrect = ((ctScan.getAntscan().equals("No") && ctScan.getAntscanCode() == null) || (ctScan.getAntscan().equals("Yes") && ctScan.getAntscanCode() != null));
@@ -93,7 +114,8 @@ public class CtScanValidator {
         if (ctScan.getSpecimenCodeExists() && ctScan.getWetDryCombinationIsCorrect() &&
                 ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect() && ctScan.getFolderLocationExists()
         & ctScan.getModelIsCorrect() && ctScan.getEthanolConcIsCorrect() && ctScan.getStainingIsCorrect()
-        && ctScan.getAntscanCodingIsCorrect() && ctScan.getScanDateCorrect()) {
+        && ctScan.getAntscanCodingIsCorrect() && ctScan.getScanDateCorrect()
+                && ctScan.getDicomFolderNotAChildOfMain()) {
             return true;
         }
         return false;
