@@ -35,9 +35,20 @@ public class Main {
     public static void main(String[] args) {
 
         logger.info("************************** Starting app **************************");
+
+
         if (args.length < 2) {
-            System.out.println("Please enter the file name to read from, as well as a label for the outputs.");
+            System.out.println("Enter at least the datafile and the datalabel.");
             System.exit(1);
+        }
+
+        if (args.length == 3) {
+            if (args[2].equals("--do-migration")) {
+                DUMMY_EXECUTION = false;
+            } else {
+                System.out.println("Erroneous third argument, exiting." + args[1]);
+                System.exit(1);
+            }
         }
 
         String CTSCAN_DATA_FILE = args[0];
@@ -47,14 +58,7 @@ public class Main {
 
 
 
-        if (args.length >= 3) {
-            if (args[2].equals("--do-migration")) {
-                DUMMY_EXECUTION = false;
-            } else {
-                System.out.println("Erroneous third argument, exiting." + args[1]);
-                System.exit(1);
-            }
-        }
+
 
 
 

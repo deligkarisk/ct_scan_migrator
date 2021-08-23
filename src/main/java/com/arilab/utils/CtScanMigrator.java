@@ -17,7 +17,7 @@ public class CtScanMigrator {
 
     private static String insertSql = "INSERT INTO public.ctscans (specimen_code, ct_scan_note, ethanol_conc, wet, body_part, " +
             "special_identifier, folder_location, scan_user, scan_reason, staining, " +
-            "antscan, antscan_code, model, dry_method, scan_date, migrated_from) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?) ";
+            "antscan, antscan_code, model, dry_method, migrated_from) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 
 
     public void migrateScan(CtScan ctScan, Connection connection, Boolean dummyMigrationFlag)  {
@@ -53,8 +53,7 @@ public class CtScanMigrator {
         dbUtil.setStringWrapper(12, ctScan.getAntscanCode(), preparedStatement);
         dbUtil.setStringWrapper(13, ctScan.getModel(), preparedStatement);
         dbUtil.setStringWrapper(14, ctScan.getDryMethod(), preparedStatement);
-        dbUtil.setStringWrapper(15, ctScan.getScanDate(), preparedStatement);
-        dbUtil.setStringWrapper(16, ctScan.getFolderLocation(), preparedStatement);
+        dbUtil.setStringWrapper(15, ctScan.getFolderLocation(), preparedStatement);
 
     }
 
