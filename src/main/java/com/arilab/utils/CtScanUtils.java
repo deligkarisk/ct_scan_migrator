@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 
 public class CtScanUtils {
 
@@ -25,11 +26,22 @@ public class CtScanUtils {
         if (ctScan.getDicomFolderLocation() == null) {
             logger.info("Attempting to automatically find the dicom folder.");
             String folderLocation = ctScan.getFolderLocation();
+
+            // Try to find the dicom folder based on settings.
             String dicomFolderLocation = pathUtils.findDicomFolderLocation(folderLocation, levelsBack, appendString);
             if (Files.exists(Paths.get(dicomFolderLocation))) {
                 ctScan.setDicomFolderLocation(dicomFolderLocation);
                 logger.info("Dicom folder found, using this: " + dicomFolderLocation);
             } else {
+                // retry with all characters of appendString to lower case.
+                dicomFolderLocation = pathUtils.findDicomFolderLocation(folderLocation, levelsBack, appendString.toLowerCase(Locale.ROOT));
+                if (Files.exists(Paths.get(dicomFolderLocation))) {
+                    ctScan.setDicomFolderLocation(dicomFolderLocation);
+                    logger.info("Dicom folder found, using this: " + dicomFolderLocation);
+                }
+            }
+            // If no dicom folder was found, log it.
+            if (ctScan.getDicomFolderLocation() == null) {
                 logger.info("Dicom folder not found, using null instead of dicom folder location: " + dicomFolderLocation);
             }
         } else {

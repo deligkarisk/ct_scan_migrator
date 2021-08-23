@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class FileUtils {
@@ -64,6 +65,10 @@ public class FileUtils {
         if (ctScan.getDicomFolderLocation() != null) {
             File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
             File dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom");
+            if (dicomDestinationDir.exists()) {
+                logger.error("Dicom folder already exists in the destination folder. Adding 2 to the dicome folder name....");
+                dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom2");
+            }
             logger.info("Moving dicom folder " + dicomSrcDir.toString() + " to " + dicomDestinationDir.toString());
             if (!dummyMigrationFlag) {
                 org.apache.commons.io.FileUtils.moveDirectory(dicomSrcDir, dicomDestinationDir);
