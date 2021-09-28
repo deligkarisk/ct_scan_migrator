@@ -29,7 +29,8 @@ It is recommended you split your data into small batches, say 30-50 scans rather
 ## Config files
 You need:
 * config.properties
-* credentials.properties
+* credentials.properties  
+
 See the WIKI pages for more information on these.
 
 
