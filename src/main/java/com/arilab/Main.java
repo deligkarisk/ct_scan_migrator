@@ -87,10 +87,10 @@ public class Main {
             logger.info("Working on scan: " + ctScan.getFolderLocation());
             ctScanService.preprocessScanFolderLocation(ctScan);
             ctScanService.updateDicomFolder(ctScan);
+            ctScanService.updateTimestamp(ctScan);
 
 
         }
-        ctScanUtilsService.preProcessScans(scansList);
         ctScanValidatorService.validateScanData(scansList, failedValidationOutput);
         ctScanUtilsService.findStandardizedFolderNames(scansList);
         ctScanValidatorService.validateStandardizedFolderNames(scansList, failedValidationOutput);

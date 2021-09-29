@@ -44,35 +44,24 @@ public class CtScanUtils {
 
 
 
-    public String findTimestampFromFolderName(CtScan ctScan) {
-        String timestamp = pathUtils.extractTimestamp(ctScan.getFolderLocation());
-        if (timestamp != null) {
-            ctScan.setScanDateCorrect(true);
-        }
-        return timestamp;
-    }
-
     public String createTimestampFromScanDate(CtScan ctScan) {
         String timestamp = null;
         try {
             SimpleDateFormat sdf = convertToSimpleDateFormat("yyyy-mm-dd");
             timestamp = sdf.format(sdf.parse(ctScan.getScanDate()));
-            ctScan.setScanDateCorrect(true);
         } catch (ParseException exception) {
             try {
                 SimpleDateFormat sdf = convertToSimpleDateFormat("yyyy-mm");
                 timestamp = sdf.format(sdf.parse(ctScan.getScanDate()));
-                ctScan.setScanDateCorrect(true);
             } catch (ParseException e) {
                 try {
                     SimpleDateFormat sdf = convertToSimpleDateFormat("yyyy");
                     timestamp = sdf.format(sdf.parse(ctScan.getScanDate()));
-                    ctScan.setScanDateCorrect(true);
-                } catch (ParseException parseException) {
-                    ctScan.setScanDateCorrect(false);
+                } catch (ParseException ignored) {
                 }
             }
         }
+
         return timestamp;
     }
 
@@ -109,18 +98,6 @@ public class CtScanUtils {
         return uniqueFolderID;
     }
 
-    public void updateTimestamp(CtScan ctScan) {
-        String timestamp = ctScanUtils.findTimestampFromFolderName(ctScan);
 
-        if (timestamp == null) {
-            timestamp = ctScanUtils.createTimestampFromScanDate(ctScan);
-        }
-
-        if (timestamp == null) {
-            timestamp = "Unknown_date";
-        }
-
-        ctScan.setTimestamp(timestamp);
-    }
 
 }

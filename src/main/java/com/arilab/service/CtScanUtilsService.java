@@ -24,11 +24,7 @@ public class CtScanUtilsService {
 
 
 
-    public void preProcessScans(List<CtScan> scanList) {
 
-       // ctScanUtils.updateTimestamp(ctScan);
-
-    }
 
     public void findStandardizedFolderNames(List<CtScan> scanList) {
         Iterator<CtScan> ctScanIterator = scanList.iterator();

@@ -43,4 +43,22 @@ public class CTScanService {
             logger.info("Dicom folder not found, leaving it as null");
         }
     }
+
+    public void updateTimestamp(CtScan ctScan) {
+
+        String timestamp;
+
+        timestamp = pathUtils.extractTimestamp(ctScan.getFolderLocation());
+
+        if (timestamp == null) {
+            timestamp = ctScanUtils.createTimestampFromScanDate(ctScan);
+        }
+
+        if (timestamp == null) {
+            timestamp = "Unknown_date";
+        }
+
+        ctScan.setTimestamp(timestamp);
+
+    }
 }
