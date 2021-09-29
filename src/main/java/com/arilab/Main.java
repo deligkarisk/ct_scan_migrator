@@ -1,7 +1,9 @@
 package com.arilab;
 
+import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
 import com.arilab.service.CTScanMigratorService;
+import com.arilab.service.CTScanService;
 import com.arilab.service.CtScanUtilsService;
 import com.arilab.service.CtScanValidatorService;
 import com.arilab.utils.*;
@@ -11,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -30,6 +33,8 @@ public class Main {
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService();
     private static final DbUtil dbUtil = new DbUtil();
     private static final Config config = Config.getInstance();
+    private static final CTScanService ctScanService = new CTScanService();
+
 
 
     public static void main(String[] args) {
@@ -74,6 +79,17 @@ public class Main {
         }
 
         List scansList = fileUtils.getScansFromFile(CTSCAN_DATA_FILE);
+
+
+        Iterator<CtScan> ctScanIterator = scansList.iterator();
+        while (ctScanIterator.hasNext()) {
+            CtScan ctScan = ctScanIterator.next();
+            logger.info("Working on scan: " + ctScan.getFolderLocation());
+            ctScanService.preprocessScanFolderLocation(ctScan);
+            ctScanService.updateDicomFolder(ctScan);
+
+
+        }
         ctScanUtilsService.preProcessScans(scansList);
         ctScanValidatorService.validateScanData(scansList, failedValidationOutput);
         ctScanUtilsService.findStandardizedFolderNames(scansList);

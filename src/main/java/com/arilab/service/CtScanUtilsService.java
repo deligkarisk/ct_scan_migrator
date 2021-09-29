@@ -18,20 +18,16 @@ public class CtScanUtilsService {
     private FileUtils fileUtils = new FileUtils();
     private CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
     private Config config = Config.getInstance();
+    private CTScanService ctScanService = new CTScanService();
 
     private static final Logger logger = LoggerFactory.getLogger(CtScanUtilsService.class);
 
 
 
     public void preProcessScans(List<CtScan> scanList) {
-        Iterator<CtScan> ctScanIterator = scanList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            logger.info("Fixing scan: " + ctScan.getFolderLocation());
-            ctScanUtils.updateScanFolderLocation(ctScan);
-            ctScanUtils.findDicomFolderLocation(ctScan, config.dicomLevelsUp, config.dicomAppendString);
-            ctScanUtils.updateTimestamp(ctScan);
-        }
+
+       // ctScanUtils.updateTimestamp(ctScan);
+
     }
 
     public void findStandardizedFolderNames(List<CtScan> scanList) {

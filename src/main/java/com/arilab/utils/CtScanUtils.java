@@ -22,45 +22,27 @@ public class CtScanUtils {
     private Config config = Config.getInstance();
 
 
-    public void findDicomFolderLocation(CtScan ctScan, int levelsBack, String appendString) {
-        if (ctScan.getDicomFolderLocation() == null) {
-            logger.info("Attempting to automatically find the dicom folder.");
+    public String findDicomFolderLocation(CtScan ctScan) {
+
             String folderLocation = ctScan.getFolderLocation();
+            String foundLocation = null;
 
             // Try to find the dicom folder based on settings.
-            String dicomFolderLocation = pathUtils.findDicomFolderLocation(folderLocation, levelsBack, appendString);
+            String dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.dicomLevelsUp, config.dicomAppendString);
             if (Files.exists(Paths.get(dicomFolderLocation))) {
-                ctScan.setDicomFolderLocation(dicomFolderLocation);
-                logger.info("Dicom folder found, using this: " + dicomFolderLocation);
+                foundLocation = dicomFolderLocation;
+
             } else {
                 // retry with all characters of appendString to lower case.
-                dicomFolderLocation = pathUtils.findDicomFolderLocation(folderLocation, levelsBack, appendString.toLowerCase(Locale.ROOT));
+                dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.dicomLevelsUp, config.dicomAppendString.toLowerCase(Locale.ROOT));
                 if (Files.exists(Paths.get(dicomFolderLocation))) {
-                    ctScan.setDicomFolderLocation(dicomFolderLocation);
-                    logger.info("Dicom folder found, using this: " + dicomFolderLocation);
+                    foundLocation = dicomFolderLocation;
                 }
             }
-            // If no dicom folder was found, log it.
-            if (ctScan.getDicomFolderLocation() == null) {
-                logger.info("Dicom folder not found, using null instead of dicom folder location: " + dicomFolderLocation);
-            }
-        } else {
-            logger.info("Dicom folder already inputted, nothing to add: " + ctScan.getDicomFolderLocation());
-        }
-
+            return foundLocation;
     }
 
-    public void updateScanFolderLocation(CtScan ctScan) {
-        Path newLocation = pathUtils.getCorrectScanFolderLocation(ctScan.getFolderLocation());
-        logger.info("Replacing old folder location with " + newLocation);
-        ctScan.setFolderLocation(newLocation.toString());
 
-        if (ctScan.getDicomFolderLocation() != null) {
-            Path newDicomFolder = pathUtils.getCorrectScanFolderLocation(ctScan.getDicomFolderLocation());
-            logger.info("Replacing old dicom folder location with " + newDicomFolder);
-            ctScan.setDicomFolderLocation(newDicomFolder.toString());
-        }
-    }
 
     public String findTimestampFromFolderName(CtScan ctScan) {
         String timestamp = pathUtils.extractTimestamp(ctScan.getFolderLocation());

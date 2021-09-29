@@ -34,7 +34,7 @@ public class PathUtils {
         return returnString;
     }
 
-    public String findDicomFolderLocation(String folderLocation, int levelsBack, String appendString) {
+    public String generateDicomPotentialFolder(String folderLocation, int levelsBack, String appendString) {
         Path dicomFolderPath = Paths.get(folderLocation);
         for (int i = 0; i < levelsBack; i++) {
             dicomFolderPath = dicomFolderPath.getParent();
