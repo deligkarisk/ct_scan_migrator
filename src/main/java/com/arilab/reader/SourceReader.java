@@ -14,19 +14,20 @@ import java.util.List;
 
 public class SourceReader {
 
-    private Logger logger = LoggerFactory.getLogger(SourceReader.class);
+    private final Logger logger = LoggerFactory.getLogger(SourceReader.class);
 
     public List readScans(String file) {
+        List files = null;
         try {
             Reader fileReader = Files.newBufferedReader(Path.of(file));
-            List csvToBean = new CsvToBeanBuilder(fileReader).withType(CtScan.class).withIgnoreLeadingWhiteSpace(
+            files = new CsvToBeanBuilder(fileReader).withType(CtScan.class).withIgnoreLeadingWhiteSpace(
                     true).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build().parse();
-            logger.info("Found " + csvToBean.size() + " scans");
-            return csvToBean;
+            logger.info("Found " + files.size() + " scans");
         } catch (IOException exception) {
-            logger.error("Could not find data file " + exception.toString());
+            logger.error("Could not find data file " + exception);
             System.exit(1);
         }
-        return null;
+
+        return files;
     }
 }
