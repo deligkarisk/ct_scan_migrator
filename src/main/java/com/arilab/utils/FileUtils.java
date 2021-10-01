@@ -22,18 +22,7 @@ public class FileUtils {
     private  Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
 
-    public  List getScansFromFile(String file) {
-        try {
-            Reader fileReader = Files.newBufferedReader(Path.of(file));
-            List csvToBean = new CsvToBeanBuilder(fileReader).withType(CtScan.class).withIgnoreLeadingWhiteSpace(
-                    true).withFieldAsNull(CSVReaderNullFieldIndicator.BOTH).build().parse();
-            logger.info("Found " + csvToBean.size() + " scans");
-            return csvToBean;
-        } catch (IOException exception) {
-            logger.error("Could not find data file " + exception.toString());
-        }
-        return null;
-    }
+
 
 
     public void writeBeansToFile(List<CtScan> ctScans, String filePath) {

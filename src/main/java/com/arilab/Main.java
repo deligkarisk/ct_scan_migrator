@@ -2,6 +2,7 @@ package com.arilab;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
+import com.arilab.reader.SourceReader;
 import com.arilab.service.CTScanMigratorService;
 import com.arilab.service.CTScanService;
 import com.arilab.service.CtScanUtilsService;
@@ -34,6 +35,7 @@ public class Main {
     private static final DbUtil dbUtil = new DbUtil();
     private static final Config config = Config.getInstance();
     private static final CTScanService ctScanService = new CTScanService();
+    public static final SourceReader sourceReader = new SourceReader();
 
 
 
@@ -78,7 +80,7 @@ public class Main {
             System.exit(1);
         }
 
-        List scansList = fileUtils.getScansFromFile(CTSCAN_DATA_FILE);
+        List scansList = sourceReader.readScans(CTSCAN_DATA_FILE);
 
 
         Iterator<CtScan> ctScanIterator = scansList.iterator();
@@ -91,7 +93,12 @@ public class Main {
 
 
         }
+
+        //TODO: Refactor validations
         ctScanValidatorService.validateScanData(scansList, failedValidationOutput);
+        // TODO: Add a new class for deciding whether to continue or not. (remove this decision from the validator)
+
+
         ctScanUtilsService.findStandardizedFolderNames(scansList);
         ctScanValidatorService.validateStandardizedFolderNames(scansList, failedValidationOutput);
         ctScanValidatorService.validateUniquenessOfFolders(scansList, failedValidationOutput);
