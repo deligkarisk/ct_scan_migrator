@@ -2,6 +2,7 @@ package com.arilab;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
+import com.arilab.flowcontroller.ArgumentChecker;
 import com.arilab.reader.SourceReader;
 import com.arilab.service.CTScanMigratorService;
 import com.arilab.service.CTScanService;
@@ -16,6 +17,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
+
+import static java.lang.Boolean.FALSE;
 
 public class Main {
 
@@ -36,40 +39,25 @@ public class Main {
     private static final Config config = Config.getInstance();
     private static final CTScanService ctScanService = new CTScanService();
     public static final SourceReader sourceReader = new SourceReader();
+    public static final ArgumentChecker argumentChecker = new ArgumentChecker();
 
 
 
     public static void main(String[] args) {
 
+        argumentChecker.check(args);
+
+        if ((args.length == 3) && (args[2].equals("--do-migration"))) {
+            DUMMY_EXECUTION = FALSE;
+        }
+
         logger.info("************************** Starting app **************************");
 
-
-        if (args.length < 2) {
-            System.out.println("Enter at least the datafile and the datalabel.");
-            System.exit(1);
-        }
-
-        if (args.length == 3) {
-            if (args[2].equals("--do-migration")) {
-                DUMMY_EXECUTION = false;
-            } else {
-                System.out.println("Erroneous third argument, exiting." + args[1]);
-                System.exit(1);
-            }
-        }
 
         String CTSCAN_DATA_FILE = args[0];
         dataLabel = args[1];
         outputFile = "./MigrationOutput" + "_" + dataLabel + ".csv";
         failedValidationOutput = "./ValidationFailed" + "_" + dataLabel + ".csv";
-
-
-
-
-
-
-
-
 
 
         logger.info("Reading data from: " + CTSCAN_DATA_FILE);
