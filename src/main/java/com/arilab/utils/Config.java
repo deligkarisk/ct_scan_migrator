@@ -11,8 +11,7 @@ import java.io.File;
 public class Config {
 
     private static Config configInstance;
-    private static String PROPERTIES_FILE = "./config.properties";
-    private static String CREDENTIALS_FILE = "./credentials.properties";
+
     private static Logger logger = LoggerFactory.getLogger(Config.class);
 
     public String dbhost;
@@ -21,42 +20,58 @@ public class Config {
     public int dicomLevelsUp;
     public String dicomAppendString;
 
-
-
     public String username;
     public String password;
 
+    public String outputFile;
+    public String failedOutputFile;
+    public String ctScanDataFile;
 
 
 
-    private Config() {
+
+    private Config(String propertiesFile, String credentialsFile, String ctScanDataFile, String dataLabel, String outputPrepend, String failedOutPrepend ) {
         Configurations configurations = new Configurations();
         try {
-            Configuration configuration =  configurations.properties(new File(PROPERTIES_FILE));
+            Configuration configuration =  configurations.properties(new File(propertiesFile));
             dbhost = configuration.getString("database.host");
             sourceDirectory = configuration.getString("source.directory");
             targetDirectory = configuration.getString("target.directory");
             dicomLevelsUp = configuration.getInt("dicom.levelsup");
             dicomAppendString = configuration.getString("dicom.append.string");
 
-            Configuration configurationCredentials = configurations.properties(new File(CREDENTIALS_FILE));
+            Configuration configurationCredentials = configurations.properties(new File(credentialsFile));
             username = configurationCredentials.getString("username");
             password = configurationCredentials.getString("password");
 
-
+            outputFile = mergeStrings(outputPrepend, dataLabel);
+            failedOutputFile = mergeStrings(failedOutPrepend, dataLabel);
+            this.ctScanDataFile = ctScanDataFile;
 
         } catch (ConfigurationException e) {
             logger.error("Could not load configuration settings, aborting operation.");
             System.exit(1);
         }
 
-
-
     }
+
+    private String mergeStrings(String prepend, String label) {
+        return("./" + prepend + "_" + label + ".csv");
+    }
+
+    public static Config createInstance(String propertiesFile, String credentialsFile, String ctScanDataFile, String dataLabel, String outputPrepend, String failedOutPrepend) {
+        if (configInstance != null) {
+            throw new AssertionError("Config singleton already initialized");
+        }
+
+        configInstance = new Config(propertiesFile, credentialsFile, ctScanDataFile, dataLabel, outputPrepend, failedOutPrepend);
+        return configInstance;
+    }
+
 
     public static Config getInstance() {
         if (configInstance == null) {
-            configInstance = new Config();
+           throw new AssertionError("Singleton has not been initialized yet, nothing to retrieve");
         }
         return configInstance;
     }
