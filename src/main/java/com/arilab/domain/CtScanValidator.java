@@ -20,23 +20,7 @@ public class CtScanValidator {
     PathUtils pathUtils = new PathUtils();
 
 
-    public Boolean validateInputData(CtScan ctScan) {
-        ctScan.setSpecimenCodeExists(dbUtilService.specimenCodeExists(ctScan.getSpecimenCode()));
-        ctScan.setWetDryCombinationIsCorrect(wetDryCombinationIsCorrect(ctScan));
-        ctScan.setDryMethodIsCorrect(dryMethodCheck(ctScan));
-        ctScan.setBodypartIsCorrect(bodypartCheck(ctScan));
-        ctScan.setFolderLocationExists(folderLocationExists(ctScan));
-        ctScan.setModelIsCorrect(modelIsAnts(ctScan));
-        ctScan.setStainingIsCorrect(stainingIsCorrect(ctScan));
-        ctScan.setEthanolConcIsCorrect(ethanolConcIsCorrect(ctScan));
-        ctScan.setAntscanCodingIsCorrect(antscanIsCorrect(ctScan));
-        ctScan.setDicomFolderNotAChildOfMain(dicomFolderNotInMainFolder(ctScan));
-        ctScan.setAllinputDataIsValid(allInputDataValidationsPassed(ctScan));
-        return ctScan.getAllinputDataIsValid();
-    }
-
-
-    private Boolean dicomFolderNotInMainFolder(CtScan ctScan) {
+    public Boolean dicomFolderNotInMainFolder(CtScan ctScan) {
         Boolean returnValue = true;
 
         if (ctScan.getDicomFolderLocation() != null) {
@@ -130,7 +114,7 @@ public class CtScanValidator {
         return (folderIsAvailable && noDatabaseEntryWithSameFolderExists);
     }
 
-    private Boolean folderLocationExists(CtScan ctScan) {
+    public Boolean folderLocationExists(CtScan ctScan) {
         Path location = Paths.get(ctScan.getFolderLocation());
         return Files.exists(location);
     }

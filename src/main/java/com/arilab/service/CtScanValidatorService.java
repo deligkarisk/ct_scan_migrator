@@ -15,6 +15,7 @@ public class CtScanValidatorService {
 
     CtScanValidator ctScanValidator = new CtScanValidator();
     FileUtils fileUtils = new FileUtils();
+    DbUtilService dbUtilService = new DbUtilService();
 
 
     public void validateUniquenessOfFolders(List<CtScan> ctScanList, String failedValidationFileOutput) {
@@ -33,7 +34,7 @@ public class CtScanValidatorService {
 
 
         if ((ctScanFolders.size() != setCtScanFolders.size()) || (ctScanDicomFolders.size() != setCtScanDicomFolders.size())
-        || (ctScanOldFolders.size() != setCtScanOldFolders.size())) {
+                || (ctScanOldFolders.size() != setCtScanOldFolders.size())) {
             fileUtils.writeBeansToFile(ctScanList, failedValidationFileOutput);
             logger.error("Scan folders not unique, exiting application.");
             System.exit(1);
@@ -69,30 +70,22 @@ public class CtScanValidatorService {
     }
 
 
-    public void validateScanData(List<CtScan> scansList, String failedValidationFileOutput) {
-        int validScans;
-        validScans = validateScanData(scansList); // validates if scans can be migrated, all
-        // info is correct.
-        if (validScans != scansList.size()) {
-            logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
-                    " file " + failedValidationFileOutput + " for further details.");
-            fileUtils.writeBeansToFile(scansList, failedValidationFileOutput);
-            System.exit(1);
-        }
-    }
-
-    // returns the number of scans passing the validation
-    private int validateScanData(List ctScanList) {
-        int validCount = 0;
+    public void validateScanData(List ctScanList) {
         Iterator<CtScan> ctScanIterator = ctScanList.iterator();
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
             logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
-            Boolean currentScanValid = ctScanValidator.validateInputData(ctScan);
-            if (currentScanValid) {
-                validCount += 1;
-            }
+            ctScan.setSpecimenCodeExists(dbUtilService.specimenCodeExists(ctScan.getSpecimenCode()));
+            ctScan.setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(ctScan));
+            ctScan.setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(ctScan));
+            ctScan.setBodypartIsCorrect(ctScanValidator.bodypartCheck(ctScan));
+            ctScan.setFolderLocationExists(ctScanValidator.folderLocationExists(ctScan));
+            ctScan.setModelIsCorrect(ctScanValidator.modelIsAnts(ctScan));
+            ctScan.setStainingIsCorrect(ctScanValidator.stainingIsCorrect(ctScan));
+            ctScan.setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(ctScan));
+            ctScan.setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(ctScan));
+            ctScan.setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(ctScan));
+            ctScan.setAllinputDataIsValid(ctScanValidator.allInputDataValidationsPassed(ctScan));
         }
-        return validCount;
     }
 }
