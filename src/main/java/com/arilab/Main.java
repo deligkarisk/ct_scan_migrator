@@ -3,11 +3,13 @@ package com.arilab;
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
 import com.arilab.flowcontroller.ArgumentChecker;
+import com.arilab.flowcontroller.CtScanDataChecker;
 import com.arilab.reader.SourceReader;
 import com.arilab.service.CTScanMigratorService;
 import com.arilab.service.CTScanService;
 import com.arilab.service.CtScanUtilsService;
 import com.arilab.service.CtScanValidatorService;
+import com.arilab.system.SystemExit;
 import com.arilab.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +24,11 @@ import static java.lang.Boolean.FALSE;
 
 public class Main {
 
-    private static  String dataLabel;
-    private static String outputFile;
-    private static  String failedValidationOutput;
-
     private static Boolean DUMMY_EXECUTION = true;
+    private static final String PROPERTIES_FILE = "./config.properties";
+    private static final String CREDENTIALS_FILE = "./credentials.properties";
+    private static final String OUTPUT_PREPEND = "MigrationOutput";
+    private static final String FAILEDOUTPUTPREPEND = "ValidationFailed";
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final CtScanValidator validator = new CtScanValidator();
@@ -40,6 +42,10 @@ public class Main {
     private static final CTScanService ctScanService = new CTScanService();
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
+    public static final SystemExit systemExit = new SystemExit();
+
+
+    public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
 
 
 
@@ -53,14 +59,9 @@ public class Main {
 
         logger.info("************************** Starting app **************************");
 
+        Config config =  Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
-        String CTSCAN_DATA_FILE = args[0];
-        dataLabel = args[1];
-        outputFile = "./MigrationOutput" + "_" + dataLabel + ".csv";
-        failedValidationOutput = "./ValidationFailed" + "_" + dataLabel + ".csv";
-
-
-        logger.info("Reading data from: " + CTSCAN_DATA_FILE);
+        logger.info("Reading data from: " + config.ctScanDataFile);
 
 
         if (!preliminaryChecksPassed()) {
@@ -68,7 +69,7 @@ public class Main {
             System.exit(1);
         }
 
-        List scansList = sourceReader.readScans(CTSCAN_DATA_FILE);
+        List scansList = sourceReader.readScans(config.ctScanDataFile);
 
 
         Iterator<CtScan> ctScanIterator = scansList.iterator();
@@ -83,15 +84,17 @@ public class Main {
         }
 
         //TODO: Refactor validations
-        ctScanValidatorService.validateScanData(scansList, failedValidationOutput);
+        ctScanValidatorService.validateScanData(scansList);
+        ctScanDataChecker.check(scansList);
+
         // TODO: Add a new class for deciding whether to continue or not. (remove this decision from the validator)
 
 
         ctScanUtilsService.findStandardizedFolderNames(scansList);
-        ctScanValidatorService.validateStandardizedFolderNames(scansList, failedValidationOutput);
-        ctScanValidatorService.validateUniquenessOfFolders(scansList, failedValidationOutput);
-        fileUtils.writeBeansToFile(scansList, outputFile);
-        ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
+        //ctScanValidatorService.validateStandardizedFolderNames(scansList, failedValidationOutput);
+        //ctScanValidatorService.validateUniquenessOfFolders(scansList, failedValidationOutput);
+       // fileUtils.writeBeansToFile(scansList, outputFile);
+        //ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
 
 
         logger.info("************************** Finished Execution **************************");
