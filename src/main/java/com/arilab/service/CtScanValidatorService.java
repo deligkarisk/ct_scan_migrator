@@ -6,6 +6,7 @@ import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -13,10 +14,16 @@ public class CtScanValidatorService {
 
     private static Logger logger = LoggerFactory.getLogger(CtScanValidatorService.class);
 
-    CtScanValidator ctScanValidator = new CtScanValidator();
-    FileUtils fileUtils = new FileUtils();
-    DbUtilService dbUtilService = new DbUtilService();
+    CtScanValidator ctScanValidator;
+    FileUtils fileUtils;
+    DatabaseService databaseService;
 
+
+    public CtScanValidatorService(CtScanValidator ctScanValidator, FileUtils fileUtils, DatabaseService databaseService) {
+        this.ctScanValidator = ctScanValidator;
+        this.fileUtils = fileUtils;
+        this.databaseService = databaseService;
+    }
 
     public void validateUniquenessOfFolders(List<CtScan> ctScanList, String failedValidationFileOutput) {
         // Ensure that migrated folders, and dicom folders are all unique inside the fill list of scans.
@@ -70,12 +77,12 @@ public class CtScanValidatorService {
     }
 
 
-    public void validateScanData(List ctScanList) {
+    public void validateScanData(List ctScanList) throws SQLException {
         Iterator<CtScan> ctScanIterator = ctScanList.iterator();
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
             logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
-            ctScan.setSpecimenCodeExists(dbUtilService.specimenCodeExists(ctScan.getSpecimenCode()));
+            ctScan.setSpecimenCodeExists(databaseService.specimenCodeExists(ctScan.getSpecimenCode()));
             ctScan.setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(ctScan));
             ctScan.setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(ctScan));
             ctScan.setBodypartIsCorrect(ctScanValidator.bodypartCheck(ctScan));

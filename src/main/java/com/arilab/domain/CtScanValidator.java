@@ -1,7 +1,6 @@
 package com.arilab.domain;
 
-import com.arilab.service.DbUtilService;
-import com.arilab.utils.DbUtil;
+import com.arilab.service.DatabaseService;
 import com.arilab.utils.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +14,14 @@ import java.util.List;
 public class CtScanValidator {
 
     private static Logger logger = LoggerFactory.getLogger(CtScanValidator.class);
-    DbUtil dbUtil = new DbUtil();
-    DbUtilService dbUtilService = new DbUtilService();
-    PathUtils pathUtils = new PathUtils();
+    DatabaseService databaseService;
+
+    public CtScanValidator(DatabaseService databaseService, PathUtils pathUtils) {
+        this.databaseService = databaseService;
+        this.pathUtils = pathUtils;
+    }
+
+    PathUtils pathUtils;
 
 
     public Boolean dicomFolderNotInMainFolder(CtScan ctScan) {
@@ -109,7 +113,7 @@ public class CtScanValidator {
         // New folders should not exist already
         Boolean folderIsAvailable = !pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
         ctScan.setNewFolderPathAvailable(folderIsAvailable);
-        Boolean noDatabaseEntryWithSameFolderExists = !dbUtilService.ctScanFolderExists(ctScan.getNewFolderPath());
+        Boolean noDatabaseEntryWithSameFolderExists = !databaseService.ctScanFolderExists(ctScan.getNewFolderPath());
         ctScan.setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
         return (folderIsAvailable && noDatabaseEntryWithSameFolderExists);
     }

@@ -1,7 +1,7 @@
 package com.arilab.utils;
 
 import com.arilab.domain.CtScan;
-import com.arilab.service.DbUtilService;
+import com.arilab.service.DatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,12 +15,16 @@ import java.util.Locale;
 public class CtScanUtils {
 
     private static Logger logger = LoggerFactory.getLogger(CtScanUtils.class);
-    private static DbUtil dbUtil = new DbUtil();
-    private static DbUtilService dbUtilService = new DbUtilService();
-    private static CtScanUtils ctScanUtils = new CtScanUtils();
-    private static PathUtils pathUtils = new PathUtils();
-    private Config config = Config.getInstance();
+    private DatabaseService databaseService;
+    private  PathUtils pathUtils;
+    private Config config;
 
+
+    public CtScanUtils(DatabaseService databaseService, PathUtils pathUtils, Config config) {
+        this.databaseService = databaseService;
+        this.pathUtils = pathUtils;
+        this.config = config;
+    }
 
     public String findDicomFolderLocation(CtScan ctScan) {
 
@@ -74,8 +78,8 @@ public class CtScanUtils {
 
 
     public void findStandardizedFolderName(CtScan ctScan) {
-        String genus = dbUtilService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
-        String speciesMorphoCode = dbUtilService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
+        String genus = databaseService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
+        String speciesMorphoCode = databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
         Path newFolder = Paths.get(config.targetDirectory, ctScan.getModel(), genus,
                 speciesMorphoCode, uniqueFolderID);

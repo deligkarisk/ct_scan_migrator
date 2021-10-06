@@ -1,6 +1,7 @@
 package com.arilab.utils;
 
 import com.arilab.domain.CtScan;
+import com.arilab.repository.DatabaseRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,8 +13,13 @@ import java.sql.SQLException;
 public class CtScanMigrator {
 
     private static final Logger logger = LoggerFactory.getLogger(CtScanMigrator.class);
-    private FileUtils fileUtils = new FileUtils();
-    private DbUtil dbUtil = new DbUtil();
+    private FileUtils fileUtils;
+    private DatabaseRepository databaseRepository;
+
+    public CtScanMigrator(FileUtils fileUtils, DatabaseRepository databaseRepository) {
+        this.fileUtils = fileUtils;
+        this.databaseRepository = databaseRepository;
+    }
 
     private static String insertSql = "INSERT INTO public.ctscans (specimen_code, ct_scan_note, ethanol_conc, wet, body_part, " +
             "special_identifier, folder_location, scan_user, scan_reason, staining, " +
@@ -39,21 +45,21 @@ public class CtScanMigrator {
 
 
     public void assignScanValuesToPreparedStatement(PreparedStatement preparedStatement, CtScan ctScan) throws SQLException {
-        dbUtil.setStringWrapper(1, ctScan.getSpecimenCode(), preparedStatement);
-        dbUtil.setStringWrapper(2, ctScan.getCtScanNote(), preparedStatement);
-        dbUtil.setStringWrapper(3, ctScan.getEthanolConcentration(), preparedStatement);
-        dbUtil.setStringWrapper(4, ctScan.getWet(), preparedStatement);
-        dbUtil.setStringWrapper(5, ctScan.getBodyPart(), preparedStatement);
-        dbUtil.setStringWrapper(6, ctScan.getSpecialIdentifier(), preparedStatement);
-        dbUtil.setStringWrapper(7, stripFirstPart(ctScan.getNewFolderPath()), preparedStatement);
-        dbUtil.setStringWrapper(8, ctScan.getScanUser(), preparedStatement);
-        dbUtil.setStringWrapper(9, ctScan.getScanReason(), preparedStatement);
-        dbUtil.setStringWrapper(10, ctScan.getStaining(), preparedStatement);
-        dbUtil.setStringWrapper(11, ctScan.getAntscan(), preparedStatement);
-        dbUtil.setStringWrapper(12, ctScan.getAntscanCode(), preparedStatement);
-        dbUtil.setStringWrapper(13, ctScan.getModel(), preparedStatement);
-        dbUtil.setStringWrapper(14, ctScan.getDryMethod(), preparedStatement);
-        dbUtil.setStringWrapper(15, ctScan.getFolderLocation(), preparedStatement);
+        databaseRepository.setStringWrapper(1, ctScan.getSpecimenCode(), preparedStatement);
+        databaseRepository.setStringWrapper(2, ctScan.getCtScanNote(), preparedStatement);
+        databaseRepository.setStringWrapper(3, ctScan.getEthanolConcentration(), preparedStatement);
+        databaseRepository.setStringWrapper(4, ctScan.getWet(), preparedStatement);
+        databaseRepository.setStringWrapper(5, ctScan.getBodyPart(), preparedStatement);
+        databaseRepository.setStringWrapper(6, ctScan.getSpecialIdentifier(), preparedStatement);
+        databaseRepository.setStringWrapper(7, stripFirstPart(ctScan.getNewFolderPath()), preparedStatement);
+        databaseRepository.setStringWrapper(8, ctScan.getScanUser(), preparedStatement);
+        databaseRepository.setStringWrapper(9, ctScan.getScanReason(), preparedStatement);
+        databaseRepository.setStringWrapper(10, ctScan.getStaining(), preparedStatement);
+        databaseRepository.setStringWrapper(11, ctScan.getAntscan(), preparedStatement);
+        databaseRepository.setStringWrapper(12, ctScan.getAntscanCode(), preparedStatement);
+        databaseRepository.setStringWrapper(13, ctScan.getModel(), preparedStatement);
+        databaseRepository.setStringWrapper(14, ctScan.getDryMethod(), preparedStatement);
+        databaseRepository.setStringWrapper(15, ctScan.getFolderLocation(), preparedStatement);
 
     }
 

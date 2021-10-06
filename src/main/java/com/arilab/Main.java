@@ -4,11 +4,11 @@ import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
 import com.arilab.flowcontroller.ArgumentChecker;
 import com.arilab.flowcontroller.CtScanDataChecker;
+import com.arilab.flowcontroller.DatabaseConnectivityChecker;
+import com.arilab.flowcontroller.FilesystemConnectivityChecker;
 import com.arilab.reader.SourceReader;
-import com.arilab.service.CTScanMigratorService;
-import com.arilab.service.CTScanService;
-import com.arilab.service.CtScanUtilsService;
-import com.arilab.service.CtScanValidatorService;
+import com.arilab.repository.DatabaseRepository;
+import com.arilab.service.*;
 import com.arilab.system.SystemExit;
 import com.arilab.utils.*;
 import org.slf4j.Logger;
@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -31,21 +32,40 @@ public class Main {
     private static final String FAILEDOUTPUTPREPEND = "ValidationFailed";
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final CtScanValidator validator = new CtScanValidator();
-    private static final CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
     private static final FileUtils fileUtils = new FileUtils();
-    private static final CtScanUtils ctScanUtils = new CtScanUtils();
-    private static final CtScanUtilsService ctScanUtilsService = new CtScanUtilsService();
-    private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService();
-    private static final DbUtil dbUtil = new DbUtil();
+    private static final PathUtils pathUtils = new PathUtils();
+
     private static final Config config = Config.getInstance();
-    private static final CTScanService ctScanService = new CTScanService();
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
     public static final SystemExit systemExit = new SystemExit();
+    public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
 
+    private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(systemExit, config);
+    private static final DatabaseService DATABASE_SERVICE = new DatabaseService(DATABASE_REPOSITORY, systemExit);
+
+    private static final CtScanValidator ctScanValidator = new CtScanValidator(DATABASE_SERVICE, pathUtils);
+
+    private static final CtScanValidatorService ctScanValidatorService = new CtScanValidatorService(ctScanValidator,
+            fileUtils, DATABASE_SERVICE);
+
+    private static final CtScanUtils ctScanUtils = new CtScanUtils(DATABASE_SERVICE, pathUtils, config);
+
+    private static final CTScanService ctScanService = new CTScanService(pathUtils, ctScanUtils);
+
+    public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
+            new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
+
+    private static final CtScanUtilsService ctScanUtilsService = new CtScanUtilsService(ctScanUtils, ctScanValidator,
+            fileUtils, ctScanValidatorService, config, ctScanService);
 
     public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
+    public static final DatabaseConnectivityChecker databaseConnectivityChecker =
+            new DatabaseConnectivityChecker(DATABASE_SERVICE, config, systemExit);
+
+    private static final CtScanMigrator ctScanMigrator = new CtScanMigrator(fileUtils, DATABASE_REPOSITORY);
+    private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
+            ctScanMigrator, config);
 
 
 
@@ -62,6 +82,11 @@ public class Main {
         Config config =  Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
         logger.info("Reading data from: " + config.ctScanDataFile);
+
+
+        filesystemConnectivityChecker.check();
+        databaseConnectivityChecker.check();
+
 
 
         if (!preliminaryChecksPassed()) {
@@ -84,7 +109,13 @@ public class Main {
         }
 
         //TODO: Refactor validations
-        ctScanValidatorService.validateScanData(scansList);
+        try {
+            ctScanValidatorService.validateScanData(scansList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            logger.error(e.toString());
+            systemExit.exit(1);
+        }
         ctScanDataChecker.check(scansList);
 
         // TODO: Add a new class for deciding whether to continue or not. (remove this decision from the validator)
@@ -134,7 +165,8 @@ public class Main {
     }
 
     private static Boolean checkDBConnectivity() {
-        return !(dbUtil.specimenCodeExists("TEST"));
+       // return !(dbUtil.specimenCodeExists("TEST"));
+        return false;
     }
 
 

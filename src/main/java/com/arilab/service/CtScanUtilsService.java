@@ -13,12 +13,21 @@ import java.util.List;
 
 public class CtScanUtilsService {
 
-    private CtScanUtils ctScanUtils = new CtScanUtils();
-    private CtScanValidator ctScanValidator = new CtScanValidator();
-    private FileUtils fileUtils = new FileUtils();
-    private CtScanValidatorService ctScanValidatorService = new CtScanValidatorService();
-    private Config config = Config.getInstance();
-    private CTScanService ctScanService = new CTScanService();
+    private CtScanUtils ctScanUtils;
+    private CtScanValidator ctScanValidator;
+    private FileUtils fileUtils;
+    private CtScanValidatorService ctScanValidatorService;
+    private Config config;
+    private CTScanService ctScanService;
+
+    public CtScanUtilsService(CtScanUtils ctScanUtils, CtScanValidator ctScanValidator, FileUtils fileUtils, CtScanValidatorService ctScanValidatorService, Config config, CTScanService ctScanService) {
+        this.ctScanUtils = ctScanUtils;
+        this.ctScanValidator = ctScanValidator;
+        this.fileUtils = fileUtils;
+        this.ctScanValidatorService = ctScanValidatorService;
+        this.config = config;
+        this.ctScanService = ctScanService;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(CtScanUtilsService.class);
 

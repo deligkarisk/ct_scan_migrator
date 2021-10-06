@@ -13,8 +13,15 @@ public class CTScanService {
     private static final Logger logger = LoggerFactory.getLogger(CTScanService.class);
 
 
-    PathUtils pathUtils = new PathUtils();
-    CtScanUtils ctScanUtils = new CtScanUtils();
+    PathUtils pathUtils;
+    CtScanUtils ctScanUtils;
+
+    public CTScanService(PathUtils pathUtils, CtScanUtils ctScanUtils) {
+        this.pathUtils = pathUtils;
+        this.ctScanUtils = ctScanUtils;
+    }
+
+
 
     public void preprocessScanFolderLocation(CtScan ctScan) {
         Path newLocation = pathUtils.getCorrectScanFolderLocation(ctScan.getFolderLocation());

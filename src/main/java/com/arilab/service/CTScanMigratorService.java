@@ -15,13 +15,19 @@ import java.util.List;
 
 public class CTScanMigratorService {
 
-    private FileUtils fileUtils = new FileUtils();
+    private FileUtils fileUtils;
+    Config config;
+    private CtScanMigrator ctScanMigrator;
 
 
-    private CtScanMigrator ctScanMigrator = new CtScanMigrator();
     private static final Logger logger = LoggerFactory.getLogger(CTScanMigratorService.class);
-    Config config = Config.getInstance();
 
+
+    public CTScanMigratorService(FileUtils fileUtils, CtScanMigrator ctScanMigrator, Config config) {
+        this.fileUtils = fileUtils;
+        this.ctScanMigrator = ctScanMigrator;
+        this.config = config;
+    }
 
     public void migrateScans(List<CtScan> scanList, String fileOutput, Boolean dummyMigrationFlag) {
         Iterator<CtScan> ctScanIterator = scanList.iterator();

@@ -24,7 +24,6 @@ public class FileUtils {
 
 
 
-
     public void writeBeansToFile(List<CtScan> ctScans, String filePath) {
         try {
             Writer writer = new FileWriter(filePath);
