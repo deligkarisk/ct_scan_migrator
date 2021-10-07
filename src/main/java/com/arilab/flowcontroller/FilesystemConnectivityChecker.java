@@ -39,7 +39,8 @@ public class FilesystemConnectivityChecker {
     }
 
     private int internalCheckFunction() {
-        Boolean sourceFolderIsMounted = fileSystemUtils.isMounted(fileSystemUtils.stringToPath(config.sourceDirectory));
+        Boolean sourceFolderIsMounted =
+                fileSystemUtils.isMounted(fileSystemUtils.stringToPath(config.sourceDirectory));
         Boolean targetFolderIsMounted = fileSystemUtils.isMounted(fileSystemUtils.stringToPath(config.targetDirectory));
 
         if (!(sourceFolderIsMounted && targetFolderIsMounted)) {

@@ -25,12 +25,12 @@ public class Config {
 
     public String outputFile;
     public String failedOutputFile;
-    public String ctScanDataFile;
+    //public String ctScanDataFile;
 
 
 
 
-    private Config(String propertiesFile, String credentialsFile, String ctScanDataFile, String dataLabel, String outputPrepend, String failedOutPrepend ) {
+    private Config(String propertiesFile, String credentialsFile) {
         Configurations configurations = new Configurations();
         try {
             Configuration configuration =  configurations.properties(new File(propertiesFile));
@@ -44,9 +44,7 @@ public class Config {
             username = configurationCredentials.getString("username");
             password = configurationCredentials.getString("password");
 
-            outputFile = mergeStrings(outputPrepend, dataLabel);
-            failedOutputFile = mergeStrings(failedOutPrepend, dataLabel);
-            this.ctScanDataFile = ctScanDataFile;
+           // this.ctScanDataFile = ctScanDataFile;
 
         } catch (ConfigurationException e) {
             logger.error("Could not load configuration settings, aborting operation.");
@@ -55,16 +53,14 @@ public class Config {
 
     }
 
-    private String mergeStrings(String prepend, String label) {
-        return("./" + prepend + "_" + label + ".csv");
-    }
 
-    public static Config createInstance(String propertiesFile, String credentialsFile, String ctScanDataFile, String dataLabel, String outputPrepend, String failedOutPrepend) {
+
+    public static Config createInstance(String propertiesFile, String credentialsFile) {
         if (configInstance != null) {
             throw new AssertionError("Config singleton already initialized");
         }
 
-        configInstance = new Config(propertiesFile, credentialsFile, ctScanDataFile, dataLabel, outputPrepend, failedOutPrepend);
+        configInstance = new Config(propertiesFile, credentialsFile);
         return configInstance;
     }
 

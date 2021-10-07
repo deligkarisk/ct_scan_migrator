@@ -31,10 +31,12 @@ public class Main {
     private static final String OUTPUT_PREPEND = "MigrationOutput";
     private static final String FAILEDOUTPUTPREPEND = "ValidationFailed";
 
+    private static final StringUtils stringUtils = new StringUtils();
+
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final FileUtils fileUtils = new FileUtils();
 
-    private static Config config = Config.createInstance()
+    private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
     private static final PathUtils pathUtils = new PathUtils(config);
 
     public static final SourceReader sourceReader = new SourceReader();
@@ -78,21 +80,26 @@ public class Main {
             DUMMY_EXECUTION = FALSE;
         }
 
+        String ctScanDataFile = args[0];
+        String dataLabel = args[1];
+
+        String outputFile = stringUtils.mergeStrings(OUTPUT_PREPEND, dataLabel);
+        String failedOutputFile = stringUtils.mergeStrings(FAILEDOUTPUTPREPEND, dataLabel);
+
         logger.info("************************** Starting app **************************");
 
 
         //config =  new Config(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
 
-        config.initialize(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
         filesystemConnectivityChecker.check();
         databaseConnectivityChecker.check();
 
 
-        logger.info("Reading data from: " + config.ctScanDataFile);
+        logger.info("Reading data from: " + ctScanDataFile);
 
-        List scansList = sourceReader.readScans(config.ctScanDataFile);
+        List scansList = sourceReader.readScans(ctScanDataFile);
 
 
         Iterator<CtScan> ctScanIterator = scansList.iterator();
@@ -120,10 +127,10 @@ public class Main {
 
 
         ctScanUtilsService.findStandardizedFolderNames(scansList);
-        //ctScanValidatorService.validateStandardizedFolderNames(scansList, failedValidationOutput);
-        //ctScanValidatorService.validateUniquenessOfFolders(scansList, failedValidationOutput);
-       // fileUtils.writeBeansToFile(scansList, outputFile);
-        //ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
+        ctScanValidatorService.validateStandardizedFolderNames(scansList, failedOutputFile);
+        ctScanValidatorService.validateUniquenessOfFolders(scansList, failedOutputFile);
+        fileUtils.writeBeansToFile(scansList, outputFile);
+        ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
 
 
         logger.info("************************** Finished Execution **************************");

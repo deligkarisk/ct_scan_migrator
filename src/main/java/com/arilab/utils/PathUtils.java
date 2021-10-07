@@ -12,7 +12,11 @@ import java.util.regex.Pattern;
 public class PathUtils {
 
     private static Logger logger = LoggerFactory.getLogger(PathUtils.class);
-    private Config config = Config.getInstance();
+    private Config config;
+
+    public PathUtils(Config config) {
+        this.config = config;
+    }
 
     public Boolean folderExists(Path folder) {
         return Files.exists(folder);
