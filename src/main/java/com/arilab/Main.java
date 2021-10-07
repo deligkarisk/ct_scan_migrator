@@ -33,9 +33,10 @@ public class Main {
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final FileUtils fileUtils = new FileUtils();
-    private static final PathUtils pathUtils = new PathUtils();
 
-    private static final Config config = Config.getInstance();
+    private static Config config = Config.createInstance()
+    private static final PathUtils pathUtils = new PathUtils(config);
+
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
     public static final SystemExit systemExit = new SystemExit();
@@ -79,20 +80,17 @@ public class Main {
 
         logger.info("************************** Starting app **************************");
 
-        Config config =  Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
-        logger.info("Reading data from: " + config.ctScanDataFile);
+        //config =  new Config(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
+
+        config.initialize(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
         filesystemConnectivityChecker.check();
         databaseConnectivityChecker.check();
 
 
-
-        if (!preliminaryChecksPassed()) {
-            logger.error("Preliminary checks failed, aborting operation...");
-            System.exit(1);
-        }
+        logger.info("Reading data from: " + config.ctScanDataFile);
 
         List scansList = sourceReader.readScans(config.ctScanDataFile);
 
