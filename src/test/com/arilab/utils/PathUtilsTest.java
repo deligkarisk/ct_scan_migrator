@@ -56,9 +56,5 @@ class PathUtilsTest {
 
         Path returnedPath = pathUtils.fixPrependPath(currentDirectory);
         then(systemExit).should().exit(1);
-
-
-
-
     }
 }

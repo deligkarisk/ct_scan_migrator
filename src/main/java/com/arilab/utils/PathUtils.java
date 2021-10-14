@@ -26,23 +26,26 @@ public class PathUtils {
     }
 
 
+    public Path fixPrependPath(String currentLocation) {
+        Path returnedPath = fixPrependPathInternal(currentLocation);
 
-        public Path fixPrependPath(String currentLocation) {
-        String parentFolderToSplit = Paths.get(config.getSourceDirectory()).getFileName().toString();
-        String[] splitResult = currentLocation.split(parentFolderToSplit);
-
-        if (splitResult.length < 2) {
-            logger.error("The pattern " + parentFolderToSplit + " was not found in the current location, please check" +
-                    " your inputs and try again. Location used: " + currentLocation);
+        if (returnedPath == null) {
             systemExit.exit(1);
-            return null; //to ensure subsequent code does not run, during tests
+        }
+        return returnedPath;
+    }
+
+
+    private Path fixPrependPathInternal(String currentLocation) {
+        String parentFolderToSplit = Paths.get(config.getSourceDirectory()).getFileName().toString();
+        boolean canSplit = currentLocation.contains(parentFolderToSplit);
+        if (!canSplit) {
+            return null;
         }
 
-
+        String[] splitResult = currentLocation.split(parentFolderToSplit);
         String newLocation = splitResult[1];
-        Path newLocationPath = Paths.get(config.getSourceDirectory(), newLocation);
-        return newLocationPath;
-
+        return Paths.get(config.getSourceDirectory(), newLocation);
     }
 
 
