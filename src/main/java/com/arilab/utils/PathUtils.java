@@ -1,5 +1,6 @@
 package com.arilab.utils;
 
+import com.arilab.system.SystemExit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,20 +14,37 @@ public class PathUtils {
 
     private static Logger logger = LoggerFactory.getLogger(PathUtils.class);
     private Config config;
+    private SystemExit systemExit;
 
-    public PathUtils(Config config) {
+    public PathUtils(Config config, SystemExit systemExit) {
         this.config = config;
+        this.systemExit = systemExit;
     }
 
     public Boolean folderExists(Path folder) {
         return Files.exists(folder);
     }
 
-    public Path getCorrectScanFolderLocation(String currentLocation) {
-        String newLocation = currentLocation.split("CT_Scan_2017-2019")[1];
-        Path newLocationPath = Paths.get(config.sourceDirectory, newLocation);
+
+
+        public Path fixPrependPath(String currentLocation) {
+        String parentFolderToSplit = Paths.get(config.getSourceDirectory()).getFileName().toString();
+        String[] splitResult = currentLocation.split(parentFolderToSplit);
+
+        if (splitResult.length < 2) {
+            logger.error("The pattern " + parentFolderToSplit + " was not found in the current location, please check" +
+                    " your inputs and try again. Location used: " + currentLocation);
+            systemExit.exit(1);
+            return null; //to ensure subsequent code does not run, during tests
+        }
+
+
+        String newLocation = splitResult[1];
+        Path newLocationPath = Paths.get(config.getSourceDirectory(), newLocation);
         return newLocationPath;
+
     }
+
 
     public String extractTimestamp(String folderPath) {
         String returnString = null;
@@ -44,7 +62,7 @@ public class PathUtils {
             dicomFolderPath = dicomFolderPath.getParent();
         }
         String dicomStringPath = Paths.get(dicomFolderPath.getParent().toString(),
-                                           dicomFolderPath.getFileName().toString() + appendString).toString();
+                dicomFolderPath.getFileName().toString() + appendString).toString();
         return dicomStringPath;
     }
 }
