@@ -24,12 +24,12 @@ public class CTScanService {
 
 
     public void preprocessScanFolderLocation(CtScan ctScan) {
-        Path newLocation = pathUtils.getCorrectScanFolderLocation(ctScan.getFolderLocation());
+        Path newLocation = pathUtils.fixPrependPath(ctScan.getFolderLocation());
         logger.info("Replacing old folder location with " + newLocation);
         ctScan.setFolderLocation(newLocation.toString());
 
         if (ctScan.getDicomFolderLocation() != null) {
-            Path newDicomFolder = pathUtils.getCorrectScanFolderLocation(ctScan.getDicomFolderLocation());
+            Path newDicomFolder = pathUtils.fixPrependPath(ctScan.getDicomFolderLocation());
             logger.info("Replacing old dicom folder location with " + newDicomFolder);
             ctScan.setDicomFolderLocation(newDicomFolder.toString());
         }
