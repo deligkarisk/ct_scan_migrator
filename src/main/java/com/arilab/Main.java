@@ -38,7 +38,6 @@ public class Main {
 
     private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
 
-
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
     public static final SystemExit systemExit = new SystemExit();
