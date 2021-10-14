@@ -14,21 +14,90 @@ public class Config {
 
     private static Logger logger = LoggerFactory.getLogger(Config.class);
 
-    public String dbhost;
-    public String sourceDirectory;
-    public String targetDirectory;
-    public int dicomLevelsUp;
-    public String dicomAppendString;
+    private String dbhost;
+    private String sourceDirectory;
+    private String targetDirectory;
+    private int dicomLevelsUp;
+    private String dicomAppendString;
 
-    public String username;
-    public String password;
+    private String username;
+    private String password;
 
-    public String outputFile;
-    public String failedOutputFile;
-    //public String ctScanDataFile;
+    private String failedOutputFile;
 
 
 
+    public static Logger getLogger() {
+        return logger;
+    }
+
+    public static void setLogger(Logger logger) {
+        Config.logger = logger;
+    }
+
+    public String getDbhost() {
+        return dbhost;
+    }
+
+    public void setDbhost(String dbhost) {
+        this.dbhost = dbhost;
+    }
+
+    public String getSourceDirectory() {
+        return sourceDirectory;
+    }
+
+    public void setSourceDirectory(String sourceDirectory) {
+        this.sourceDirectory = sourceDirectory;
+    }
+
+    public String getTargetDirectory() {
+        return targetDirectory;
+    }
+
+    public void setTargetDirectory(String targetDirectory) {
+        this.targetDirectory = targetDirectory;
+    }
+
+    public int getDicomLevelsUp() {
+        return dicomLevelsUp;
+    }
+
+    public void setDicomLevelsUp(int dicomLevelsUp) {
+        this.dicomLevelsUp = dicomLevelsUp;
+    }
+
+    public String getDicomAppendString() {
+        return dicomAppendString;
+    }
+
+    public void setDicomAppendString(String dicomAppendString) {
+        this.dicomAppendString = dicomAppendString;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getFailedOutputFile() {
+        return failedOutputFile;
+    }
+
+    public void setFailedOutputFile(String failedOutputFile) {
+        this.failedOutputFile = failedOutputFile;
+    }
 
     private Config(String propertiesFile, String credentialsFile) {
         Configurations configurations = new Configurations();
@@ -65,10 +134,4 @@ public class Config {
     }
 
 
-    public static Config getInstance() {
-        if (configInstance == null) {
-           throw new AssertionError("Singleton has not been initialized yet, nothing to retrieve");
-        }
-        return configInstance;
-    }
 }

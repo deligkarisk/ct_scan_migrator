@@ -37,11 +37,13 @@ public class Main {
     private static final FileUtils fileUtils = new FileUtils();
 
     private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
-    private static final PathUtils pathUtils = new PathUtils(config);
+
 
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
     public static final SystemExit systemExit = new SystemExit();
+
+    private static final PathUtils pathUtils = new PathUtils(config, systemExit);
     public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
 
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(systemExit, config);
@@ -158,15 +160,15 @@ public class Main {
     }
 
     private static Boolean bucketIsMounted() {
-        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(config.sourceDirectory));
-        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(config.targetDirectory));
+        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(config.getSourceDirectory()));
+        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(config.getTargetDirectory()));
         return ((oldBucketFolderIsMounted && newBucketFolderIsMounted));
     }
 
     private static Boolean canWriteToBucket() throws IOException {
-        Files.deleteIfExists(Paths.get(config.targetDirectory, "testFile"));
-        Files.createFile(Paths.get(config.targetDirectory, "testFile"));
-        Files.deleteIfExists(Paths.get(config.targetDirectory, "testFile"));
+        Files.deleteIfExists(Paths.get(config.getTargetDirectory(), "testFile"));
+        Files.createFile(Paths.get(config.getTargetDirectory(), "testFile"));
+        Files.deleteIfExists(Paths.get(config.getTargetDirectory(), "testFile"));
         return true;
     }
 

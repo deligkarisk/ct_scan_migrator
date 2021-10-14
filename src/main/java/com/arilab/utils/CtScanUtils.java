@@ -32,13 +32,13 @@ public class CtScanUtils {
             String foundLocation = null;
 
             // Try to find the dicom folder based on settings.
-            String dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.dicomLevelsUp, config.dicomAppendString);
+            String dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.getDicomLevelsUp(), config.getDicomAppendString());
             if (Files.exists(Paths.get(dicomFolderLocation))) {
                 foundLocation = dicomFolderLocation;
 
             } else {
                 // retry with all characters of appendString to lower case.
-                dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.dicomLevelsUp, config.dicomAppendString.toLowerCase(Locale.ROOT));
+                dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.getDicomLevelsUp(), config.getDicomAppendString().toLowerCase(Locale.ROOT));
                 if (Files.exists(Paths.get(dicomFolderLocation))) {
                     foundLocation = dicomFolderLocation;
                 }
@@ -81,7 +81,7 @@ public class CtScanUtils {
         String genus = databaseService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
         String speciesMorphoCode = databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
-        Path newFolder = Paths.get(config.targetDirectory, ctScan.getModel(), genus,
+        Path newFolder = Paths.get(config.getTargetDirectory(), ctScan.getModel(), genus,
                 speciesMorphoCode, uniqueFolderID);
         ctScan.setNewFolderPath(newFolder.toString());
     }

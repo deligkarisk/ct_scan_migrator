@@ -34,9 +34,9 @@ public class DatabaseRepository {
 
     public Boolean specimenCodeExists(String specimenCode) throws SQLException {
 
-        try (Connection connection = DriverManager.getConnection(config.dbhost,
-                config.username,
-                config.password);
+        try (Connection connection = DriverManager.getConnection(config.getDbhost(),
+                config.getUsername(),
+                config.getPassword());
              PreparedStatement preparedStatement = connection.prepareStatement(selectAllSpecimens)) {
             preparedStatement.setString(1, specimenCode);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -47,9 +47,9 @@ public class DatabaseRepository {
 
     public Boolean ctScanFolderExists(String folder) {
         Boolean folderExists = null;
-        try (Connection connection = DriverManager.getConnection(config.dbhost,
-                config.username,
-                config.password);
+        try (Connection connection = DriverManager.getConnection(config.getDbhost(),
+                config.getUsername(),
+                config.getPassword());
              PreparedStatement preparedStatement = connection.prepareStatement(selectFolder)) {
             setStringWrapper(1, stripFirstPart(folder), preparedStatement);
             folderExists = preparedStatement.executeQuery().isBeforeFirst();
@@ -87,9 +87,9 @@ public class DatabaseRepository {
 
 
     public String runSQLQueryOnSpecimenCode(String query, String specimenCode, String columnName) {
-        try (Connection connection = DriverManager.getConnection(config.dbhost,
-                config.username,
-                config.password);
+        try (Connection connection = DriverManager.getConnection(config.getDbhost(),
+                config.getUsername(),
+                config.getPassword());
              PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setString(1, specimenCode);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {

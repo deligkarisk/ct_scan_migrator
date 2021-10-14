@@ -32,9 +32,9 @@ public class CTScanMigratorService {
     public void migrateScans(List<CtScan> scanList, String fileOutput, Boolean dummyMigrationFlag) {
         Iterator<CtScan> ctScanIterator = scanList.iterator();
 
-        try (Connection connection = DriverManager.getConnection(config.dbhost,
-                config.username,
-                config.password)) {
+        try (Connection connection = DriverManager.getConnection(config.getDbhost(),
+                config.getUsername(),
+                config.getPassword())) {
             while (ctScanIterator.hasNext()) {
                 CtScan ctScan = ctScanIterator.next();
                 ctScanMigrator.migrateScan(ctScan, connection, dummyMigrationFlag);
