@@ -101,14 +101,7 @@ public class CtScanValidator {
 
 
 
-    public Boolean validateStandardizedFolder(CtScan ctScan) {
-        // New folders should not exist already
-        Boolean folderIsAvailable = !pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
-        ctScan.setNewFolderPathAvailable(folderIsAvailable);
-        Boolean noDatabaseEntryWithSameFolderExists = !databaseService.ctScanFolderExists(ctScan.getNewFolderPath());
-        ctScan.setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
-        return (folderIsAvailable && noDatabaseEntryWithSameFolderExists);
-    }
+
 
     public Boolean folderLocationExists(CtScan ctScan) {
         Path location = Paths.get(ctScan.getFolderLocation());

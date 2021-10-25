@@ -50,31 +50,9 @@ public class CtScanValidatorService {
 
     }
 
-    public void validateStandardizedFolderNames(List<CtScan> ctScanList, String failedValidationFileOutput) {
-        int validScans;
-        validScans = validateStandardizedFolderNames(ctScanList);
-        if (validScans != ctScanList.size()) {
-            logger.error("Not all scans passed validation of new standardized folder, migration will not proceed. " +
-                    "Please see the" +
-                    "file " + failedValidationFileOutput + " for further details.");
-            fileUtils.writeBeansToFile(ctScanList, failedValidationFileOutput);
-            System.exit(1);
-        }
-    }
 
-    private int validateStandardizedFolderNames(List<CtScan> ctScanList) {
-        int validCount = 0;
-        Iterator<CtScan> ctScanIterator = ctScanList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            logger.info("Validating derived standardized folder " + ctScan.getNewFolderPath());
-            Boolean currentScanValid = ctScanValidator.validateStandardizedFolder(ctScan);
-            if (currentScanValid) {
-                validCount += 1;
-            }
-        }
-        return validCount;
-    }
+
+
 
 
 }

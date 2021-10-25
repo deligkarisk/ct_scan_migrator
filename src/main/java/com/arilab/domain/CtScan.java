@@ -2,10 +2,12 @@ package com.arilab.domain;
 
 import com.arilab.service.DatabaseService;
 import com.arilab.utils.CtScanUtils;
+import com.arilab.utils.PathUtils;
 import com.opencsv.bean.CsvBindByName;
 import lombok.NonNull;
 import lombok.ToString;
 
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 @ToString
@@ -446,8 +448,15 @@ public class CtScan {
     public void findStandardizedFolderName(CtScanUtils ctScanUtils) {
         String newStandardizedFolder = ctScanUtils.findStandardizedFolderName(this);
         setNewFolderPath(newStandardizedFolder);
+    }
 
 
+    public void validateStandardizedFolder(PathUtils pathUtils, DatabaseService databaseService) {
+        // New folders should not exist already
+        Boolean folderIsAvailable = !pathUtils.folderExists(Paths.get(getNewFolderPath()));
+        setNewFolderPathAvailable(folderIsAvailable);
+        Boolean noDatabaseEntryWithSameFolderExists = !databaseService.ctScanFolderExists(getNewFolderPath());
+        setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
     }
 
 

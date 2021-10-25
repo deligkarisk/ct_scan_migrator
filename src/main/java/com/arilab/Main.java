@@ -2,10 +2,7 @@ package com.arilab;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
-import com.arilab.flowcontroller.ArgumentChecker;
-import com.arilab.flowcontroller.CtScanDataChecker;
-import com.arilab.flowcontroller.DatabaseConnectivityChecker;
-import com.arilab.flowcontroller.FilesystemConnectivityChecker;
+import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
 import com.arilab.repository.DatabaseRepository;
 import com.arilab.service.*;
@@ -65,6 +62,8 @@ public class Main {
     public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
     public static final DatabaseConnectivityChecker databaseConnectivityChecker =
             new DatabaseConnectivityChecker(databaseService, config, systemExit);
+    public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(config
+            , systemExit, fileUtils);
 
     private static final CtScanMigrator ctScanMigrator = new CtScanMigrator(fileUtils, DATABASE_REPOSITORY);
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
@@ -114,9 +113,9 @@ public class Main {
         validateScanData(scansList);
         ctScanDataChecker.check(scansList); // Decides whether to continue or not
         findStandardizedFolderNames(scansList);
+        validateStandardizedFolderNames(scansList);
+        standardizedFoldersChecker.check(scansList); // Decides whether to continue or not
 
-
-        ctScanValidatorService.validateStandardizedFolderNames(scansList, failedOutputFile);
         ctScanValidatorService.validateUniquenessOfFolders(scansList, failedOutputFile);
         fileUtils.writeBeansToFile(scansList, outputFile);
         ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
@@ -187,7 +186,15 @@ public class Main {
             CtScan ctScan = ctScanIterator.next();
             ctScan.findStandardizedFolderName(ctScanUtils);
         }
+    }
 
+
+    private static void validateStandardizedFolderNames(List<CtScan> ctScanList) {
+        Iterator<CtScan> ctScanIterator = ctScanList.iterator();
+        while (ctScanIterator.hasNext()) {
+            CtScan ctScan = ctScanIterator.next();
+            ctScan.validateStandardizedFolder(pathUtils, databaseService);
+        }
     }
 }
 

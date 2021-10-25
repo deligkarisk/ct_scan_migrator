@@ -1,6 +1,8 @@
 package com.arilab.domain;
 
+import com.arilab.service.DatabaseService;
 import com.arilab.utils.CtScanUtils;
+import com.arilab.utils.PathUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -22,6 +24,12 @@ class CtScanTest {
 
     @Mock
     CtScanUtils ctScanUtils;
+
+    @Mock
+    PathUtils pathUtils;
+
+    @Mock
+    DatabaseService databaseService;
 
     @Test
     void validateScanDataAllValid() throws SQLException {
@@ -104,7 +112,38 @@ class CtScanTest {
 
         // then
         assertEquals("folderspath", ctScan.getNewFolderPath());
+    }
 
 
+    @Test
+    void validateStandardizedFolderAllValid() {
+        // given
+        CtScan ctScan = new CtScan();
+        when(pathUtils.folderExists(any())).thenReturn(true);
+        when(databaseService.ctScanFolderExists(anyString())).thenReturn(true);
+
+        // when
+        ctScan.validateStandardizedFolder(pathUtils, databaseService);
+
+        // then
+        assertEquals(true, ctScan.getNewFolderPathAvailable());
+        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
+    }
+
+
+
+    @Test
+    void validateStandardizedFolderSomeInvalid() {
+        // given
+        CtScan ctScan = new CtScan();
+        when(pathUtils.folderExists(any())).thenReturn(false);
+        when(databaseService.ctScanFolderExists(anyString())).thenReturn(true);
+
+        // when
+        ctScan.validateStandardizedFolder(pathUtils, databaseService);
+
+        // then
+        assertEquals(false, ctScan.getNewFolderPathAvailable());
+        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
     }
 }
