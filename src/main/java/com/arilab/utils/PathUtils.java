@@ -27,20 +27,13 @@ public class PathUtils {
 
 
     public Path fixPrependPath(String currentLocation) {
-        Path returnedPath = fixPrependPathInternal(currentLocation);
-
-        if (returnedPath == null) {
-            systemExit.exit(1);
-        }
-        return returnedPath;
-    }
-
-
-    private Path fixPrependPathInternal(String currentLocation) {
         String parentFolderToSplit = Paths.get(config.getSourceDirectory()).getFileName().toString();
         boolean canSplit = currentLocation.contains(parentFolderToSplit);
         if (!canSplit) {
-            return null;
+            logger.error("Can't find the parent folder " + parentFolderToSplit + " in " + currentLocation + ". " +
+                    "Aborting" +
+                    " operations.");
+            throw new RuntimeException("Unable to fix the folder location. Aborting.");
         }
 
         String[] splitResult = currentLocation.split(parentFolderToSplit);
