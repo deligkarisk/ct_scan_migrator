@@ -77,13 +77,13 @@ public class CtScanUtils {
     }
 
 
-    public void findStandardizedFolderName(CtScan ctScan) {
+    public String findStandardizedFolderName(CtScan ctScan) {
         String genus = databaseService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
         String speciesMorphoCode = databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
         Path newFolder = Paths.get(config.getTargetDirectory(), ctScan.getModel(), genus,
                 speciesMorphoCode, uniqueFolderID);
-        ctScan.setNewFolderPath(newFolder.toString());
+       return newFolder.toString();
     }
 
     private String createUniqueFolderId(CtScan ctScan, String genus) {
@@ -101,7 +101,4 @@ public class CtScanUtils {
 
         return uniqueFolderID;
     }
-
-
-
 }

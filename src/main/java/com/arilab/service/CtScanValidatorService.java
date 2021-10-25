@@ -77,22 +77,4 @@ public class CtScanValidatorService {
     }
 
 
-    public void validateScanData(List ctScanList) throws SQLException {
-        Iterator<CtScan> ctScanIterator = ctScanList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
-            ctScan.setSpecimenCodeExists(databaseService.specimenCodeExists(ctScan.getSpecimenCode()));
-            ctScan.setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(ctScan));
-            ctScan.setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(ctScan));
-            ctScan.setBodypartIsCorrect(ctScanValidator.bodypartCheck(ctScan));
-            ctScan.setFolderLocationExists(ctScanValidator.folderLocationExists(ctScan));
-            ctScan.setModelIsCorrect(ctScanValidator.modelIsAnts(ctScan));
-            ctScan.setStainingIsCorrect(ctScanValidator.stainingIsCorrect(ctScan));
-            ctScan.setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(ctScan));
-            ctScan.setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(ctScan));
-            ctScan.setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(ctScan));
-            ctScan.setAllinputDataIsValid(ctScanValidator.allInputDataValidationsPassed(ctScan));
-        }
-    }
 }

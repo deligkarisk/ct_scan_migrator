@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -98,16 +99,7 @@ public class CtScanValidator {
         return false;
     }
 
-    public Boolean allInputDataValidationsPassed(CtScan ctScan) {
-        if (ctScan.getSpecimenCodeExists() && ctScan.getWetDryCombinationIsCorrect() &&
-                ctScan.getDryMethodIsCorrect() && ctScan.getBodypartIsCorrect() && ctScan.getFolderLocationExists()
-        & ctScan.getModelIsCorrect() && ctScan.getEthanolConcIsCorrect() && ctScan.getStainingIsCorrect()
-        && ctScan.getAntscanCodingIsCorrect() && ctScan.getScanDateCorrect()
-                && ctScan.getDicomFolderNotAChildOfMain()) {
-            return true;
-        }
-        return false;
-    }
+
 
     public Boolean validateStandardizedFolder(CtScan ctScan) {
         // New folders should not exist already
@@ -124,6 +116,10 @@ public class CtScanValidator {
     }
 
 
+    public boolean specimenCodeExists(String specimenCode) throws SQLException {
+        return databaseService.specimenCodeExists(specimenCode);
+
+    }
 
 
 

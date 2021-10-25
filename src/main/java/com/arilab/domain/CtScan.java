@@ -1,13 +1,17 @@
 package com.arilab.domain;
 
+import com.arilab.service.DatabaseService;
+import com.arilab.utils.CtScanUtils;
 import com.opencsv.bean.CsvBindByName;
 import lombok.NonNull;
 import lombok.ToString;
 
+import java.sql.SQLException;
+
 @ToString
 public class CtScan {
     @CsvBindByName(column = "specimen_code", required = true)
-    private  String specimenCode;
+    private String specimenCode;
 
     @CsvBindByName(column = "ct_scan_note")
     private String ctScanNote;
@@ -404,4 +408,47 @@ public class CtScan {
     public void setDicomFolderNotAChildOfMain(Boolean dicomFolderNotAChildOfMain) {
         this.dicomFolderNotAChildOfMain = dicomFolderNotAChildOfMain;
     }
+
+
+    public void validateScanData(CtScanValidator ctScanValidator) throws SQLException {
+
+        setSpecimenCodeExists(ctScanValidator.specimenCodeExists(getSpecimenCode()));
+        setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(this));
+        setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(this));
+        setBodypartIsCorrect(ctScanValidator.bodypartCheck(this));
+        setFolderLocationExists(ctScanValidator.folderLocationExists(this));
+        setModelIsCorrect(ctScanValidator.modelIsAnts(this));
+        setStainingIsCorrect(ctScanValidator.stainingIsCorrect(this));
+        setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(this));
+        setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(this));
+        setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(this));
+        setAllinputDataIsValid(allInputDataValidationsPassed());
+
+
+    }
+
+    private boolean allInputDataValidationsPassed() {
+        if (getSpecimenCodeExists() &&
+                getWetDryCombinationIsCorrect() &&
+                getDryMethodIsCorrect() &&
+                getBodypartIsCorrect() &&
+                getFolderLocationExists() &&
+                getModelIsCorrect() &&
+                getEthanolConcIsCorrect() &&
+                getStainingIsCorrect() &&
+                getAntscanCodingIsCorrect() &&
+                getDicomFolderNotAChildOfMain()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void findStandardizedFolderName(CtScanUtils ctScanUtils) {
+        String newStandardizedFolder = ctScanUtils.findStandardizedFolderName(this);
+        setNewFolderPath(newStandardizedFolder);
+
+
+    }
+
+
 }

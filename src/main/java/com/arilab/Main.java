@@ -46,32 +46,29 @@ public class Main {
     public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
 
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(systemExit, config);
-    private static final DatabaseService DATABASE_SERVICE = new DatabaseService(DATABASE_REPOSITORY, systemExit);
+    private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
 
-    private static final CtScanValidator ctScanValidator = new CtScanValidator(DATABASE_SERVICE, pathUtils);
+    private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, pathUtils);
 
     private static final CtScanValidatorService ctScanValidatorService = new CtScanValidatorService(ctScanValidator,
-            fileUtils, DATABASE_SERVICE);
+            fileUtils, databaseService);
 
-    private static final CtScanUtils ctScanUtils = new CtScanUtils(DATABASE_SERVICE, pathUtils, config);
+    private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, pathUtils, config);
 
     private static final CTScanService ctScanService = new CTScanService(pathUtils, ctScanUtils);
 
     public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
             new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
 
-    private static final CtScanUtilsService ctScanUtilsService = new CtScanUtilsService(ctScanUtils, ctScanValidator,
-            fileUtils, ctScanValidatorService, config, ctScanService);
+
 
     public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
     public static final DatabaseConnectivityChecker databaseConnectivityChecker =
-            new DatabaseConnectivityChecker(DATABASE_SERVICE, config, systemExit);
+            new DatabaseConnectivityChecker(databaseService, config, systemExit);
 
     private static final CtScanMigrator ctScanMigrator = new CtScanMigrator(fileUtils, DATABASE_REPOSITORY);
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanMigrator, config);
-
-
 
 
     public static void main(String[] args) {
@@ -94,7 +91,6 @@ public class Main {
         //config =  new Config(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
 
 
-
         filesystemConnectivityChecker.check();
         databaseConnectivityChecker.check();
 
@@ -115,20 +111,11 @@ public class Main {
 
         }
 
-        //TODO: Refactor validations
-        try {
-            ctScanValidatorService.validateScanData(scansList);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            logger.error(e.toString());
-            systemExit.exit(1);
-        }
-        ctScanDataChecker.check(scansList);
-
-        // TODO: Add a new class for deciding whether to continue or not. (remove this decision from the validator)
+        validateScanData(scansList);
+        ctScanDataChecker.check(scansList); // Decides whether to continue or not
+        findStandardizedFolderNames(scansList);
 
 
-        ctScanUtilsService.findStandardizedFolderNames(scansList);
         ctScanValidatorService.validateStandardizedFolderNames(scansList, failedOutputFile);
         ctScanValidatorService.validateUniquenessOfFolders(scansList, failedOutputFile);
         fileUtils.writeBeansToFile(scansList, outputFile);
@@ -172,11 +159,36 @@ public class Main {
     }
 
     private static Boolean checkDBConnectivity() {
-       // return !(dbUtil.specimenCodeExists("TEST"));
+        // return !(dbUtil.specimenCodeExists("TEST"));
         return false;
     }
 
 
+    private static void validateScanData(List<CtScan> ctScanList) {
+        Iterator<CtScan> ctScanIterator = ctScanList.iterator();
+        while (ctScanIterator.hasNext()) {
+            CtScan ctScan = ctScanIterator.next();
+            logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
+            try {
+                ctScan.validateScanData(ctScanValidator);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                logger.error(e.toString());
+                systemExit.exit(1);
+            }
+
+        }
+    }
+
+
+    private static void findStandardizedFolderNames(List<CtScan> scanList) {
+        Iterator<CtScan> ctScanIterator = scanList.iterator();
+        while (ctScanIterator.hasNext()) {
+            CtScan ctScan = ctScanIterator.next();
+            ctScan.findStandardizedFolderName(ctScanUtils);
+        }
+
+    }
 }
 
 
