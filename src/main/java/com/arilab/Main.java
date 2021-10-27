@@ -47,8 +47,7 @@ public class Main {
 
     private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, pathUtils);
 
-    private static final CtScanValidatorService ctScanValidatorService = new CtScanValidatorService(ctScanValidator,
-            fileUtils, databaseService);
+    private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
 
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, pathUtils, config);
 
@@ -116,7 +115,14 @@ public class Main {
         validateStandardizedFolderNames(scansList);
         standardizedFoldersChecker.check(scansList); // Decides whether to continue or not
 
-        ctScanValidatorService.validateUniquenessOfFolders(scansList, failedOutputFile);
+
+        boolean allFoldersUnique = ctScanCollectionValidator.areAllFoldersUniqueInCollection(scansList);
+
+        if (!allFoldersUnique) {
+            logger.error("Not all folders unique, system will exit.");
+            systemExit.exit(1);
+        }
+
         fileUtils.writeBeansToFile(scansList, outputFile);
         ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
 
