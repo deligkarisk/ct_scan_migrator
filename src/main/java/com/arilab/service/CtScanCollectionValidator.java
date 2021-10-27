@@ -13,6 +13,11 @@ public class CtScanCollectionValidator {
 
 
     public boolean areAllFoldersUniqueInCollection(List<CtScan> ctScanList) {
+
+        //todo: can we improve the design of this method? Seems like it is doing three things, checking for all three
+        // different folder lists.
+
+
         // Ensure that migrated folders, and dicom folders are all unique inside the fill list of scans.
         List<String> ctScanFolders = ctScanList.stream().map(CtScan::getNewFolderPath).collect(Collectors.toList());
         List<String> ctScanDicomFolders = ctScanList.stream().map(CtScan::getDicomFolderLocation).collect(Collectors.toList());
