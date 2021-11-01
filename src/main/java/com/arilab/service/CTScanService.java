@@ -1,12 +1,14 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
+import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.CtScanUtils;
 import com.arilab.utils.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.sql.SQLException;
 
 public class CTScanService {
 
@@ -15,10 +17,12 @@ public class CTScanService {
 
     PathUtils pathUtils;
     CtScanUtils ctScanUtils;
+    CtScanRepository ctScanRepository;
 
-    public CTScanService(PathUtils pathUtils, CtScanUtils ctScanUtils) {
+    public CTScanService(PathUtils pathUtils, CtScanUtils ctScanUtils, CtScanRepository ctScanRepository) {
         this.pathUtils = pathUtils;
         this.ctScanUtils = ctScanUtils;
+        this.ctScanRepository = ctScanRepository;
     }
 
 
@@ -66,6 +70,14 @@ public class CTScanService {
         }
 
         ctScan.setTimestamp(timestamp);
+
+    }
+
+
+
+    public Boolean ctScanFolderExists(String folder) throws SQLException {
+        Boolean ctScanFolderExists = ctScanRepository.findCtScanFolder(folder).isBeforeFirst();
+        return ctScanFolderExists;
 
     }
 }

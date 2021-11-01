@@ -1,5 +1,6 @@
 package com.arilab.domain;
 
+import com.arilab.service.CTScanService;
 import com.arilab.service.DatabaseService;
 import com.arilab.utils.CtScanUtils;
 import com.arilab.utils.PathUtils;
@@ -451,11 +452,11 @@ public class CtScan {
     }
 
 
-    public void validateStandardizedFolder(PathUtils pathUtils, DatabaseService databaseService) {
+    public void validateStandardizedFolder(PathUtils pathUtils, CTScanService ctScanService) throws SQLException {
         // New folders should not exist already
         Boolean folderIsAvailable = !pathUtils.folderExists(Paths.get(getNewFolderPath()));
         setNewFolderPathAvailable(folderIsAvailable);
-        Boolean noDatabaseEntryWithSameFolderExists = !databaseService.ctScanFolderExists(getNewFolderPath());
+        Boolean noDatabaseEntryWithSameFolderExists = !ctScanService.ctScanFolderExists(getNewFolderPath());
         setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
     }
 

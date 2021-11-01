@@ -1,5 +1,6 @@
 package com.arilab.domain;
 
+import com.arilab.service.CTScanService;
 import com.arilab.service.DatabaseService;
 import com.arilab.utils.CtScanUtils;
 import com.arilab.utils.PathUtils;
@@ -29,7 +30,7 @@ class CtScanTest {
     PathUtils pathUtils;
 
     @Mock
-    DatabaseService databaseService;
+    CTScanService ctScanService;
 
     @Test
     void validateScanDataAllValid() throws SQLException {
@@ -116,14 +117,14 @@ class CtScanTest {
 
 
     @Test
-    void validateStandardizedFolderAllValid() {
+    void validateStandardizedFolderAllValid() throws SQLException {
         // given
         CtScan ctScan = new CtScan();
         when(pathUtils.folderExists(any())).thenReturn(true);
-        when(databaseService.ctScanFolderExists(anyString())).thenReturn(true);
+        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(true);
 
         // when
-        ctScan.validateStandardizedFolder(pathUtils, databaseService);
+        ctScan.validateStandardizedFolder(pathUtils, ctScanService);
 
         // then
         assertEquals(true, ctScan.getNewFolderPathAvailable());
@@ -133,14 +134,14 @@ class CtScanTest {
 
 
     @Test
-    void validateStandardizedFolderSomeInvalid() {
+    void validateStandardizedFolderSomeInvalid() throws SQLException {
         // given
         CtScan ctScan = new CtScan();
         when(pathUtils.folderExists(any())).thenReturn(false);
-        when(databaseService.ctScanFolderExists(anyString())).thenReturn(true);
+        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(true);
 
         // when
-        ctScan.validateStandardizedFolder(pathUtils, databaseService);
+        ctScan.validateStandardizedFolder(pathUtils, ctScanService);
 
         // then
         assertEquals(false, ctScan.getNewFolderPathAvailable());

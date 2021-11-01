@@ -26,10 +26,7 @@ public class DatabaseService {
 
     }
 
-    public Boolean ctScanFolderExists(String folder) {
-        Boolean ctScanFolderExists = databaseRepository.ctScanFolderExists(folder);
-        return ctScanFolderExists;
-    }
+
 
 
     public String findSpeciesNameOrMorphoCodeFromSpecimenCode(String specimenCode) {

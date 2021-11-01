@@ -7,6 +7,7 @@ import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -29,7 +30,7 @@ public class CTScanMigratorService {
         this.config = config;
     }
 
-    public void migrateScans(List<CtScan> scanList, String fileOutput, Boolean dummyMigrationFlag) {
+    public void migrateScans(List<CtScan> scanList, String fileOutput, Boolean dummyMigrationFlag) throws SQLException, IOException {
         Iterator<CtScan> ctScanIterator = scanList.iterator();
 
         try (Connection connection = DriverManager.getConnection(config.getDbhost(),
@@ -39,17 +40,8 @@ public class CTScanMigratorService {
                 CtScan ctScan = ctScanIterator.next();
                 ctScanMigrator.migrateScan(ctScan, connection, dummyMigrationFlag);
             }
-        } catch (SQLException sqlException) {
-            logger.error("Exception during migration service: " + sqlException.toString());
-        } finally {
-            fileUtils.writeBeansToFile(scanList, fileOutput);
         }
 
     }
-
-
-
-
-
 
 }

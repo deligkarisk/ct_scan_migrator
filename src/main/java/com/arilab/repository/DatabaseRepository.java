@@ -18,7 +18,7 @@ public class DatabaseRepository {
             "WHERE " + "specimen.specimen_code = ?";
     String selectMorphoCode = "SELECT species.morpho_code FROM public.specimen LEFT JOIN species USING(taxon_code) " +
             "WHERE " + "specimen.specimen_code = ?";
-    String selectFolder = "SELECT folder_location FROM public.ctscans WHERE folder_location = ?";
+
 
     Logger logger = LoggerFactory.getLogger(DatabaseRepository.class);
 
@@ -45,22 +45,6 @@ public class DatabaseRepository {
     }
 
 
-    public Boolean ctScanFolderExists(String folder) {
-        Boolean folderExists = null;
-        try (Connection connection = DriverManager.getConnection(config.getDbhost(),
-                config.getUsername(),
-                config.getPassword());
-             PreparedStatement preparedStatement = connection.prepareStatement(selectFolder)) {
-            setStringWrapper(1, stripFirstPart(folder), preparedStatement);
-            folderExists = preparedStatement.executeQuery().isBeforeFirst();
-        } catch (SQLException sqlException) {
-            logger.error("SQL Exception: " + sqlException);
-            System.exit(1);
-        }
-
-        return folderExists;
-
-    }
 
     private String stripFirstPart(String folderPath) {
         // Removes the /mnt/bucket part of the folder to leave the standardized one, starting with CTScans/...
@@ -124,34 +108,6 @@ public class DatabaseRepository {
     }
 
 
-    public void setIntWrapper(Integer paramSeq, Integer value, PreparedStatement preparedStatement) throws
-            SQLException {
-        if (value == null) {
-            preparedStatement.setNull(paramSeq, java.sql.Types.NULL);
-            return;
-        }
-        preparedStatement.setInt(paramSeq, value);
-    }
-
-
-    public void setStringWrapper(Integer paramSeq, String value, PreparedStatement preparedStatement) throws
-            SQLException {
-        if (value == null) {
-            preparedStatement.setNull(paramSeq, java.sql.Types.NULL);
-            return;
-        }
-        preparedStatement.setString(paramSeq, value);
-    }
-
-
-    public void setFloatWrapper(Integer paramSeq, Float value, PreparedStatement preparedStatement) throws
-            SQLException {
-        if (value == null) {
-            preparedStatement.setNull(paramSeq, java.sql.Types.NULL);
-            return;
-        }
-        preparedStatement.setFloat(paramSeq, value);
-    }
 
 
 }
