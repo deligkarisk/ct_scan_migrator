@@ -29,41 +29,27 @@ public class Main {
     private static final String FAILEDOUTPUTPREPEND = "ValidationFailed";
 
     private static final StringUtils stringUtils = new StringUtils();
-
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final FileUtils fileUtils = new FileUtils();
-
     private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
-
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
     public static final SystemExit systemExit = new SystemExit();
-
     private static final PathUtils pathUtils = new PathUtils(config, systemExit);
     public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
-
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(systemExit, config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
-
     private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, pathUtils);
-
     private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
-
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, pathUtils, config);
-
     private static final CTScanService ctScanService = new CTScanService(pathUtils, ctScanUtils);
-
     public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
             new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
-
-
-
     public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
     public static final DatabaseConnectivityChecker databaseConnectivityChecker =
             new DatabaseConnectivityChecker(databaseService, config, systemExit);
     public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(config
             , systemExit, fileUtils);
-
     private static final CtScanMigrator ctScanMigrator = new CtScanMigrator(fileUtils, DATABASE_REPOSITORY);
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanMigrator, config);
