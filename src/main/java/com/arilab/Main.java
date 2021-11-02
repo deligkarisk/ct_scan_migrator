@@ -1,6 +1,7 @@
 package com.arilab;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanValidator;
 import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
@@ -45,7 +46,8 @@ public class Main {
     private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, pathUtils);
     private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, pathUtils, config);
-    private static final CTScanService ctScanService = new CTScanService(pathUtils, ctScanUtils, ctScanRepository);
+    private static final CTScanService ctScanService = new CTScanService(pathUtils, ctScanUtils, ctScanRepository,
+            ctScanValidator, databaseService, config);
     public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
             new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
     public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
@@ -57,6 +59,7 @@ public class Main {
     private static final CtScanMigrator ctScanMigrator = new CtScanMigrator(fileUtils, DATABASE_REPOSITORY, ctScanRepository);
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanMigrator, config);
+    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService);
 
 
     public static void main(String[] args)  {
@@ -85,23 +88,22 @@ public class Main {
 
         logger.info("Reading data from: " + ctScanDataFile);
 
-        List scansList = sourceReader.readScans(ctScanDataFile);
+        CtScanCollection ctScanCollection = new CtScanCollection(sourceReader.readScans(ctScanDataFile));
 
-
-        Iterator<CtScan> ctScanIterator = scansList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            logger.info("Working on scan: " + ctScan.getFolderLocation());
-            ctScanService.preprocessScanFolderLocation(ctScan);
-            ctScanService.updateDicomFolder(ctScan);
-            ctScanService.updateTimestamp(ctScan);
-        }
-
-        validateScanData(scansList);
-        ctScanDataChecker.check(scansList); // Decides whether to continue or not
-        findStandardizedFolderNames(scansList);
         try {
-            validateStandardizedFolderNames(scansList);
+            ctScanCollectionService.preprocessData(ctScanCollection);
+            ctScanCollectionService.validateScanData(ctScanCollection);
+            ctScanDataChecker.check(ctScanCollection); // Decides whether to continue or not
+        } catch (SQLException sqlException) {
+            logger.error("Exception caught during migration: {}", sqlException.toString());
+            fileUtils.writeBeansToFile(ctScanCollection.getCtScans(), outputFile);
+            systemExit.exit(1);
+        }
+        ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
+
+
+        try {
+           validateStandardizedFolderNames(scansList);
         } catch (SQLException e) {
             e.printStackTrace();
             // todo: quit application
@@ -109,9 +111,9 @@ public class Main {
         standardizedFoldersChecker.check(scansList); // Decides whether to continue or not
 
 
-        boolean allFoldersUnique = ctScanCollectionValidator.areAllFoldersUniqueInCollection(scansList);
+       boolean allFoldersUnique = ctScanCollectionValidator.areAllFoldersUniqueInCollection(scansList);
 
-        if (!allFoldersUnique) {
+       if (!allFoldersUnique) {
             logger.error("Not all folders unique, system will exit.");
             systemExit.exit(1);
         }
@@ -124,14 +126,9 @@ public class Main {
         } catch (SQLException|IOException exception) {
             logger.error("Exception caught during migration: {}", exception.toString());
             fileUtils.writeBeansToFile(scansList, outputFile);
-            // todo: quit application
+            systemExit.exit(1);
         }
 
-
-        //  catch (SQLException | IOException exception) {
-        //
-        //            ctScan.setMigrated(false);
-        //            ctScan.setMigrationException(exception.toString().substring(0,200));
 
         logger.info("************************** Finished Execution **************************");
     }
@@ -175,30 +172,8 @@ public class Main {
     }
 
 
-    private static void validateScanData(List<CtScan> ctScanList) {
-        Iterator<CtScan> ctScanIterator = ctScanList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
-            try {
-                ctScan.validateScanData(ctScanValidator);
-            } catch (SQLException e) {
-                e.printStackTrace();
-                logger.error(e.toString());
-                systemExit.exit(1);
-            }
-
-        }
-    }
 
 
-    private static void findStandardizedFolderNames(List<CtScan> scanList) {
-        Iterator<CtScan> ctScanIterator = scanList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            ctScan.findStandardizedFolderName(ctScanUtils);
-        }
-    }
 
 
     private static void validateStandardizedFolderNames(List<CtScan> ctScanList) throws SQLException {

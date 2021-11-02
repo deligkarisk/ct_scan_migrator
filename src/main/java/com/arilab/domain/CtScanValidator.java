@@ -100,9 +100,6 @@ public class CtScanValidator {
     }
 
 
-
-
-
     public Boolean folderLocationExists(CtScan ctScan) {
         Path location = Paths.get(ctScan.getFolderLocation());
         return Files.exists(location);
@@ -111,11 +108,24 @@ public class CtScanValidator {
 
     public boolean specimenCodeExists(String specimenCode) throws SQLException {
         return databaseService.specimenCodeExists(specimenCode);
-
     }
 
 
-
+    public boolean allInputDataValidationsPassed(CtScan ctScan) {
+        if (ctScan.getSpecimenCodeExists() &&
+                ctScan.getWetDryCombinationIsCorrect() &&
+                ctScan.getDryMethodIsCorrect() &&
+                ctScan.getBodypartIsCorrect() &&
+                ctScan.getFolderLocationExists() &&
+                ctScan.getModelIsCorrect() &&
+                ctScan.getEthanolConcIsCorrect() &&
+                ctScan.getStainingIsCorrect() &&
+                ctScan.getAntscanCodingIsCorrect() &&
+                ctScan.getDicomFolderNotAChildOfMain()) {
+            return true;
+        }
+        return false;
+    }
 }
 
 

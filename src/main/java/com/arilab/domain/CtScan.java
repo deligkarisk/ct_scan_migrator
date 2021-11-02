@@ -413,44 +413,6 @@ public class CtScan {
     }
 
 
-    public void validateScanData(CtScanValidator ctScanValidator) throws SQLException {
-
-        setSpecimenCodeExists(ctScanValidator.specimenCodeExists(getSpecimenCode()));
-        setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(this));
-        setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(this));
-        setBodypartIsCorrect(ctScanValidator.bodypartCheck(this));
-        setFolderLocationExists(ctScanValidator.folderLocationExists(this));
-        setModelIsCorrect(ctScanValidator.modelIsAnts(this));
-        setStainingIsCorrect(ctScanValidator.stainingIsCorrect(this));
-        setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(this));
-        setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(this));
-        setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(this));
-        setAllinputDataIsValid(allInputDataValidationsPassed());
-
-
-    }
-
-    private boolean allInputDataValidationsPassed() {
-        if (getSpecimenCodeExists() &&
-                getWetDryCombinationIsCorrect() &&
-                getDryMethodIsCorrect() &&
-                getBodypartIsCorrect() &&
-                getFolderLocationExists() &&
-                getModelIsCorrect() &&
-                getEthanolConcIsCorrect() &&
-                getStainingIsCorrect() &&
-                getAntscanCodingIsCorrect() &&
-                getDicomFolderNotAChildOfMain()) {
-            return true;
-        }
-        return false;
-    }
-
-    public void findStandardizedFolderName(CtScanUtils ctScanUtils) {
-        String newStandardizedFolder = ctScanUtils.findStandardizedFolderName(this);
-        setNewFolderPath(newStandardizedFolder);
-    }
-
 
     public void validateStandardizedFolder(PathUtils pathUtils, CTScanService ctScanService) throws SQLException {
         // New folders should not exist already

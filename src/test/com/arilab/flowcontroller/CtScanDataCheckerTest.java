@@ -1,6 +1,7 @@
 package com.arilab.flowcontroller;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanCollection;
 import com.arilab.system.SystemExit;
 import com.arilab.utils.Config;
 import com.arilab.utils.FileUtils;
@@ -21,7 +22,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class CtScanDataCheckerTest {
 
-    List<CtScan> scanList;
+   CtScanCollection ctScanCollection;
 
     @Mock
     CtScan ctScan1;
@@ -43,9 +44,12 @@ class CtScanDataCheckerTest {
 
     @BeforeEach
     void setUp() {
-        scanList = new ArrayList<>();
+
+        List<CtScan> scanList = new ArrayList<>();
         scanList.add(ctScan1);
         scanList.add(ctScan2);
+
+        CtScanCollection ctScanCollection = new CtScanCollection(scanList);
 
 
     }
@@ -58,7 +62,7 @@ class CtScanDataCheckerTest {
         when(ctScan2.getAllinputDataIsValid()).thenReturn(false);
 
         // when
-        ctScanDataChecker.check(scanList);
+        ctScanDataChecker.check(ctScanCollection);
 
         // then
         verify(systemExit).exit(1);
@@ -73,7 +77,7 @@ class CtScanDataCheckerTest {
         when(ctScan2.getAllinputDataIsValid()).thenReturn(true);
 
         // when
-        ctScanDataChecker.check(scanList);
+        ctScanDataChecker.check(ctScanCollection);
 
         // then
         verifyNoInteractions(systemExit);

@@ -1,13 +1,16 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanValidator;
 import com.arilab.repository.CtScanRepository;
+import com.arilab.utils.Config;
 import com.arilab.utils.CtScanUtils;
 import com.arilab.utils.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 
 public class CTScanService {
@@ -18,13 +21,36 @@ public class CTScanService {
     PathUtils pathUtils;
     CtScanUtils ctScanUtils;
     CtScanRepository ctScanRepository;
+    CtScanValidator ctScanValidator;
+    DatabaseService databaseService;
+    Config config;
 
-    public CTScanService(PathUtils pathUtils, CtScanUtils ctScanUtils, CtScanRepository ctScanRepository) {
+    public CTScanService(PathUtils pathUtils, CtScanUtils ctScanUtils, CtScanRepository ctScanRepository,
+                         CtScanValidator ctScanValidator, DatabaseService databaseService, Config config) {
         this.pathUtils = pathUtils;
         this.ctScanUtils = ctScanUtils;
         this.ctScanRepository = ctScanRepository;
+        this.ctScanValidator = ctScanValidator;
+        this.databaseService = databaseService;
+        this.config = config;
     }
 
+
+    public void validateScanData(CtScan ctScan) throws SQLException {
+
+        ctScan.setSpecimenCodeExists(ctScanValidator.specimenCodeExists(ctScan.getSpecimenCode()));
+        ctScan.setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(ctScan));
+        ctScan.setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(ctScan));
+        ctScan.setBodypartIsCorrect(ctScanValidator.bodypartCheck(ctScan));
+        ctScan.setFolderLocationExists(ctScanValidator.folderLocationExists(ctScan));
+        ctScan.setModelIsCorrect(ctScanValidator.modelIsAnts(ctScan));
+        ctScan.setStainingIsCorrect(ctScanValidator.stainingIsCorrect(ctScan));
+        ctScan.setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(ctScan));
+        ctScan.setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(ctScan));
+        ctScan.setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(ctScan));
+
+        ctScan.setAllinputDataIsValid(ctScanValidator.allInputDataValidationsPassed(ctScan));
+    }
 
 
     public void preprocessScanFolderLocation(CtScan ctScan) {
@@ -73,11 +99,35 @@ public class CTScanService {
 
     }
 
-
-
     public Boolean ctScanFolderExists(String folder) throws SQLException {
         Boolean ctScanFolderExists = ctScanRepository.findCtScanFolder(folder).isBeforeFirst();
         return ctScanFolderExists;
+    }
 
+
+    public void findStandardizedFolderName(CtScan ctScan) {
+        String genus = databaseService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
+        String speciesMorphoCode = databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
+        String uniqueFolderID = createUniqueFolderId(ctScan, genus);
+        Path newFolder = Paths.get(config.getTargetDirectory(), ctScan.getModel(), genus,
+                speciesMorphoCode, uniqueFolderID);
+        ctScan.setNewFolderPath(newFolder.toString());
+    }
+
+    private String createUniqueFolderId(CtScan ctScan, String genus) {
+        String uniqueFolderID = null;
+        if (ctScan.getSpecialIdentifier() == null) {
+            uniqueFolderID =
+                    ctScan.getSpecimenCode() + "_" + genus.substring(0,
+                            3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getTimestamp();
+
+        } else {
+            uniqueFolderID =
+                    ctScan.getSpecimenCode() + "_" + genus.substring(0,
+                            3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getSpecialIdentifier() + "_" + ctScan.getTimestamp();
+        }
+
+        return uniqueFolderID;
     }
 }
+

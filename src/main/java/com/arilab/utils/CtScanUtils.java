@@ -77,28 +77,7 @@ public class CtScanUtils {
     }
 
 
-    public String findStandardizedFolderName(CtScan ctScan) {
-        String genus = databaseService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
-        String speciesMorphoCode = databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
-        String uniqueFolderID = createUniqueFolderId(ctScan, genus);
-        Path newFolder = Paths.get(config.getTargetDirectory(), ctScan.getModel(), genus,
-                speciesMorphoCode, uniqueFolderID);
-       return newFolder.toString();
-    }
 
-    private String createUniqueFolderId(CtScan ctScan, String genus) {
-        String uniqueFolderID = null;
-        if (ctScan.getSpecialIdentifier() == null) {
-            uniqueFolderID =
-                    ctScan.getSpecimenCode() + "_" + genus.substring(0,
-                            3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getTimestamp();
 
-        } else {
-            uniqueFolderID =
-                    ctScan.getSpecimenCode() + "_" + genus.substring(0,
-                            3) + "_" + ctScan.getBodyPart() + "_" + ctScan.getSpecialIdentifier() + "_" + ctScan.getTimestamp();
-        }
 
-        return uniqueFolderID;
-    }
 }

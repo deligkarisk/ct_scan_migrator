@@ -34,48 +34,5 @@ class CtScanUtilsTest {
     void createTimestampFromScanDate() {
     }
 
-    @Test
-    void findStandardizedFolderNameWithSpecialID() {
-        // given
-        when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
-        when(databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(any())).thenReturn("Strumingenys");
 
-        when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
-
-        CtScan ctScan = new CtScan();
-        ctScan.setSpecimenCode("CASENT0000");
-        ctScan.setBodyPart("Head");
-        ctScan.setTimestamp("20200802_000000");
-        ctScan.setSpecialIdentifier("SpecialID");
-        ctScan.setModel("Ants");
-
-        // when
-        String returnedStandardizedFolderName = ctScanUtils.findStandardizedFolderName(ctScan);
-
-        // then
-        assertEquals("/mnt/bucket/Ants/Pheidole/Strumingenys/CASENT0000_Phe_Head_SpecialID_20200802_000000", returnedStandardizedFolderName);
-
-    }
-
-    @Test
-    void findStandardizedFolderNameWithOutSpecialID() {
-        // given
-        when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
-        when(databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(any())).thenReturn("Strumingenys");
-
-        when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
-
-        CtScan ctScan = new CtScan();
-        ctScan.setSpecimenCode("CASENT0000");
-        ctScan.setBodyPart("Head");
-        ctScan.setTimestamp("20200802_000000");
-        ctScan.setModel("Ants");
-
-        // when
-        String returnedStandardizedFolderName = ctScanUtils.findStandardizedFolderName(ctScan);
-
-        // then
-        assertEquals("/mnt/bucket/Ants/Pheidole/Strumingenys/CASENT0000_Phe_Head_20200802_000000", returnedStandardizedFolderName);
-
-    }
 }
