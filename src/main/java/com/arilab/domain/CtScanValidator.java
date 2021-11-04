@@ -32,10 +32,6 @@ public class CtScanValidator {
             Path dicomPath = Paths.get(ctScan.getDicomFolderLocation());
             Path mainDataPath = Paths.get(ctScan.getFolderLocation());
 
-            if (!Files.exists(dicomPath)) {
-                logger.error("Dicom path does not exist, exiting... :" + dicomPath.toString());
-                System.exit(1);
-            }
 
             returnValue = !dicomPath.startsWith(mainDataPath);
 
@@ -43,6 +39,17 @@ public class CtScanValidator {
 
         return returnValue;
 
+    }
+
+
+    public Boolean folderLocationExists(CtScan ctScan) {
+        Path location = Paths.get(ctScan.getFolderLocation());
+        return Files.exists(location);
+    }
+
+    public Boolean dicomFolderLocationExists(CtScan ctScan) {
+        Path dicomPath = Paths.get(ctScan.getDicomFolderLocation());
+        return Files.exists(dicomPath);
     }
 
     public Boolean antscanIsCorrect(CtScan ctScan) {
@@ -100,10 +107,7 @@ public class CtScanValidator {
     }
 
 
-    public Boolean folderLocationExists(CtScan ctScan) {
-        Path location = Paths.get(ctScan.getFolderLocation());
-        return Files.exists(location);
-    }
+
 
 
     public boolean specimenCodeExists(String specimenCode) throws SQLException {
@@ -111,21 +115,7 @@ public class CtScanValidator {
     }
 
 
-    public boolean allInputDataValidationsPassed(CtScan ctScan) {
-        if (ctScan.getSpecimenCodeExists() &&
-                ctScan.getWetDryCombinationIsCorrect() &&
-                ctScan.getDryMethodIsCorrect() &&
-                ctScan.getBodypartIsCorrect() &&
-                ctScan.getFolderLocationExists() &&
-                ctScan.getModelIsCorrect() &&
-                ctScan.getEthanolConcIsCorrect() &&
-                ctScan.getStainingIsCorrect() &&
-                ctScan.getAntscanCodingIsCorrect() &&
-                ctScan.getDicomFolderNotAChildOfMain()) {
-            return true;
-        }
-        return false;
-    }
+
 }
 
 

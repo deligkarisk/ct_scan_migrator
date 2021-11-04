@@ -1,6 +1,5 @@
-package com.arilab.service;
+package com.arilab.domain;
 
-import com.arilab.domain.CtScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -6,10 +6,7 @@ import com.arilab.utils.Config;
 import com.arilab.utils.PathUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.nio.file.Paths;
@@ -37,7 +34,7 @@ class CTScanServiceTest {
     @Mock
     DatabaseService databaseService;
 
-    @Mock
+    @Spy
     CtScan ctScan;
 
     @InjectMocks
@@ -76,12 +73,13 @@ class CTScanServiceTest {
         when(ctScanValidator.dryMethodCheck(any())).thenReturn(true);
         when(ctScanValidator.bodypartCheck(any())).thenReturn(true);
         when(ctScanValidator.folderLocationExists(any())).thenReturn(true);
+        when(ctScanValidator.dicomFolderLocationExists(any())).thenReturn(true);
         when(ctScanValidator.modelIsAnts(any())).thenReturn(true);
         when(ctScanValidator.stainingIsCorrect(any())).thenReturn(true);
         when(ctScanValidator.ethanolConcIsCorrect(any())).thenReturn(true);
         when(ctScanValidator.antscanIsCorrect(any())).thenReturn(true);
         when(ctScanValidator.dicomFolderNotInMainFolder(any())).thenReturn(true);
-        when(ctScanValidator.allInputDataValidationsPassed(any())).thenReturn(true);
+
 
         // when
         ctScanService.validateScanData(ctScan);
@@ -106,7 +104,6 @@ class CTScanServiceTest {
         when(ctScanValidator.ethanolConcIsCorrect(any())).thenReturn(true);
         when(ctScanValidator.antscanIsCorrect(any())).thenReturn(false);
         when(ctScanValidator.dicomFolderNotInMainFolder(any())).thenReturn(true);
-        when(ctScanValidator.allInputDataValidationsPassed(any())).thenReturn(false);
 
 
         // when
@@ -122,7 +119,7 @@ class CTScanServiceTest {
 
 
     @Test
-    void findStandardizedFolderNameWithSpecialID2() {
+    void findStandardizedFolderNameWithSpecialID() {
         // given
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");

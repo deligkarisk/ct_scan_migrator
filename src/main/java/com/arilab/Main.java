@@ -2,6 +2,7 @@ package com.arilab;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanCollection;
+import com.arilab.domain.CtScanCollectionValidator;
 import com.arilab.domain.CtScanValidator;
 import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
@@ -101,14 +102,14 @@ public class Main {
         }
         ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
 
-
+/*
         try {
            validateStandardizedFolderNames(scansList);
         } catch (SQLException e) {
             e.printStackTrace();
             // todo: quit application
         }
-        standardizedFoldersChecker.check(scansList); // Decides whether to continue or not
+     standardizedFoldersChecker.check(scansList); // Decides whether to continue or not
 
 
        boolean allFoldersUnique = ctScanCollectionValidator.areAllFoldersUniqueInCollection(scansList);
@@ -127,7 +128,7 @@ public class Main {
             logger.error("Exception caught during migration: {}", exception.toString());
             fileUtils.writeBeansToFile(scansList, outputFile);
             systemExit.exit(1);
-        }
+        }*/
 
 
         logger.info("************************** Finished Execution **************************");

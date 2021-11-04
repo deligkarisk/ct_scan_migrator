@@ -43,13 +43,33 @@ public class CTScanService {
         ctScan.setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(ctScan));
         ctScan.setBodypartIsCorrect(ctScanValidator.bodypartCheck(ctScan));
         ctScan.setFolderLocationExists(ctScanValidator.folderLocationExists(ctScan));
+        ctScan.setDicomFolderLocationExists(ctScanValidator.dicomFolderLocationExists(ctScan));
+
         ctScan.setModelIsCorrect(ctScanValidator.modelIsAnts(ctScan));
         ctScan.setStainingIsCorrect(ctScanValidator.stainingIsCorrect(ctScan));
         ctScan.setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(ctScan));
         ctScan.setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(ctScan));
         ctScan.setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(ctScan));
 
-        ctScan.setAllinputDataIsValid(ctScanValidator.allInputDataValidationsPassed(ctScan));
+        ctScan.setAllinputDataIsValid(allInputDataValidationsPassed(ctScan));
+    }
+
+
+    private boolean allInputDataValidationsPassed(CtScan ctScan) {
+        if (ctScan.getSpecimenCodeExists() &&
+                ctScan.getWetDryCombinationIsCorrect() &&
+                ctScan.getDryMethodIsCorrect() &&
+                ctScan.getBodypartIsCorrect() &&
+                ctScan.getFolderLocationExists() &&
+                ctScan.getModelIsCorrect() &&
+                ctScan.getEthanolConcIsCorrect() &&
+                ctScan.getStainingIsCorrect() &&
+                ctScan.getAntscanCodingIsCorrect() &&
+                ctScan.getDicomFolderLocationExists() &&
+                ctScan.getDicomFolderNotAChildOfMain()) {
+            return true;
+        }
+        return false;
     }
 
 

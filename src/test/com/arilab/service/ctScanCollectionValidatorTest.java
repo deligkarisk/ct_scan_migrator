@@ -1,6 +1,7 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanCollectionValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;

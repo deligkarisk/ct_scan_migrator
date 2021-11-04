@@ -44,6 +44,9 @@ public class CtScan {
     @CsvBindByName(column = "dicom_folder_location")
     private String dicomFolderLocation;
 
+    @CsvBindByName(column = "dicom_folder_location_exists")
+    private Boolean dicomFolderLocationExists;
+
     @CsvBindByName(column = "dicom_folder_not_inside_main")
     private Boolean dicomFolderNotAChildOfMain;
 
@@ -412,7 +415,13 @@ public class CtScan {
         this.dicomFolderNotAChildOfMain = dicomFolderNotAChildOfMain;
     }
 
+    public Boolean getDicomFolderLocationExists() {
+        return dicomFolderLocationExists;
+    }
 
+    public void setDicomFolderLocationExists(Boolean dicomFolderLocationExists) {
+        this.dicomFolderLocationExists = dicomFolderLocationExists;
+    }
 
     public void validateStandardizedFolder(PathUtils pathUtils, CTScanService ctScanService) throws SQLException {
         // New folders should not exist already
