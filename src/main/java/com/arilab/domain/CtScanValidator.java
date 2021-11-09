@@ -107,15 +107,8 @@ public class CtScanValidator {
     }
 
 
-
-
-
     public boolean specimenCodeExists(String specimenCode) throws SQLException {
         return databaseService.specimenCodeExists(specimenCode);
     }
 
-
-
 }
-
-

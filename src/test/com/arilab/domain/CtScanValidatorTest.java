@@ -6,6 +6,8 @@ import org.checkerframework.checker.fenum.qual.AwtAlphaCompositingRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -111,38 +113,89 @@ class CtScanValidatorTest {
         System.out.println(tempdir2);
     }
 
-    @Test
-    void antscanIsCorrect() {
+    @ParameterizedTest
+    @CsvSource({
+            "Yes, ANTSCANCODE",
+            "No,"
+    })
+    void antscanIsCorrectValid(String antscanFlag, String antscanCode) {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setAntscan(antscanFlag);
+        ctScan.setAntscanCode(antscanCode);
+
+        // when
+        Boolean returnedResult = ctScanValidator.antscanIsCorrect(ctScan);
+
+        // then
+        assertEquals(true, returnedResult);
     }
 
-    @Test
-    void stainingIsCorrect() {
-    }
+    @ParameterizedTest
+    @CsvSource({
+            "No, ANTSCANCODE",
+            "Yes,"
+    })
+    void antscanIsCorrectInvalid(String antscanFlag, String antscanCode) {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setAntscan(antscanFlag);
+        ctScan.setAntscanCode(antscanCode);
 
-    @Test
-    void ethanolConcIsCorrect() {
-    }
+        // when
+        Boolean returnedResult = ctScanValidator.antscanIsCorrect(ctScan);
 
-    @Test
-    void modelIsAnts() {
-    }
-
-    @Test
-    void wetDryCombinationIsCorrect() {
-    }
-
-    @Test
-    void dryMethodCheck() {
-    }
-
-    @Test
-    void bodypartCheck() {
+        // then
+        assertEquals(false, returnedResult);
     }
 
 
-    @Test
-    void specimenCodeExists() {
+
+    @ParameterizedTest
+    @CsvSource({
+            "Yes,,EthanolConc",
+            "No,DryMethod,No ethanol used"
+    })
+    void wetDryCombinationIsCorrectValid(String wetFlag, String dryFlag, String ethanolConcentrationFlag) {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setWet(wetFlag);
+        ctScan.setDryMethod(dryFlag);
+        ctScan.setEthanolConcentration(ethanolConcentrationFlag);
+
+        // when
+        Boolean returnedValue = ctScanValidator.wetDryCombinationIsCorrect(ctScan);
+
+        // then
+        assertEquals(true,returnedValue);
     }
+
+
+
+    @ParameterizedTest
+    @CsvSource({
+            "Yes,DryMethod,EthanolConc",
+            "No,DryMethod,EthanolConc",
+            "Yes, DryMethod,",
+            "Yes,,",
+            "No,,",
+            "No,DryMethod,EthanolConc"
+    })
+    void wetDryCombinationIsCorrectInvalid(String wetFlag, String dryFlag, String ethanolConcentrationFlag) {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setWet(wetFlag);
+        ctScan.setDryMethod(dryFlag);
+        ctScan.setEthanolConcentration(ethanolConcentrationFlag);
+
+        // when
+        Boolean returnedValue = ctScanValidator.wetDryCombinationIsCorrect(ctScan);
+
+        // then
+        assertEquals(false,returnedValue);
+    }
+
+
 
     @Test
     void allInputDataValidationsPassed() {
