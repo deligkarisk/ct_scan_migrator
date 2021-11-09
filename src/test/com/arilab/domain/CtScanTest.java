@@ -6,6 +6,7 @@ import com.arilab.utils.CtScanUtils;
 import com.arilab.utils.PathUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -37,12 +38,14 @@ class CtScanTest {
 
 
 
+
     @Test
     void validateStandardizedFolderAllValid() throws SQLException {
         // given
         CtScan ctScan = new CtScan();
-        when(pathUtils.folderExists(any())).thenReturn(true);
-        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(true);
+        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
+        when(pathUtils.folderExists(any())).thenReturn(false);
+        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(false);
 
         // when
         ctScan.validateStandardizedFolder(pathUtils, ctScanService);
@@ -58,8 +61,9 @@ class CtScanTest {
     void validateStandardizedFolderSomeInvalid() throws SQLException {
         // given
         CtScan ctScan = new CtScan();
-        when(pathUtils.folderExists(any())).thenReturn(false);
-        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(true);
+        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
+        when(pathUtils.folderExists(any())).thenReturn(true);
+        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(false);
 
         // when
         ctScan.validateStandardizedFolder(pathUtils, ctScanService);

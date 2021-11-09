@@ -49,7 +49,7 @@ class CtScanDataCheckerTest {
         scanList.add(ctScan1);
         scanList.add(ctScan2);
 
-        CtScanCollection ctScanCollection = new CtScanCollection(scanList);
+         ctScanCollection = new CtScanCollection(scanList);
 
 
     }
