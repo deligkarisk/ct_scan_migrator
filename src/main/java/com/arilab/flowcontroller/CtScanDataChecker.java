@@ -38,7 +38,7 @@ public class CtScanDataChecker {
         if (validScans != scanList.size()) {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
                     " file " + config.getFailedOutputFile() + " for further details.");
-            fileUtils.writeBeansToFile(scanList, config.getFailedOutputFile());
+            fileUtils.writeBeansToFile(ctScanCollection, config.getFailedOutputFile());
             systemExit.exit(1);
         }
     }

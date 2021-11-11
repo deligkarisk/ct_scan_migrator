@@ -195,11 +195,4 @@ class CtScanValidatorTest {
         assertEquals(false,returnedValue);
     }
 
-
-
-    @Test
-    void allInputDataValidationsPassed() {
-    }
-    // todo: implement
-
 }

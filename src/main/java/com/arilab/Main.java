@@ -56,11 +56,12 @@ public class Main {
             new DatabaseConnectivityChecker(databaseService, config, systemExit);
     public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(config
             , systemExit, fileUtils);
+    public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
 
-    private static final CtScanMigrator ctScanMigrator = new CtScanMigrator(fileUtils, DATABASE_REPOSITORY, ctScanRepository);
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
-            ctScanMigrator, config);
-    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService);
+            ctScanRepository);
+    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService,
+            ctScanCollectionValidator, uniqueFoldersChecker);
 
 
     public static void main(String[] args)  {
@@ -97,38 +98,33 @@ public class Main {
             ctScanDataChecker.check(ctScanCollection); // Decides whether to continue or not
         } catch (SQLException sqlException) {
             logger.error("Exception caught during migration: {}", sqlException.toString());
-            fileUtils.writeBeansToFile(ctScanCollection.getCtScans(), outputFile);
+            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             systemExit.exit(1);
         }
         ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
 
-/*
+
         try {
-           validateStandardizedFolderNames(scansList);
+           ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
         } catch (SQLException e) {
-            e.printStackTrace();
-            // todo: quit application
-        }
-     standardizedFoldersChecker.check(scansList); // Decides whether to continue or not
-
-
-       boolean allFoldersUnique = ctScanCollectionValidator.areAllFoldersUniqueInCollection(scansList);
-
-       if (!allFoldersUnique) {
-            logger.error("Not all folders unique, system will exit.");
+            logger.error("SQL exception when validating the new standardized folders, exiting.");
             systemExit.exit(1);
         }
 
-        fileUtils.writeBeansToFile(scansList, outputFile);
+        standardizedFoldersChecker.check(ctScanCollection); // Decides whether to continue or not
+        ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
+
+        // Before migrating, write all information to the output file.
+        fileUtils.writeBeansToFile(ctScanCollection, outputFile);
 
 
         try {
-            ctScanMigratorService.migrateScans(scansList, outputFile, DUMMY_EXECUTION);
+            ctScanMigratorService.migrateScans(ctScanCollection, DUMMY_EXECUTION);
         } catch (SQLException|IOException exception) {
             logger.error("Exception caught during migration: {}", exception.toString());
-            fileUtils.writeBeansToFile(scansList, outputFile);
+            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             systemExit.exit(1);
-        }*/
+        }
 
 
         logger.info("************************** Finished Execution **************************");
@@ -177,13 +173,7 @@ public class Main {
 
 
 
-    private static void validateStandardizedFolderNames(List<CtScan> ctScanList) throws SQLException {
-        Iterator<CtScan> ctScanIterator = ctScanList.iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            ctScan.validateStandardizedFolder(pathUtils, ctScanService);
-        }
-    }
+
 }
 
 

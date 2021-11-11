@@ -11,12 +11,8 @@ public class CtScanCollectionValidator {
     private static Logger logger = LoggerFactory.getLogger(CtScanCollectionValidator.class);
 
 
-    public boolean areAllFoldersUniqueInCollection(List<CtScan> ctScanList) {
-
-        //todo: can we improve the design of this method? Seems like it is doing three things, checking for all three
-        // different folder lists.
-
-
+    public boolean areAllFoldersUniqueInCollection(CtScanCollection ctScanCollection) {
+        List<CtScan> ctScanList = ctScanCollection.getCtScans();
         // Ensure that migrated folders, and dicom folders are all unique inside the fill list of scans.
         List<String> ctScanFolders = ctScanList.stream().map(CtScan::getNewFolderPath).collect(Collectors.toList());
         List<String> ctScanDicomFolders = ctScanList.stream().map(CtScan::getDicomFolderLocation).collect(Collectors.toList());

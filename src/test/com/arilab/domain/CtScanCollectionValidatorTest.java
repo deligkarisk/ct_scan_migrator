@@ -1,4 +1,4 @@
-package com.arilab.service;
+package com.arilab.domain;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanCollectionValidator;
@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class ctScanCollectionValidatorTest {
+class CtScanCollectionValidatorTest {
 
 
     @InjectMocks
@@ -38,9 +38,11 @@ class ctScanCollectionValidatorTest {
         List<CtScan> ctScans = new ArrayList<>();
         ctScans.add(ctScan1);
         ctScans.add(ctScan2);
+        CtScanCollection ctScanCollection = new CtScanCollection(ctScans);
+
 
         // when
-        boolean returnedResult = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScans);
+        boolean returnedResult = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScanCollection);
 
         // then
         assertEquals(true, returnedResult);
@@ -75,9 +77,11 @@ class ctScanCollectionValidatorTest {
         List<CtScan> ctScans = new ArrayList<>();
         ctScans.add(ctScan1);
         ctScans.add(ctScan2);
+        CtScanCollection ctScanCollection = new CtScanCollection(ctScans);
+
 
         // when
-        boolean returnedResult = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScans);
+        boolean returnedResult = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScanCollection);
 
         // then
         assertEquals(false, returnedResult);

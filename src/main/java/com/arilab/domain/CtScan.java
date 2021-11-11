@@ -423,14 +423,7 @@ public class CtScan {
         this.dicomFolderLocationExists = dicomFolderLocationExists;
     }
 
-    public void validateStandardizedFolder(PathUtils pathUtils, CTScanService ctScanService) throws SQLException {
-        // todo: Does this need to go somewhere else?
-        // New folders should not exist already
-        Boolean folderIsAvailable = !pathUtils.folderExists(Paths.get(getNewFolderPath()));
-        setNewFolderPathAvailable(folderIsAvailable);
-        Boolean noDatabaseEntryWithSameFolderExists = !ctScanService.ctScanFolderExists(getNewFolderPath());
-        setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
-    }
+
 
 
 }

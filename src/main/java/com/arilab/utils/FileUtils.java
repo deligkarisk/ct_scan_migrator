@@ -1,6 +1,7 @@
 package com.arilab.utils;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanCollection;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.StatefulBeanToCsv;
 import com.opencsv.bean.StatefulBeanToCsvBuilder;
@@ -24,11 +25,13 @@ public class FileUtils {
 
 
 
-    public void writeBeansToFile(List<CtScan> ctScans, String filePath) {
+    public void writeBeansToFile(CtScanCollection ctScanCollection, String filePath) {
+        List<CtScan> scanList = ctScanCollection.getCtScans();
+
         try {
             Writer writer = new FileWriter(filePath);
             StatefulBeanToCsv statefulBeanToCsv = new StatefulBeanToCsvBuilder(writer).build();
-            statefulBeanToCsv.write(ctScans);
+            statefulBeanToCsv.write(scanList);
             writer.close();
         } catch (IOException ioException) {
             logger.error("IO Exception in opening the file to be written." + ioException.toString());

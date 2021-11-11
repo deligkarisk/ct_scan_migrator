@@ -111,4 +111,8 @@ public class CtScanValidator {
         return databaseService.specimenCodeExists(specimenCode);
     }
 
+    public boolean standardizedFolderIsAvailable(CtScan ctScan) {
+        return !pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
+    }
+
 }

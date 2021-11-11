@@ -39,37 +39,5 @@ class CtScanTest {
 
 
 
-    @Test
-    void validateStandardizedFolderAllValid() throws SQLException {
-        // given
-        CtScan ctScan = new CtScan();
-        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
-        when(pathUtils.folderExists(any())).thenReturn(false);
-        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(false);
 
-        // when
-        ctScan.validateStandardizedFolder(pathUtils, ctScanService);
-
-        // then
-        assertEquals(true, ctScan.getNewFolderPathAvailable());
-        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
-    }
-
-
-
-    @Test
-    void validateStandardizedFolderSomeInvalid() throws SQLException {
-        // given
-        CtScan ctScan = new CtScan();
-        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
-        when(pathUtils.folderExists(any())).thenReturn(true);
-        when(ctScanService.ctScanFolderExists(anyString())).thenReturn(false);
-
-        // when
-        ctScan.validateStandardizedFolder(pathUtils, ctScanService);
-
-        // then
-        assertEquals(false, ctScan.getNewFolderPathAvailable());
-        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
-    }
 }

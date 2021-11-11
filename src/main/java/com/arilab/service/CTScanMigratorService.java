@@ -1,8 +1,9 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanCollection;
+import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.Config;
-import com.arilab.utils.CtScanMigrator;
 import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,36 +13,28 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
 
 public class CTScanMigratorService {
 
-    private FileUtils fileUtils;
-    Config config;
-    private CtScanMigrator ctScanMigrator;
+    FileUtils fileUtils;
+    CtScanRepository ctScanRepository;
 
 
     private static final Logger logger = LoggerFactory.getLogger(CTScanMigratorService.class);
 
 
-    public CTScanMigratorService(FileUtils fileUtils, CtScanMigrator ctScanMigrator, Config config) {
+    public CTScanMigratorService(FileUtils fileUtils, CtScanRepository ctScanRepository) {
         this.fileUtils = fileUtils;
-        this.ctScanMigrator = ctScanMigrator;
-        this.config = config;
+        this.ctScanRepository = ctScanRepository;
     }
 
-    public void migrateScans(List<CtScan> scanList, String fileOutput, Boolean dummyMigrationFlag) throws SQLException, IOException {
-        Iterator<CtScan> ctScanIterator = scanList.iterator();
+    public void migrateScans(CtScanCollection ctScanCollection, Boolean dummyMigrationFlag) throws SQLException,
+            IOException {
 
-        try (Connection connection = DriverManager.getConnection(config.getDbhost(),
-                config.getUsername(),
-                config.getPassword())) {
-            while (ctScanIterator.hasNext()) {
-                CtScan ctScan = ctScanIterator.next();
-                ctScanMigrator.migrateScan(ctScan, connection, dummyMigrationFlag);
-            }
+        for (CtScan ctScan : ctScanCollection.getCtScans()) {
+            ctScanRepository.insertCtScan(ctScan, dummyMigrationFlag);
+            fileUtils.migrateFolder(ctScan, dummyMigrationFlag);
+            ctScan.setMigrated(true);
         }
-
     }
-
 }

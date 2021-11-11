@@ -1,6 +1,7 @@
 package com.arilab.flowcontroller;
 
 import com.arilab.domain.CtScan;
+import com.arilab.domain.CtScanCollection;
 import com.arilab.system.SystemExit;
 import com.arilab.utils.Config;
 import com.arilab.utils.FileUtils;
@@ -53,9 +54,11 @@ class StandardizedFoldersCheckerTest {
         List<CtScan> ctScans = new ArrayList<>();
         ctScans.add(ctScan1);
         ctScans.add(ctScan2);
+        CtScanCollection ctScanCollection = new CtScanCollection(ctScans);
+
 
         // when
-        standardizedFoldersChecker.check(ctScans);
+        standardizedFoldersChecker.check(ctScanCollection);
 
         // then
         verifyNoInteractions(systemExit);
@@ -80,9 +83,11 @@ class StandardizedFoldersCheckerTest {
         List<CtScan> ctScans = new ArrayList<>();
         ctScans.add(ctScan1);
         ctScans.add(ctScan2);
+        CtScanCollection ctScanCollection = new CtScanCollection(ctScans);
+
 
         // when
-        standardizedFoldersChecker.check(ctScans);
+        standardizedFoldersChecker.check(ctScanCollection);
 
         // then
         verify(systemExit).exit(1);
@@ -106,9 +111,12 @@ class StandardizedFoldersCheckerTest {
         List<CtScan> ctScans = new ArrayList<>();
         ctScans.add(ctScan1);
         ctScans.add(ctScan2);
+        CtScanCollection ctScanCollection = new CtScanCollection(ctScans);
+
 
         // when
-        standardizedFoldersChecker.check(ctScans);
+        standardizedFoldersChecker.check(ctScanCollection);
+
 
         // then
         verify(systemExit).exit(1);

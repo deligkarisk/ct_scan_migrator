@@ -149,5 +149,17 @@ public class CTScanService {
 
         return uniqueFolderID;
     }
+
+
+
+    public void validateStandardizedFolder(CtScan ctScan) throws SQLException {
+        // New folders should not exist already
+        Boolean folderIsAvailable = ctScanValidator.standardizedFolderIsAvailable(ctScan);
+        ctScan.setNewFolderPathAvailable(folderIsAvailable);
+
+        // New folders should not exist in the db either
+        Boolean noDatabaseEntryWithSameFolderExists = !ctScanFolderExists(ctScan.getNewFolderPath());
+        ctScan.setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
+    }
 }
 

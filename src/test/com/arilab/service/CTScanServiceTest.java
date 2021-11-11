@@ -2,6 +2,7 @@ package com.arilab.service;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
+import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.Config;
 import com.arilab.utils.PathUtils;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -37,7 +39,11 @@ class CTScanServiceTest {
     @Spy
     CtScan ctScan;
 
+    @Mock
+    CtScanRepository ctScanRepository;
+
     @InjectMocks
+    @Spy
     CTScanService ctScanService;
 
     @Captor
@@ -45,7 +51,7 @@ class CTScanServiceTest {
 
 
     @Test
-    void preprocessScanFolderLocation() {
+    void preprocessScanFolderLocation() throws SQLException {
 
         // given
         when(ctScan.getFolderLocation()).thenReturn("/mnt/bucket/CTScans/Ants/Genus " +
@@ -117,7 +123,6 @@ class CTScanServiceTest {
     }
 
 
-
     @Test
     void findStandardizedFolderNameWithSpecialID() {
         // given
@@ -161,5 +166,41 @@ class CTScanServiceTest {
         then(ctScan).should().setNewFolderPath(captor.capture());
         assertEquals("/mnt/bucket/Ants/Pheidole/Strumingenys/CASENT0000_Phe_Head_20200802_000000", captor.getValue());
 
+    }
+
+
+    @Test
+    void validateStandardizedFolderAllValid() throws SQLException {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
+        when(ctScanValidator.standardizedFolderIsAvailable(any())).thenReturn(true);
+        //when(ctScanService.ctScanFolderExists(any())).thenReturn(false);
+        Mockito.doReturn(false).when(ctScanService).ctScanFolderExists(any());
+
+        // when
+        ctScanService.validateStandardizedFolder(ctScan);
+
+        // then
+        assertEquals(true, ctScan.getNewFolderPathAvailable());
+        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
+    }
+
+
+    @Test
+    void validateStandardizedFolderSomeInvalid() throws SQLException {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
+        when(ctScanValidator.standardizedFolderIsAvailable(any())).thenReturn(false);
+        Mockito.doReturn(false).when(ctScanService).ctScanFolderExists(any());
+
+        // when
+        ctScanService.validateStandardizedFolder(ctScan);
+
+
+        // then
+        assertEquals(false, ctScan.getNewFolderPathAvailable());
+        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
     }
 }
