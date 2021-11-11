@@ -62,7 +62,7 @@ class CtScanDataCheckerTest {
         when(ctScan2.getAllinputDataIsValid()).thenReturn(false);
 
         // when
-        ctScanDataChecker.check(ctScanCollection);
+        ctScanDataChecker.check(ctScanCollection, "failedfile");
 
         // then
         verify(systemExit).exit(1);
@@ -77,7 +77,7 @@ class CtScanDataCheckerTest {
         when(ctScan2.getAllinputDataIsValid()).thenReturn(true);
 
         // when
-        ctScanDataChecker.check(ctScanCollection);
+        ctScanDataChecker.check(ctScanCollection, "failedfile");
 
         // then
         verifyNoInteractions(systemExit);

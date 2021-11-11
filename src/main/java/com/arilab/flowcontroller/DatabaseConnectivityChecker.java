@@ -6,20 +6,17 @@ import com.arilab.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
 
 public class DatabaseConnectivityChecker {
 
     DatabaseService databaseService;
-    Config config;
     SystemExit systemExit;
 
     private static Logger logger = LoggerFactory.getLogger(DatabaseConnectivityChecker.class);
 
-    public DatabaseConnectivityChecker(DatabaseService databaseService, Config config, SystemExit systemExit) {
+    public DatabaseConnectivityChecker(DatabaseService databaseService, SystemExit systemExit) {
         this.databaseService = databaseService;
-        this.config = config;
         this.systemExit = systemExit;
     }
 

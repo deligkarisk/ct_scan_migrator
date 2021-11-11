@@ -14,26 +14,23 @@ public class StandardizedFoldersChecker {
 
     private static Logger logger = LoggerFactory.getLogger(StandardizedFoldersChecker.class);
 
-
-    private Config config;
     private SystemExit systemExit;
     private FileUtils fileUtils;
 
 
-    public StandardizedFoldersChecker(Config config, SystemExit systemExit, FileUtils fileUtils) {
-        this.config = config;
+    public StandardizedFoldersChecker(SystemExit systemExit, FileUtils fileUtils) {
         this.systemExit = systemExit;
         this.fileUtils = fileUtils;
     }
 
-    public void check(CtScanCollection ctScanCollection) {
+    public void check(CtScanCollection ctScanCollection, String failedOutputFile) {
         List<CtScan> scanList = ctScanCollection.getCtScans();
 
         for (CtScan ctScan : scanList) {
             if (!(ctScan.getNewFolderPathAvailable() && ctScan.getNewFolderPathAvailableIntheDatabase())) {
                 logger.error("Not all scans passed the validation of the standardized folder names. See the " +
-                                config.getFailedOutputFile() + "file for details.");
-                fileUtils.writeBeansToFile(ctScanCollection, config.getFailedOutputFile());
+                        failedOutputFile + "file for details.");
+                fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
                 systemExit.exit(1);
             }
 

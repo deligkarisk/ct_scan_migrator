@@ -48,6 +48,11 @@ public class CtScanValidator {
     }
 
     public Boolean dicomFolderLocationExists(CtScan ctScan) {
+
+        if (ctScan.getDicomFolderLocation() == null) {
+            return true;
+        }
+
         Path dicomPath = Paths.get(ctScan.getDicomFolderLocation());
         return Files.exists(dicomPath);
     }

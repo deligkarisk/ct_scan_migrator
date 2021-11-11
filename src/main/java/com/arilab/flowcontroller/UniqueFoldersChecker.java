@@ -13,6 +13,7 @@ public class UniqueFoldersChecker {
         if (!allFoldersUnique) {
             logger.error("Not all folders unique, system will exit.");
             systemExit.exit(1);
+            // todo: write bean file before exiting?
         }
 
     }

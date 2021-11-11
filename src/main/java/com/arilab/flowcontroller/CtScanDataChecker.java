@@ -16,16 +16,14 @@ public class CtScanDataChecker {
     private static Logger logger = LoggerFactory.getLogger(CtScanDataChecker.class);
 
     private FileUtils fileUtils;
-    private Config config;
     private SystemExit systemExit;
 
-    public CtScanDataChecker(FileUtils fileUtils, Config config, SystemExit systemExit) {
+    public CtScanDataChecker(FileUtils fileUtils, SystemExit systemExit) {
         this.fileUtils = fileUtils;
-        this.config = config;
         this.systemExit = systemExit;
     }
 
-    public void check(CtScanCollection ctScanCollection) {
+    public void check(CtScanCollection ctScanCollection, String failedOutputFile) {
         List<CtScan> scanList = ctScanCollection.getCtScans();
 
         int validScans = 0;
@@ -37,8 +35,8 @@ public class CtScanDataChecker {
 
         if (validScans != scanList.size()) {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
-                    " file " + config.getFailedOutputFile() + " for further details.");
-            fileUtils.writeBeansToFile(ctScanCollection, config.getFailedOutputFile());
+                    " file " + failedOutputFile + " for further details.");
+            fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
             systemExit.exit(1);
         }
     }

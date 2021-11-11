@@ -57,8 +57,8 @@ public class FileUtils {
             File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
             String label = Paths.get(ctScan.getNewFolderPath()).getFileName().toString();
             String dicomFileLabel = label + "_dicom";
-
             File dicomDestinationDir = new File(ctScan.getNewFolderPath(), dicomFileLabel);
+
             if (dicomDestinationDir.exists()) {
                 logger.error("Dicom folder already exists in the destination folder. Adding 2 to the dicome folder name....");
                 dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom2");

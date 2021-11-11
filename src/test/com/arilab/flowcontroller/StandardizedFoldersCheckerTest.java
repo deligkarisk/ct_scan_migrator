@@ -58,7 +58,7 @@ class StandardizedFoldersCheckerTest {
 
 
         // when
-        standardizedFoldersChecker.check(ctScanCollection);
+        standardizedFoldersChecker.check(ctScanCollection, "failedOutputFile");
 
         // then
         verifyNoInteractions(systemExit);
@@ -69,9 +69,6 @@ class StandardizedFoldersCheckerTest {
     void checkPathFoldersNotAvailable() {
 
         // given
-
-        when(config.getFailedOutputFile()).thenReturn("/failedoutputfile.csv");
-
         CtScan ctScan1 = new CtScan();
         ctScan1.setNewFolderPathAvailable(true);
         ctScan1.setNewFolderPathAvailableIntheDatabase(true);
@@ -87,7 +84,7 @@ class StandardizedFoldersCheckerTest {
 
 
         // when
-        standardizedFoldersChecker.check(ctScanCollection);
+        standardizedFoldersChecker.check(ctScanCollection, "failedOutputFile");
 
         // then
         verify(systemExit).exit(1);
@@ -96,8 +93,6 @@ class StandardizedFoldersCheckerTest {
 
     @Test
     void checkPathInDatabaseNotAvailable() {
-
-        when(config.getFailedOutputFile()).thenReturn("/failedoutputfile.csv");
 
         // given
         CtScan ctScan1 = new CtScan();
@@ -115,7 +110,7 @@ class StandardizedFoldersCheckerTest {
 
 
         // when
-        standardizedFoldersChecker.check(ctScanCollection);
+        standardizedFoldersChecker.check(ctScanCollection, "failedOutputFile");
 
 
         // then

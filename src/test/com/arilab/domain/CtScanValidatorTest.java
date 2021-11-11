@@ -33,6 +33,15 @@ class CtScanValidatorTest {
     CtScanValidator ctScanValidator;
 
 
+
+    @Test
+    void dicomFolderLocationExistsLocationEmpty() {
+        CtScan ctScan = new CtScan();
+        Boolean result = ctScanValidator.dicomFolderLocationExists(ctScan);
+        assertEquals(true, result);
+    }
+
+
     @Test
     void dicomFolderLocationExists(@TempDir Path tempdir) {
         CtScan ctScan = new CtScan();

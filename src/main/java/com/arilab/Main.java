@@ -51,11 +51,10 @@ public class Main {
             ctScanValidator, databaseService, config);
     public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
             new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
-    public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, config, systemExit);
+    public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, systemExit);
     public static final DatabaseConnectivityChecker databaseConnectivityChecker =
-            new DatabaseConnectivityChecker(databaseService, config, systemExit);
-    public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(config
-            , systemExit, fileUtils);
+            new DatabaseConnectivityChecker(databaseService, systemExit);
+    public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(systemExit, fileUtils);
     public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
 
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
@@ -95,7 +94,7 @@ public class Main {
         try {
             ctScanCollectionService.preprocessData(ctScanCollection);
             ctScanCollectionService.validateScanData(ctScanCollection);
-            ctScanDataChecker.check(ctScanCollection); // Decides whether to continue or not
+            ctScanDataChecker.check(ctScanCollection, failedOutputFile); // Decides whether to continue or not
         } catch (SQLException sqlException) {
             logger.error("Exception caught during migration: {}", sqlException.toString());
             fileUtils.writeBeansToFile(ctScanCollection, outputFile);
@@ -111,7 +110,7 @@ public class Main {
             systemExit.exit(1);
         }
 
-        standardizedFoldersChecker.check(ctScanCollection); // Decides whether to continue or not
+        standardizedFoldersChecker.check(ctScanCollection, failedOutputFile); // Decides whether to continue or not
         ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
 
         // Before migrating, write all information to the output file.
