@@ -44,7 +44,15 @@ public class FileUtils {
         }
     }
 
-    public void migrateFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+    public void migrateScan(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+        moveMainFolder(ctScan, dummyMigrationFlag);
+
+        if (ctScan.getDicomFolderLocation() != null) {
+            moveDicomFolder(ctScan, dummyMigrationFlag);
+        }
+    }
+
+    private void moveMainFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
         File srcDir = new File(ctScan.getFolderLocation());
         File destinationDir = new File(ctScan.getNewFolderPath());
         logger.info("Moving folder " + srcDir.toString() + " to " + destinationDir.toString());
@@ -52,22 +60,22 @@ public class FileUtils {
             org.apache.commons.io.FileUtils.moveDirectory(srcDir, destinationDir);
         }
         logger.info("Moving of raw/main data folder completed");
+    }
 
-        if (ctScan.getDicomFolderLocation() != null) {
-            File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
-            String label = Paths.get(ctScan.getNewFolderPath()).getFileName().toString();
-            String dicomFileLabel = label + "_dicom";
-            File dicomDestinationDir = new File(ctScan.getNewFolderPath(), dicomFileLabel);
+    private void moveDicomFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+        File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
+        File dicomDestinationDir = new File(ctScan.getNewDicomFolderPath());
 
-            if (dicomDestinationDir.exists()) {
-                logger.error("Dicom folder already exists in the destination folder. Adding 2 to the dicome folder name....");
-                dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom2");
-            }
-            logger.info("Moving dicom folder " + dicomSrcDir.toString() + " to " + dicomDestinationDir.toString());
-            if (!dummyMigrationFlag) {
-                org.apache.commons.io.FileUtils.moveDirectory(dicomSrcDir, dicomDestinationDir);
-            }
-            logger.info("Moving of the dicom folder completed");
+
+        if (dicomDestinationDir.exists()) {
+            logger.error("Dicom folder already exists in the destination folder. Adding 2 to the dicome folder name....");
+            dicomDestinationDir = new File(ctScan.getNewFolderPath(), "Dicom2");
         }
+        logger.info("Moving dicom folder " + dicomSrcDir.toString() + " to " + dicomDestinationDir.toString());
+        if (!dummyMigrationFlag) {
+            org.apache.commons.io.FileUtils.moveDirectory(dicomSrcDir, dicomDestinationDir);
+        }
+        logger.info("Moving of the dicom folder completed");
+
     }
 }

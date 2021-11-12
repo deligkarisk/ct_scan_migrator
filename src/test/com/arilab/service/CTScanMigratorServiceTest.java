@@ -17,7 +17,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -60,6 +59,6 @@ class CTScanMigratorServiceTest {
         assertEquals(true, ctScan2.getMigrated());
         assertEquals(true, ctScan3.getMigrated());
         verify(ctScanRepository, times(3)).insertCtScan(any(), any());
-        verify(fileUtils, times(3)).migrateFolder(any(),any());
+        verify(fileUtils, times(3)).migrateScan(any(),any());
     }
 }

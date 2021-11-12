@@ -9,6 +9,7 @@ import com.arilab.utils.PathUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
@@ -125,13 +126,30 @@ public class CTScanService {
     }
 
 
-    public void findStandardizedFolderName(CtScan ctScan) {
+    public void setNewFolderPaths(CtScan ctScan) {
+        String newFolderName = findNewMainFolderPath(ctScan);
+        ctScan.setNewFolderPath(newFolderName);
+
+        if (ctScan.getDicomFolderLocation() != null) {
+            String newDicomFolderName = findNewDicomFolderPath(newFolderName);
+            ctScan.setNewDicomFolderPath(newDicomFolderName);
+        }
+    }
+
+    private String findNewMainFolderPath(CtScan ctScan) {
         String genus = databaseService.findGenusFromSpecimenCode(ctScan.getSpecimenCode());
         String speciesMorphoCode = databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(ctScan.getSpecimenCode());
         String uniqueFolderID = createUniqueFolderId(ctScan, genus);
         Path newFolder = Paths.get(config.getTargetDirectory(), ctScan.getModel(), genus,
                 speciesMorphoCode, uniqueFolderID);
-        ctScan.setNewFolderPath(newFolder.toString());
+        return newFolder.toString();
+    }
+
+    private String findNewDicomFolderPath(String newFolderName) {
+        String label = Paths.get(newFolderName).getFileName().toString();
+        String dicomFileLabel = label + "_dicom";
+        File dicomDestinationDir = new File(newFolderName, dicomFileLabel);
+        return dicomDestinationDir.toString();
     }
 
     private String createUniqueFolderId(CtScan ctScan, String genus) {

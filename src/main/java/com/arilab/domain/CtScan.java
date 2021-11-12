@@ -110,6 +110,9 @@ public class CtScan {
     @CsvBindByName(column = "new_folder_path")
     private String newFolderPath;
 
+    @CsvBindByName(column = "new_Dicom_folder_path")
+    private String newDicomFolderPath;
+
     @CsvBindByName(column = "new_folder_available_on_bucket")
     private Boolean newFolderPathAvailable;
 
@@ -423,7 +426,11 @@ public class CtScan {
         this.dicomFolderLocationExists = dicomFolderLocationExists;
     }
 
+    public String getNewDicomFolderPath() {
+        return newDicomFolderPath;
+    }
 
-
-
+    public void setNewDicomFolderPath(String newDicomFolderPath) {
+        this.newDicomFolderPath = newDicomFolderPath;
+    }
 }

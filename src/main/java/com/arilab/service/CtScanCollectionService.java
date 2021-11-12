@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
 
 public class CtScanCollectionService {
 
@@ -54,7 +53,7 @@ public class CtScanCollectionService {
         Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
-            ctScanService.findStandardizedFolderName(ctScan);
+            ctScanService.setNewFolderPaths(ctScan);
         }
     }
 

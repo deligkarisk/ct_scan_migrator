@@ -15,10 +15,8 @@ import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CTScanServiceTest {
@@ -124,7 +122,7 @@ class CTScanServiceTest {
 
 
     @Test
-    void findStandardizedFolderNameWithSpecialID() {
+    void setNewFolderPathsWithSpecialIdNullDicom() {
         // given
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
@@ -134,20 +132,19 @@ class CTScanServiceTest {
         when(ctScan.getTimestamp()).thenReturn("20200802_000000");
         when(ctScan.getSpecialIdentifier()).thenReturn("SpecialID");
         when(ctScan.getModel()).thenReturn("Ants");
-
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
 
         // when
-        ctScanService.findStandardizedFolderName(ctScan);
+        ctScanService.setNewFolderPaths(ctScan);
 
         // then
         then(ctScan).should().setNewFolderPath(captor.capture());
         assertEquals("/mnt/bucket/Ants/Pheidole/Strumingenys/CASENT0000_Phe_Head_SpecialID_20200802_000000", captor.getValue());
-
+        then(ctScan).should(times(0)).setNewDicomFolderPath(any());
     }
 
     @Test
-    void findStandardizedFolderNameWithOutSpecialID() {
+    void setNewFolderPathsWithoutSpecialIdNullDicom() {
         // given
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
@@ -156,16 +153,71 @@ class CTScanServiceTest {
         when(ctScan.getBodyPart()).thenReturn("Head");
         when(ctScan.getTimestamp()).thenReturn("20200802_000000");
         when(ctScan.getModel()).thenReturn("Ants");
-
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
 
         // when
-        ctScanService.findStandardizedFolderName(ctScan);
+        ctScanService.setNewFolderPaths(ctScan);
 
         // then
         then(ctScan).should().setNewFolderPath(captor.capture());
         assertEquals("/mnt/bucket/Ants/Pheidole/Strumingenys/CASENT0000_Phe_Head_20200802_000000", captor.getValue());
+        then(ctScan).should(times(0)).setNewDicomFolderPath(any());
+    }
 
+    @Test
+    void setNewFolderPathsWithSpecialIdWithDicom() {
+
+        String BASE_NAME = "CASENT0000_Phe_Head_SpecialID_20200802_000000";
+        String EXPECTED_NEW_MAIN_FOLDER = "/mnt/bucket/Ants/Pheidole/Strumingenys/" + BASE_NAME;
+        String EXPECTED_NEW_DICOM_FOLDER = EXPECTED_NEW_MAIN_FOLDER + "/" + BASE_NAME + "_dicom";
+
+        // given
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
+        when(databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(any())).thenReturn("Strumingenys");
+        when(ctScan.getSpecimenCode()).thenReturn("CASENT0000");
+        when(ctScan.getBodyPart()).thenReturn("Head");
+        when(ctScan.getTimestamp()).thenReturn("20200802_000000");
+        when(ctScan.getSpecialIdentifier()).thenReturn("SpecialID");
+        when(ctScan.getModel()).thenReturn("Ants");
+        when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
+        when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
+
+        // when
+        ctScanService.setNewFolderPaths(ctScan);
+
+        // then
+        then(ctScan).should().setNewFolderPath(captor.capture());
+        assertEquals(EXPECTED_NEW_MAIN_FOLDER, captor.getValue());
+        then(ctScan).should(times(1)).setNewDicomFolderPath(captor.capture());
+        assertEquals(EXPECTED_NEW_DICOM_FOLDER, captor.getValue());
+    }
+
+    @Test
+    void setNewFolderPathsWithoutSpecialIdWithDicom() {
+        String BASE_NAME = "CASENT0000_Phe_Head_20200802_000000";
+        String EXPECTED_NEW_MAIN_FOLDER = "/mnt/bucket/Ants/Pheidole/Strumingenys/" + BASE_NAME;
+        String EXPECTED_NEW_DICOM_FOLDER = EXPECTED_NEW_MAIN_FOLDER + "/" + BASE_NAME + "_dicom";
+
+        // given
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
+        when(databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(any())).thenReturn("Strumingenys");
+        when(ctScan.getSpecimenCode()).thenReturn("CASENT0000");
+        when(ctScan.getBodyPart()).thenReturn("Head");
+        when(ctScan.getTimestamp()).thenReturn("20200802_000000");
+        when(ctScan.getModel()).thenReturn("Ants");
+        when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
+        when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
+
+        // when
+        ctScanService.setNewFolderPaths(ctScan);
+
+        // then
+        then(ctScan).should().setNewFolderPath(captor.capture());
+        assertEquals(EXPECTED_NEW_MAIN_FOLDER, captor.getValue());
+        then(ctScan).should(times(1)).setNewDicomFolderPath(captor.capture());
+        assertEquals(EXPECTED_NEW_DICOM_FOLDER, captor.getValue());
     }
 
 
