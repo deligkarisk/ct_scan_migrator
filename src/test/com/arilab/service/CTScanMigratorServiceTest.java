@@ -59,6 +59,6 @@ class CTScanMigratorServiceTest {
         assertEquals(true, ctScan2.getMigrated());
         assertEquals(true, ctScan3.getMigrated());
         verify(ctScanRepository, times(3)).insertCtScan(any(), any());
-        verify(fileUtils, times(3)).migrateScan(any(),any());
+        verify(fileUtils, times(3)).moveMainFolder(any(),any());
     }
 }

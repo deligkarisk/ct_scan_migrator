@@ -21,9 +21,21 @@ import java.util.List;
 public class FileUtils {
 
     private  Logger logger = LoggerFactory.getLogger(FileUtils.class);
+    DirectoryMover directoryMover;
 
+    public FileUtils(DirectoryMover directoryMover) {
+        this.directoryMover = directoryMover;
+    }
 
-
+    public void moveMainFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+        File srcDir = new File(ctScan.getFolderLocation());
+        File destinationDir = new File(ctScan.getNewFolderPath());
+        logger.info("Moving folder " + srcDir.toString() + " to " + destinationDir.toString());
+        if (!dummyMigrationFlag) {
+            directoryMover.move(srcDir, destinationDir);
+        }
+        logger.info("Moving of raw/main data folder completed");
+    }
 
     public void writeBeansToFile(CtScanCollection ctScanCollection, String filePath) {
         List<CtScan> scanList = ctScanCollection.getCtScans();
@@ -44,25 +56,10 @@ public class FileUtils {
         }
     }
 
-    public void migrateScan(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
-        moveMainFolder(ctScan, dummyMigrationFlag);
 
-        if (ctScan.getDicomFolderLocation() != null) {
-            moveDicomFolder(ctScan, dummyMigrationFlag);
-        }
-    }
 
-    private void moveMainFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
-        File srcDir = new File(ctScan.getFolderLocation());
-        File destinationDir = new File(ctScan.getNewFolderPath());
-        logger.info("Moving folder " + srcDir.toString() + " to " + destinationDir.toString());
-        if (!dummyMigrationFlag) {
-            org.apache.commons.io.FileUtils.moveDirectory(srcDir, destinationDir);
-        }
-        logger.info("Moving of raw/main data folder completed");
-    }
 
-    private void moveDicomFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+    public void moveDicomFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
         File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
         File dicomDestinationDir = new File(ctScan.getNewDicomFolderPath());
 

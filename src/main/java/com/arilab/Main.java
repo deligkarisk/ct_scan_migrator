@@ -33,7 +33,8 @@ public class Main {
 
     private static final StringUtils stringUtils = new StringUtils();
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final FileUtils fileUtils = new FileUtils();
+    private static final DirectoryMover properDirectoryMover = new ProperDirectoryMover();
+    private static final FileUtils fileUtils = new FileUtils(properDirectoryMover);
     private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();

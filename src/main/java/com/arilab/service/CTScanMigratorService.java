@@ -29,8 +29,17 @@ public class CTScanMigratorService {
 
         for (CtScan ctScan : ctScanCollection.getCtScans()) {
             ctScanRepository.insertCtScan(ctScan, dummyMigrationFlag);
-            fileUtils.migrateScan(ctScan, dummyMigrationFlag);
+            migrateScan(ctScan, dummyMigrationFlag);
             ctScan.setMigrated(true);
+        }
+    }
+
+
+    private void migrateScan(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+        fileUtils.moveMainFolder(ctScan, dummyMigrationFlag);
+
+        if (ctScan.getDicomFolderLocation() != null) {
+            fileUtils.moveDicomFolder(ctScan, dummyMigrationFlag);
         }
     }
 }
