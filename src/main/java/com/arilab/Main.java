@@ -80,9 +80,6 @@ public class Main {
         logger.info("************************** Starting app **************************");
 
 
-        //config =  new Config(PROPERTIES_FILE, CREDENTIALS_FILE,args[0], args[1], OUTPUT_PREPEND, FAILEDOUTPUTPREPEND);
-
-
         filesystemConnectivityChecker.check();
         databaseConnectivityChecker.check();
 
@@ -128,51 +125,6 @@ public class Main {
 
         logger.info("************************** Finished Execution **************************");
     }
-
-
-    private static Boolean preliminaryChecksPassed() {
-        return checkBucketConnectivity() && checkDBConnectivity();
-    }
-
-    private static Boolean checkBucketConnectivity() {
-        if (!bucketIsMounted()) {
-            logger.error("Bucket folders are not mounted, aborting operations...");
-            System.exit(1);
-        }
-
-        try {
-            Boolean canWriteToNewFolderLocation = canWriteToBucket();
-        } catch (IOException exception) {
-            logger.error("Cannot write to new bucket location, aborting..." + exception);
-            System.exit(1);
-        }
-        return true;
-    }
-
-    private static Boolean bucketIsMounted() {
-        Boolean oldBucketFolderIsMounted = Files.exists(Paths.get(config.getSourceDirectory()));
-        Boolean newBucketFolderIsMounted = Files.exists(Paths.get(config.getTargetDirectory()));
-        return ((oldBucketFolderIsMounted && newBucketFolderIsMounted));
-    }
-
-    private static Boolean canWriteToBucket() throws IOException {
-        Files.deleteIfExists(Paths.get(config.getTargetDirectory(), "testFile"));
-        Files.createFile(Paths.get(config.getTargetDirectory(), "testFile"));
-        Files.deleteIfExists(Paths.get(config.getTargetDirectory(), "testFile"));
-        return true;
-    }
-
-    private static Boolean checkDBConnectivity() {
-        // return !(dbUtil.specimenCodeExists("TEST"));
-        return false;
-    }
-
-
-
-
-
-
-
 }
 
 
