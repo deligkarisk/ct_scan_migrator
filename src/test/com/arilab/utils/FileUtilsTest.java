@@ -11,12 +11,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class FileUtilsTest {
 
     FileUtils fileUtils;
-    FakeDirectoryMover fakeDirectoryMover;
+    DirectoryMoverSpy directoryMoverSpy;
 
     @BeforeEach
     void setUp() {
-        fakeDirectoryMover = new FakeDirectoryMover();
-        fileUtils = new FileUtils(fakeDirectoryMover);
+        directoryMoverSpy = new DirectoryMoverSpy();
+        fileUtils = new FileUtils(directoryMoverSpy);
 
     }
 
@@ -31,8 +31,8 @@ class FileUtilsTest {
         fileUtils.moveMainFolder(ctScan,true );
 
         // then
-        assertEquals(null, fakeDirectoryMover.calledSourceDir);
-        assertEquals(null, fakeDirectoryMover.calledDestDir);
+        assertEquals(null, directoryMoverSpy.calledSourceDir);
+        assertEquals(null, directoryMoverSpy.calledDestDir);
     }
 
 
@@ -47,7 +47,7 @@ class FileUtilsTest {
         fileUtils.moveMainFolder(ctScan,false );
 
         // then
-        assertEquals("oldFolderLocation", fakeDirectoryMover.calledSourceDir.toString());
-        assertEquals("newFolderLocation", fakeDirectoryMover.calledDestDir.toString());
+        assertEquals("oldFolderLocation", directoryMoverSpy.calledSourceDir.toString());
+        assertEquals("newFolderLocation", directoryMoverSpy.calledDestDir.toString());
     }
 }

@@ -3,7 +3,7 @@ package com.arilab.utils;
 import java.io.File;
 import java.io.IOException;
 
-public class FakeDirectoryMover implements DirectoryMover{
+public class DirectoryMoverSpy implements DirectoryMover{
 
     public File calledSourceDir;
     public File calledDestDir;
@@ -13,7 +13,5 @@ public class FakeDirectoryMover implements DirectoryMover{
         System.out.println("Moving directory from: " + sourceDir.toString() + " to: " + destinationDir.toString());
         calledDestDir = destinationDir;
         calledSourceDir = sourceDir;
-
-
     }
 }

@@ -1,6 +1,5 @@
 package com.arilab;
 
-import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanCollectionValidator;
 import com.arilab.domain.CtScanValidator;
@@ -15,11 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.List;
 
 import static java.lang.Boolean.FALSE;
 
@@ -33,7 +28,7 @@ public class Main {
 
     private static final StringUtils stringUtils = new StringUtils();
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
-    private static final DirectoryMover properDirectoryMover = new ProperDirectoryMover();
+    private static final DirectoryMover properDirectoryMover = new DirectoryMoverProper();
     private static final FileUtils fileUtils = new FileUtils(properDirectoryMover);
     private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
     public static final SourceReader sourceReader = new SourceReader();

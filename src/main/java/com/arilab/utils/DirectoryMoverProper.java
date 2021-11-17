@@ -3,7 +3,7 @@ package com.arilab.utils;
 import java.io.File;
 import java.io.IOException;
 
-public class ProperDirectoryMover implements DirectoryMover {
+public class DirectoryMoverProper implements DirectoryMover {
 
     @Override
     public void move(File sourceDir, File destinationDir) throws IOException {
