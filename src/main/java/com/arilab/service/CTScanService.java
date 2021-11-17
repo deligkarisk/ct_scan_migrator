@@ -149,6 +149,12 @@ public class CTScanService {
         String label = Paths.get(newFolderName).getFileName().toString();
         String dicomFileLabel = label + "_dicom";
         File dicomDestinationDir = new File(newFolderName, dicomFileLabel);
+
+        if (pathUtils.folderExists(dicomDestinationDir.toPath()))  {
+            dicomFileLabel = label + "_dicom2";
+            dicomDestinationDir = new File(newFolderName, dicomFileLabel);
+        }
+
         return dicomDestinationDir.toString();
     }
 

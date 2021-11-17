@@ -182,6 +182,8 @@ class CTScanServiceTest {
         when(ctScan.getModel()).thenReturn("Ants");
         when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
+        when(pathUtils.folderExists(any())).thenReturn(false);
+
 
         // when
         ctScanService.setNewFolderPaths(ctScan);
@@ -209,6 +211,39 @@ class CTScanServiceTest {
         when(ctScan.getModel()).thenReturn("Ants");
         when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
+        when(pathUtils.folderExists(any())).thenReturn(false);
+
+
+        // when
+        ctScanService.setNewFolderPaths(ctScan);
+
+        // then
+        then(ctScan).should().setNewFolderPath(captor.capture());
+        assertEquals(EXPECTED_NEW_MAIN_FOLDER, captor.getValue());
+        then(ctScan).should(times(1)).setNewDicomFolderPath(captor.capture());
+        assertEquals(EXPECTED_NEW_DICOM_FOLDER, captor.getValue());
+    }
+
+
+
+
+    @Test
+    void setNewFolderPathsWithoutSpecialIdWithDicomWhenDicomFolderAlreadyExists() {
+        String BASE_NAME = "CASENT0000_Phe_Head_20200802_000000";
+        String EXPECTED_NEW_MAIN_FOLDER = "/mnt/bucket/Ants/Pheidole/Strumingenys/" + BASE_NAME;
+        String EXPECTED_NEW_DICOM_FOLDER = EXPECTED_NEW_MAIN_FOLDER + "/" + BASE_NAME + "_dicom2";
+
+        // given
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        when(databaseService.findGenusFromSpecimenCode(any())).thenReturn("Pheidole");
+        when(databaseService.findSpeciesNameOrMorphoCodeFromSpecimenCode(any())).thenReturn("Strumingenys");
+        when(ctScan.getSpecimenCode()).thenReturn("CASENT0000");
+        when(ctScan.getBodyPart()).thenReturn("Head");
+        when(ctScan.getTimestamp()).thenReturn("20200802_000000");
+        when(ctScan.getModel()).thenReturn("Ants");
+        when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
+        when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
+        when(pathUtils.folderExists(any())).thenReturn(true);
 
         // when
         ctScanService.setNewFolderPaths(ctScan);

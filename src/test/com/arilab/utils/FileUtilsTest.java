@@ -50,4 +50,37 @@ class FileUtilsTest {
         assertEquals("oldFolderLocation", directoryMoverSpy.calledSourceDir.toString());
         assertEquals("newFolderLocation", directoryMoverSpy.calledDestDir.toString());
     }
+
+    @Test
+    void moveDicomFolderNotDummy() throws IOException {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setDicomFolderLocation("dicomFolder/folderA");
+        ctScan.setNewDicomFolderPath("newDicomeFolder/folderB");
+
+        // when
+        fileUtils.moveDicomFolder(ctScan, false);
+
+        // then
+        assertEquals("dicomFolder/folderA", directoryMoverSpy.calledSourceDir.toString());
+        assertEquals("newDicomeFolder/folderB", directoryMoverSpy.calledDestDir.toString());
+    }
+
+
+
+    @Test
+    void moveDicomFolderDummy() throws IOException {
+        // given
+        CtScan ctScan = new CtScan();
+        ctScan.setDicomFolderLocation("dicomFolder/folderA");
+        ctScan.setNewDicomFolderPath("newDicomeFolder/folderB");
+
+        // when
+        fileUtils.moveDicomFolder(ctScan, true);
+
+        // then
+        assertNull(directoryMoverSpy.calledSourceDir);
+        assertNull(directoryMoverSpy.calledDestDir);
+
+    }
 }
