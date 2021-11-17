@@ -1,21 +1,12 @@
 package com.arilab.domain;
 
 import com.arilab.service.CTScanService;
-import com.arilab.service.DatabaseService;
 import com.arilab.utils.CtScanUtils;
-import com.arilab.utils.PathUtils;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.SQLException;
-
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CtScanTest {
@@ -27,8 +18,6 @@ class CtScanTest {
     @Mock
     CtScanUtils ctScanUtils;
 
-    @Mock
-    PathUtils pathUtils;
 
     @Mock
     CTScanService ctScanService;

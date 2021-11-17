@@ -4,16 +4,16 @@ import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanValidator;
 import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.Config;
-import com.arilab.utils.PathUtils;
+import com.arilab.utils.FileUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Paths;
 import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -26,7 +26,7 @@ class CTScanServiceTest {
     Config config;
 
     @Mock
-    PathUtils pathUtils;
+    FileUtils fileUtils;
 
     @Mock
     CtScanValidator ctScanValidator;
@@ -48,24 +48,47 @@ class CTScanServiceTest {
     ArgumentCaptor<String> stringArgumentCaptor;
 
 
+
     @Test
-    void preprocessScanFolderLocation() throws SQLException {
+    void preprocessScanFolderLocation() {
 
         // given
-        when(ctScan.getFolderLocation()).thenReturn("/mnt/bucket/CTScans/Ants/Genus " +
+        when(ctScan.getFolderLocation()).thenReturn("Y:bucket/CTScansFolder/Ants/Genus " +
                 "Pheidole/CASENT334/CASENT334_2000_030302_000000");
-        when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CTScans/Ants/Genus Pheidole/CASENT334_OUT");
-        when(pathUtils.fixPrependPath(any())).thenReturn(Paths.get("path"));
+        when(ctScan.getDicomFolderLocation()).thenReturn("Y:/bucket/CTScansFolder/Ants/Genus Pheidole/CASENT334_OUT");
+        when(config.getSourceDirectory()).thenReturn("/mnt/bucket/CTScansFolder");
 
         // when
         ctScanService.preprocessScanFolderLocation(ctScan);
 
         // then
         verify(ctScan).setFolderLocation(stringArgumentCaptor.capture());
-        assertEquals("path", stringArgumentCaptor.getValue());
+        assertEquals("/mnt/bucket/CTScansFolder/Ants/Genus Pheidole/CASENT334/CASENT334_2000_030302_000000",
+                stringArgumentCaptor.getValue());
         verify(ctScan).setDicomFolderLocation(stringArgumentCaptor.capture());
-        assertEquals("path", stringArgumentCaptor.getValue());
+        assertEquals("/mnt/bucket/CTScansFolder/Ants/Genus Pheidole/CASENT334_OUT", stringArgumentCaptor.getValue());
     }
+
+
+
+    @Test
+    void preprocessScanFolderLocationExceptionIfCannotFind() {
+
+        // given
+        when(ctScan.getFolderLocation()).thenReturn("Y:bucket/CTScansFolder/Ants/Genus " +
+                "Pheidole/CASENT334/CASENT334_2000_030302_000000");
+        when(config.getSourceDirectory()).thenReturn("/mnt/bucket/UexistentFolder");
+
+        // when
+        try {
+            ctScanService.preprocessScanFolderLocation(ctScan);
+        } catch (RuntimeException runtimeException) {
+            return;
+
+        }
+        fail();
+    }
+
 
 
     @Test
@@ -182,7 +205,7 @@ class CTScanServiceTest {
         when(ctScan.getModel()).thenReturn("Ants");
         when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
-        when(pathUtils.folderExists(any())).thenReturn(false);
+        when(fileUtils.folderExists(any())).thenReturn(false);
 
 
         // when
@@ -211,7 +234,7 @@ class CTScanServiceTest {
         when(ctScan.getModel()).thenReturn("Ants");
         when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
-        when(pathUtils.folderExists(any())).thenReturn(false);
+        when(fileUtils.folderExists(any())).thenReturn(false);
 
 
         // when
@@ -243,7 +266,7 @@ class CTScanServiceTest {
         when(ctScan.getModel()).thenReturn("Ants");
         when(ctScan.getDicomFolderLocation()).thenReturn("/mnt/bucket/CASENT000_dicom");
         when(config.getTargetDirectory()).thenReturn("/mnt/bucket/");
-        when(pathUtils.folderExists(any())).thenReturn(true);
+        when(fileUtils.folderExists(any())).thenReturn(true);
 
         // when
         ctScanService.setNewFolderPaths(ctScan);

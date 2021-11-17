@@ -31,36 +31,10 @@ class PathUtilsTest {
     @Mock
     SystemExit systemExit;
 
-    @InjectMocks
-    PathUtils pathUtils;
 
     @BeforeEach
     void setUp() {
-        when(config.getSourceDirectory()).thenReturn(PROP_SOURCE_DIRECTORY);
 
     }
 
-    @Test
-    void fixPrependPath() {
-
-        currentDirectory = "/bucket/EconomoU/CT_Scan_2017-2019/Ants/Genus Strumigenys/S.tumida_CASENT00185699/S.tumida_CASENT00185699_2018-06-30_113210";
-
-        Path returnedPath = pathUtils.fixPrependPath(currentDirectory);
-        assertEquals(CORRECT_MODIFIED_DIRECTORY, returnedPath.toString());
-    }
-
-    @Test
-    void whenCurrentLocationInvalidThenQuit() {
-        currentDirectory = "/bucket/EconomoU/CT_Scan_/Ants/Genus Strumigenys/S.tumida_CASENT00185699/S" +
-                ".tumida_CASENT00185699_2018-06-30_113210";
-        try {
-            Path returnedPath = pathUtils.fixPrependPath(currentDirectory);
-        } catch (RuntimeException runtimeException) {
-            return;
-
-        }
-
-        fail();
-
-    }
 }

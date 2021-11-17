@@ -34,16 +34,15 @@ public class Main {
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
     public static final SystemExit systemExit = new SystemExit();
-    private static final PathUtils pathUtils = new PathUtils(config, systemExit);
     private static final CtScanRepository ctScanRepository = new CtScanRepository(config);
 
     public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(systemExit, config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
-    private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, pathUtils);
+    private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, fileUtils);
     private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
-    private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, pathUtils, config);
-    private static final CTScanService ctScanService = new CTScanService(pathUtils, ctScanUtils, ctScanRepository,
+    private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
+    private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
             ctScanValidator, databaseService, config);
     public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
             new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);

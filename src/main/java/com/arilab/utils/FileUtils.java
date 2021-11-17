@@ -27,7 +27,12 @@ public class FileUtils {
         this.directoryMover = directoryMover;
     }
 
+    public Boolean folderExists(Path folder) {
+        return Files.exists(folder);
+    }
+
     public void moveMainFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+        // todo maybe these should go into the ctscan migrator service, and have a simple moveFolder method here.
         File srcDir = new File(ctScan.getFolderLocation());
         File destinationDir = new File(ctScan.getNewFolderPath());
         logger.info("Moving folder " + srcDir.toString() + " to " + destinationDir.toString());
@@ -38,6 +43,7 @@ public class FileUtils {
     }
 
     public void moveDicomFolder(CtScan ctScan, Boolean dummyMigrationFlag) throws IOException {
+        // todo maybe these should go into the ctscan migrator service, and have a simple moveFolder method here.
         File dicomSrcDir = new File(ctScan.getDicomFolderLocation());
         File dicomDestinationDir = new File(ctScan.getNewDicomFolderPath());
         logger.info("Moving dicom folder " + dicomSrcDir.toString() + " to " + dicomDestinationDir.toString());

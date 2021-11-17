@@ -16,13 +16,11 @@ public class CtScanUtils {
 
     private static Logger logger = LoggerFactory.getLogger(CtScanUtils.class);
     private DatabaseService databaseService;
-    private  PathUtils pathUtils;
     private Config config;
 
 
-    public CtScanUtils(DatabaseService databaseService, PathUtils pathUtils, Config config) {
+    public CtScanUtils(DatabaseService databaseService,Config config) {
         this.databaseService = databaseService;
-        this.pathUtils = pathUtils;
         this.config = config;
     }
 
@@ -32,18 +30,28 @@ public class CtScanUtils {
             String foundLocation = null;
 
             // Try to find the dicom folder based on settings.
-            String dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.getDicomLevelsUp(), config.getDicomAppendString());
+            String dicomFolderLocation = generateDicomPotentialFolder(folderLocation, config.getDicomLevelsUp(), config.getDicomAppendString());
             if (Files.exists(Paths.get(dicomFolderLocation))) {
                 foundLocation = dicomFolderLocation;
 
             } else {
                 // retry with all characters of appendString to lower case.
-                dicomFolderLocation = pathUtils.generateDicomPotentialFolder(folderLocation, config.getDicomLevelsUp(), config.getDicomAppendString().toLowerCase(Locale.ROOT));
+                dicomFolderLocation = generateDicomPotentialFolder(folderLocation, config.getDicomLevelsUp(), config.getDicomAppendString().toLowerCase(Locale.ROOT));
                 if (Files.exists(Paths.get(dicomFolderLocation))) {
                     foundLocation = dicomFolderLocation;
                 }
             }
             return foundLocation;
+    }
+
+    private String generateDicomPotentialFolder(String folderLocation, int levelsBack, String appendString) {
+        Path dicomFolderPath = Paths.get(folderLocation);
+        for (int i = 0; i < levelsBack; i++) {
+            dicomFolderPath = dicomFolderPath.getParent();
+        }
+        String dicomStringPath = Paths.get(dicomFolderPath.getParent().toString(),
+                dicomFolderPath.getFileName().toString() + appendString).toString();
+        return dicomStringPath;
     }
 
 

@@ -1,8 +1,6 @@
 package com.arilab.domain;
 
 import com.arilab.service.DatabaseService;
-import com.arilab.utils.PathUtils;
-import org.checkerframework.checker.fenum.qual.AwtAlphaCompositingRule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -13,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -25,9 +22,6 @@ class CtScanValidatorTest {
 
     @Mock
     DatabaseService databaseService;
-
-    @Mock
-    PathUtils pathUtils;
 
     @InjectMocks
     CtScanValidator ctScanValidator;

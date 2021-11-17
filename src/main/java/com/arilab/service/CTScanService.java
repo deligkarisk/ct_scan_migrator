@@ -5,7 +5,7 @@ import com.arilab.domain.CtScanValidator;
 import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.Config;
 import com.arilab.utils.CtScanUtils;
-import com.arilab.utils.PathUtils;
+import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,22 +13,24 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CTScanService {
 
     private static final Logger logger = LoggerFactory.getLogger(CTScanService.class);
 
 
-    PathUtils pathUtils;
+    FileUtils fileUtils;
     CtScanUtils ctScanUtils;
     CtScanRepository ctScanRepository;
     CtScanValidator ctScanValidator;
     DatabaseService databaseService;
     Config config;
 
-    public CTScanService(PathUtils pathUtils, CtScanUtils ctScanUtils, CtScanRepository ctScanRepository,
+    public CTScanService(FileUtils fileUtils, CtScanUtils ctScanUtils, CtScanRepository ctScanRepository,
                          CtScanValidator ctScanValidator, DatabaseService databaseService, Config config) {
-        this.pathUtils = pathUtils;
+        this.fileUtils = fileUtils;
         this.ctScanUtils = ctScanUtils;
         this.ctScanRepository = ctScanRepository;
         this.ctScanValidator = ctScanValidator;
@@ -75,15 +77,30 @@ public class CTScanService {
 
 
     public void preprocessScanFolderLocation(CtScan ctScan) {
-        Path newLocation = pathUtils.fixPrependPath(ctScan.getFolderLocation());
+        Path newLocation = findCorrectPath(ctScan.getFolderLocation());
         logger.info("Replacing old folder location with " + newLocation);
         ctScan.setFolderLocation(newLocation.toString());
 
         if (ctScan.getDicomFolderLocation() != null) {
-            Path newDicomFolder = pathUtils.fixPrependPath(ctScan.getDicomFolderLocation());
+            Path newDicomFolder = findCorrectPath(ctScan.getDicomFolderLocation());
             logger.info("Replacing old dicom folder location with " + newDicomFolder);
             ctScan.setDicomFolderLocation(newDicomFolder.toString());
         }
+    }
+
+    private Path findCorrectPath(String currentLocation) {
+        String parentFolderToSplit = Paths.get(config.getSourceDirectory()).getFileName().toString();
+        boolean canSplit = currentLocation.contains(parentFolderToSplit);
+        if (!canSplit) {
+            logger.error("Can't find the parent folder " + parentFolderToSplit + " in " + currentLocation + ". " +
+                    "Aborting" +
+                    " operations.");
+            throw new RuntimeException("Unable to fix the folder location. Aborting.");
+        }
+
+        String[] splitResult = currentLocation.split(parentFolderToSplit);
+        String newLocation = splitResult[1];
+        return Paths.get(config.getSourceDirectory(), newLocation);
     }
 
     public void updateDicomFolder(CtScan ctScan) {
@@ -106,7 +123,7 @@ public class CTScanService {
 
         String timestamp;
 
-        timestamp = pathUtils.extractTimestamp(ctScan.getFolderLocation());
+        timestamp = extractTimestamp(ctScan.getFolderLocation());
 
         if (timestamp == null) {
             timestamp = ctScanUtils.createTimestampFromScanDate(ctScan);
@@ -117,7 +134,16 @@ public class CTScanService {
         }
 
         ctScan.setTimestamp(timestamp);
+    }
 
+    private String extractTimestamp(String folderPath) {
+        String returnString = null;
+        Pattern pattern = Pattern.compile("\\d\\d\\d\\d-\\d\\d-\\d\\d_\\d\\d\\d\\d\\d\\d");
+        Matcher matcher = pattern.matcher(folderPath);
+        if (matcher.find()) {
+            returnString = matcher.group(0);
+        }
+        return returnString;
     }
 
     public Boolean ctScanFolderExists(String folder) throws SQLException {
@@ -150,7 +176,7 @@ public class CTScanService {
         String dicomFileLabel = label + "_dicom";
         File dicomDestinationDir = new File(newFolderName, dicomFileLabel);
 
-        if (pathUtils.folderExists(dicomDestinationDir.toPath()))  {
+        if (fileUtils.folderExists(dicomDestinationDir.toPath()))  {
             dicomFileLabel = label + "_dicom2";
             dicomDestinationDir = new File(newFolderName, dicomFileLabel);
         }

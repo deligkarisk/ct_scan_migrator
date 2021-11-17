@@ -1,7 +1,7 @@
 package com.arilab.domain;
 
 import com.arilab.service.DatabaseService;
-import com.arilab.utils.PathUtils;
+import com.arilab.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,13 +16,14 @@ public class CtScanValidator {
 
     private static Logger logger = LoggerFactory.getLogger(CtScanValidator.class);
     DatabaseService databaseService;
+    FileUtils fileUtils;
 
-    public CtScanValidator(DatabaseService databaseService, PathUtils pathUtils) {
+    public CtScanValidator(DatabaseService databaseService, FileUtils fileUtils) {
         this.databaseService = databaseService;
-        this.pathUtils = pathUtils;
+        this.fileUtils= fileUtils;
     }
 
-    PathUtils pathUtils;
+
 
 
     public Boolean dicomFolderNotInMainFolder(CtScan ctScan) {
@@ -117,7 +118,7 @@ public class CtScanValidator {
     }
 
     public boolean standardizedFolderIsAvailable(CtScan ctScan) {
-        return !pathUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
+        return !fileUtils.folderExists(Paths.get(ctScan.getNewFolderPath()));
     }
 
 }
