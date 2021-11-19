@@ -9,7 +9,6 @@ import java.sql.*;
 
 public class DatabaseRepository {
 
-    String selectAllSpecimens = "SELECT * FROM public.specimen WHERE specimen_code = ?";
     String selectGenus = "SELECT species.genus_name FROM public.specimen LEFT JOIN species USING(taxon_code) WHERE " +
             "specimen.specimen_code = ?";
     String selectSpeciesName = "SELECT species.species_name FROM public.specimen LEFT JOIN species USING(taxon_code) " +
@@ -18,6 +17,8 @@ public class DatabaseRepository {
             "WHERE " + "specimen.specimen_code = ?";
     String selectMorphoCode = "SELECT species.morpho_code FROM public.specimen LEFT JOIN species USING(taxon_code) " +
             "WHERE " + "specimen.specimen_code = ?";
+    String selectAllSpecimens = "SELECT * FROM public.specimen WHERE specimen_code = ?";
+
 
 
     Logger logger = LoggerFactory.getLogger(DatabaseRepository.class);
@@ -106,8 +107,4 @@ public class DatabaseRepository {
             System.exit(1);
         }
     }
-
-
-
-
 }

@@ -26,7 +26,6 @@ public class Main {
     private static final String OUTPUT_PREPEND = "MigrationOutput";
     private static final String FAILEDOUTPUTPREPEND = "ValidationFailed";
 
-    private static final StringUtils stringUtils = new StringUtils();
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final DirectoryMover properDirectoryMover = new DirectoryMoverProper();
     private static final FileUtils fileUtils = new FileUtils(properDirectoryMover);
@@ -58,7 +57,7 @@ public class Main {
             ctScanCollectionValidator, uniqueFoldersChecker);
 
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         argumentChecker.check(args);
 
@@ -69,8 +68,8 @@ public class Main {
         String ctScanDataFile = args[0];
         String dataLabel = args[1];
 
-        String outputFile = stringUtils.mergeStrings(OUTPUT_PREPEND, dataLabel);
-        String failedOutputFile = stringUtils.mergeStrings(FAILEDOUTPUTPREPEND, dataLabel);
+        String outputFile = mergeStrings(OUTPUT_PREPEND, dataLabel);
+        String failedOutputFile = mergeStrings(FAILEDOUTPUTPREPEND, dataLabel);
 
         logger.info("************************** Starting app **************************");
 
@@ -96,7 +95,7 @@ public class Main {
 
 
         try {
-           ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
+            ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
         } catch (SQLException e) {
             logger.error("SQL exception when validating the new standardized folders, exiting.");
             systemExit.exit(1);
@@ -111,7 +110,7 @@ public class Main {
 
         try {
             ctScanMigratorService.migrateScans(ctScanCollection, DUMMY_EXECUTION);
-        } catch (SQLException|IOException exception) {
+        } catch (SQLException | IOException exception) {
             logger.error("Exception caught during migration: {}", exception.toString());
             fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             systemExit.exit(1);
@@ -120,6 +119,10 @@ public class Main {
 
         logger.info("************************** Finished Execution **************************");
     }
+
+
+    private static String mergeStrings(String prepend, String label) {
+        return ("./" + prepend + "_" + label + ".csv");
+    }
+
 }
-
-
