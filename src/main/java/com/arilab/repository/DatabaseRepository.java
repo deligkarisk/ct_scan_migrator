@@ -24,11 +24,9 @@ public class DatabaseRepository {
     Logger logger = LoggerFactory.getLogger(DatabaseRepository.class);
 
     private Config config;
-    private SystemExit systemExit;
 
 
-    public DatabaseRepository(SystemExit systemExit, Config config) {
-        this.systemExit = systemExit;
+    public DatabaseRepository(Config config) {
         this.config = config;
     }
 

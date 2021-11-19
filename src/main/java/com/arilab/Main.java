@@ -36,9 +36,10 @@ public class Main {
     private static final CtScanRepository ctScanRepository = new CtScanRepository(config);
 
     public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
-    private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(systemExit, config);
+    private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
     private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, fileUtils);
+    private static final CtScanValidationService ctScanValidationService = new CtScanValidationService();
     private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
@@ -54,7 +55,7 @@ public class Main {
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanRepository);
     private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService,
-            ctScanCollectionValidator, uniqueFoldersChecker);
+            ctScanCollectionValidator, uniqueFoldersChecker, ctScanValidationService);
 
 
     public static void main(String[] args) {

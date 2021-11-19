@@ -3,11 +3,14 @@ package com.arilab.service;
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanCollectionValidator;
+import com.arilab.domain.validator.ValidatorGroup;
 import com.arilab.flowcontroller.UniqueFoldersChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class CtScanCollectionService {
@@ -17,13 +20,15 @@ public class CtScanCollectionService {
     CTScanService ctScanService;
     CtScanCollectionValidator ctScanCollectionValidator;
     UniqueFoldersChecker uniqueFoldersChecker;
+    CtScanValidationService ctScanValidationService;
 
 
     public CtScanCollectionService(CTScanService ctScanService, CtScanCollectionValidator ctScanCollectionValidator,
-                                   UniqueFoldersChecker uniqueFoldersChecker) {
+                                   UniqueFoldersChecker uniqueFoldersChecker, CtScanValidationService ctScanValidationService) {
         this.ctScanService = ctScanService;
         this.ctScanCollectionValidator = ctScanCollectionValidator;
         this.uniqueFoldersChecker = uniqueFoldersChecker;
+        this.ctScanValidationService = ctScanValidationService;
     }
 
     public void preprocessData(CtScanCollection ctScanCollection) {
@@ -46,6 +51,23 @@ public class CtScanCollectionService {
             logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
             ctScanService.validateScanData(ctScan);
         }
+    }
+
+    public HashMap<String, String> validateCollection(ValidatorGroup validatorGroup,
+                                                       CtScanCollection ctScanCollection) {
+        HashMap<String, String> collectionErrors = new HashMap<>();
+        ArrayList<String> ctScanErrors = new ArrayList<>();
+
+
+        Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
+        while (ctScanIterator.hasNext()) {
+            CtScan ctScan = ctScanIterator.next();
+            ctScanErrors = ctScanValidationService.validate(validatorGroup, ctScan);
+            for (String ctScanError : ctScanErrors) {
+                collectionErrors.put(ctScan.getFolderLocation(), ctScanError);
+            }
+        }
+        return collectionErrors;
     }
 
 
