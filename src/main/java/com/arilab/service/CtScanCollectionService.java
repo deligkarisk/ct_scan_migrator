@@ -45,6 +45,7 @@ public class CtScanCollectionService {
 
 
     public void validateScanData(CtScanCollection ctScanCollection) throws SQLException {
+        // todo: replace with Strategy pattern
         Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
@@ -53,9 +54,9 @@ public class CtScanCollectionService {
         }
     }
 
-    public HashMap<String, String> validateCollection(ValidatorGroup validatorGroup,
+    public HashMap<String, ArrayList<String>> validateCollection(ValidatorGroup validatorGroup,
                                                        CtScanCollection ctScanCollection) {
-        HashMap<String, String> collectionErrors = new HashMap<>();
+        HashMap<String, ArrayList<String>> collectionErrors = new HashMap<>();
         ArrayList<String> ctScanErrors = new ArrayList<>();
 
 
@@ -63,9 +64,7 @@ public class CtScanCollectionService {
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
             ctScanErrors = ctScanValidationService.validate(validatorGroup, ctScan);
-            for (String ctScanError : ctScanErrors) {
-                collectionErrors.put(ctScan.getFolderLocation(), ctScanError);
-            }
+            collectionErrors.put(ctScan.getFolderLocation(), ctScanErrors);
         }
         return collectionErrors;
     }
@@ -81,6 +80,7 @@ public class CtScanCollectionService {
 
 
     public void validateStandardizedFolderNames(CtScanCollection ctScanCollection) throws SQLException {
+        // todo: replace with Strategy pattern
         Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
         while (ctScanIterator.hasNext()) {
             CtScan ctScan = ctScanIterator.next();
@@ -89,6 +89,7 @@ public class CtScanCollectionService {
     }
 
     public void validateAllFoldersUniqueInCollection(CtScanCollection ctScanCollection) {
+        // todo: replace with Strategy pattern
         Boolean areAllFoldersUnique = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScanCollection);
         uniqueFoldersChecker.check(areAllFoldersUnique);
     }

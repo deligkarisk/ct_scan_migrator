@@ -3,6 +3,8 @@ package com.arilab;
 import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanCollectionValidator;
 import com.arilab.domain.CtScanValidator;
+import com.arilab.domain.validator.ValidationGroup1;
+import com.arilab.domain.validator.ValidatorGroup;
 import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
 import com.arilab.repository.CtScanRepository;
@@ -15,6 +17,8 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import static java.lang.Boolean.FALSE;
 
@@ -58,6 +62,9 @@ public class Main {
             ctScanCollectionValidator, uniqueFoldersChecker, ctScanValidationService);
 
 
+    private static final ValidatorGroup validatorGroup1 = new ValidationGroup1();
+
+
     public static void main(String[] args) {
 
         argumentChecker.check(args);
@@ -85,7 +92,9 @@ public class Main {
 
         try {
             ctScanCollectionService.preprocessData(ctScanCollection);
-            ctScanCollectionService.validateScanData(ctScanCollection);
+            HashMap<String, ArrayList<String>> errors = ctScanCollectionService.validateCollection(validatorGroup1,
+                    ctScanCollection);
+           // ctScanCollectionService.validateScanData(ctScanCollection);
             ctScanDataChecker.check(ctScanCollection, failedOutputFile); // Decides whether to continue or not
         } catch (SQLException sqlException) {
             logger.error("Exception caught during migration: {}", sqlException.toString());
