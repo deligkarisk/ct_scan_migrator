@@ -44,7 +44,7 @@ public class CtScanCollectionService {
     }
 
 
-    public void validateScanData(CtScanCollection ctScanCollection) throws SQLException {
+ /*   public void validateScanData(CtScanCollection ctScanCollection) throws SQLException {
         // todo: replace with Strategy pattern
         Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
         while (ctScanIterator.hasNext()) {
@@ -52,10 +52,10 @@ public class CtScanCollectionService {
             logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
             ctScanService.validateScanData(ctScan);
         }
-    }
+    }*/
 
     public HashMap<String, ArrayList<String>> validateCollection(ValidatorGroup validatorGroup,
-                                                       CtScanCollection ctScanCollection) {
+                                                       CtScanCollection ctScanCollection) throws SQLException {
         HashMap<String, ArrayList<String>> collectionErrors = new HashMap<>();
         ArrayList<String> ctScanErrors = new ArrayList<>();
 

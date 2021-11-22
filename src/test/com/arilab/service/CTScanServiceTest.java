@@ -91,57 +91,10 @@ class CTScanServiceTest {
 
 
 
-    @Test
-    void validateScanDataAllValid() throws SQLException {
-        // given
-        ArgumentCaptor<Boolean> booleanArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
-        when(ctScanValidator.specimenCodeExists(any())).thenReturn(true);
-        when(ctScanValidator.wetDryCombinationIsCorrect(any())).thenReturn(true);
-        when(ctScanValidator.dryMethodCheck(any())).thenReturn(true);
-        when(ctScanValidator.bodypartCheck(any())).thenReturn(true);
-        when(ctScanValidator.folderLocationExists(any())).thenReturn(true);
-        when(ctScanValidator.dicomFolderLocationExists(any())).thenReturn(true);
-        when(ctScanValidator.modelIsAnts(any())).thenReturn(true);
-        when(ctScanValidator.stainingIsCorrect(any())).thenReturn(true);
-        when(ctScanValidator.ethanolConcIsCorrect(any())).thenReturn(true);
-        when(ctScanValidator.antscanIsCorrect(any())).thenReturn(true);
-        when(ctScanValidator.dicomFolderNotInMainFolder(any())).thenReturn(true);
 
 
-        // when
-        ctScanService.validateScanData(ctScan);
-
-        // then
-        verify(ctScan).setAllinputDataIsValid(booleanArgumentCaptor.capture());
-        assertEquals(true, booleanArgumentCaptor.getValue());
-    }
 
 
-    @Test
-    void validateScanDataWithInvalid() throws SQLException {
-        // given
-        ArgumentCaptor<Boolean> booleanArgumentCaptor = ArgumentCaptor.forClass(Boolean.class);
-        when(ctScanValidator.specimenCodeExists(any())).thenReturn(false);
-        when(ctScanValidator.wetDryCombinationIsCorrect(any())).thenReturn(true);
-        when(ctScanValidator.dryMethodCheck(any())).thenReturn(true);
-        when(ctScanValidator.bodypartCheck(any())).thenReturn(true);
-        when(ctScanValidator.folderLocationExists(any())).thenReturn(true);
-        when(ctScanValidator.modelIsAnts(any())).thenReturn(true);
-        when(ctScanValidator.stainingIsCorrect(any())).thenReturn(false);
-        when(ctScanValidator.ethanolConcIsCorrect(any())).thenReturn(true);
-        when(ctScanValidator.antscanIsCorrect(any())).thenReturn(false);
-        when(ctScanValidator.dicomFolderNotInMainFolder(any())).thenReturn(true);
-
-
-        // when
-        ctScanService.validateScanData(ctScan);
-
-        // then
-        verify(ctScan).setAllinputDataIsValid(booleanArgumentCaptor.capture());
-        assertEquals(false, booleanArgumentCaptor.getValue());
-        verify(ctScan).setEthanolConcIsCorrect(booleanArgumentCaptor.capture());
-        assertEquals(true, booleanArgumentCaptor.getValue());
-    }
 
 
     @Test

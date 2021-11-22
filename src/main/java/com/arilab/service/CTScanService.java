@@ -39,24 +39,6 @@ public class CTScanService {
     }
 
 
-    public void validateScanData(CtScan ctScan) throws SQLException {
-
-        ctScan.setSpecimenCodeExists(ctScanValidator.specimenCodeExists(ctScan.getSpecimenCode()));
-        ctScan.setWetDryCombinationIsCorrect(ctScanValidator.wetDryCombinationIsCorrect(ctScan));
-        ctScan.setDryMethodIsCorrect(ctScanValidator.dryMethodCheck(ctScan));
-        ctScan.setBodypartIsCorrect(ctScanValidator.bodypartCheck(ctScan));
-        ctScan.setFolderLocationExists(ctScanValidator.folderLocationExists(ctScan));
-        ctScan.setDicomFolderLocationExists(ctScanValidator.dicomFolderLocationExists(ctScan));
-
-        ctScan.setModelIsCorrect(ctScanValidator.modelIsAnts(ctScan));
-        ctScan.setStainingIsCorrect(ctScanValidator.stainingIsCorrect(ctScan));
-        ctScan.setEthanolConcIsCorrect(ctScanValidator.ethanolConcIsCorrect(ctScan));
-        ctScan.setAntscanCodingIsCorrect(ctScanValidator.antscanIsCorrect(ctScan));
-        ctScan.setDicomFolderNotAChildOfMain(ctScanValidator.dicomFolderNotInMainFolder(ctScan));
-
-        ctScan.setAllinputDataIsValid(allInputDataValidationsPassed(ctScan));
-    }
-
 
     private boolean allInputDataValidationsPassed(CtScan ctScan) {
         if (ctScan.getSpecimenCodeExists() &&

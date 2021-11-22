@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class StainingValidator implements Validator {
+public class EthanolConcValidator implements Validator{
     // todo: replace with enum
     @Override
     public Optional<String> validate(CtScan ctScan) {
-        List<String> stainingValues = Arrays.asList("Iodine", "PTA", "Osmium", "No staining");
-        if (stainingValues.contains(ctScan.getStaining())) {
+        List<String> ethanolConcValues = Arrays.asList("No ethanol used", "70%", "95%", "99%", "Not known");
+        if (ethanolConcValues.contains(ctScan.getEthanolConcentration())) {
             return Optional.empty();
         } else {
-            return Optional.of("Staining field is wrong.");
+            return Optional.of("Ethanol concentration not correct.");
         }
     }
 }

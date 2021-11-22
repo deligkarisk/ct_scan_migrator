@@ -3,7 +3,7 @@ package com.arilab;
 import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanCollectionValidator;
 import com.arilab.domain.CtScanValidator;
-import com.arilab.domain.validator.ValidationGroup1;
+import com.arilab.domain.validator.BasicFieldValidationGroup;
 import com.arilab.domain.validator.ValidatorGroup;
 import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
@@ -50,7 +50,6 @@ public class Main {
             ctScanValidator, databaseService, config);
     public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
             new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
-    public static final CtScanDataChecker ctScanDataChecker = new CtScanDataChecker(fileUtils, systemExit);
     public static final DatabaseConnectivityChecker databaseConnectivityChecker =
             new DatabaseConnectivityChecker(databaseService, systemExit);
     public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(systemExit, fileUtils);
@@ -62,7 +61,10 @@ public class Main {
             ctScanCollectionValidator, uniqueFoldersChecker, ctScanValidationService);
 
 
-    private static final ValidatorGroup validatorGroup1 = new ValidationGroup1();
+    private static final ValidatorGroup basicFieldValidationGroup = new BasicFieldValidationGroup(databaseService);
+
+
+    static HashMap<String, ArrayList<String>> errors = new HashMap<>();
 
 
     public static void main(String[] args) {
@@ -92,24 +94,19 @@ public class Main {
 
         try {
             ctScanCollectionService.preprocessData(ctScanCollection);
-            HashMap<String, ArrayList<String>> errors = ctScanCollectionService.validateCollection(validatorGroup1,
+            errors = ctScanCollectionService.validateCollection(basicFieldValidationGroup,
                     ctScanCollection);
-           // ctScanCollectionService.validateScanData(ctScanCollection);
-            ctScanDataChecker.check(ctScanCollection, failedOutputFile); // Decides whether to continue or not
+            quitIfErrors(errors, failedOutputFile, ctScanCollection);
+            ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
+            ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
+
+
         } catch (SQLException sqlException) {
             logger.error("Exception caught during migration: {}", sqlException.toString());
             fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             systemExit.exit(1);
         }
-        ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
 
-
-        try {
-            ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
-        } catch (SQLException e) {
-            logger.error("SQL exception when validating the new standardized folders, exiting.");
-            systemExit.exit(1);
-        }
 
         standardizedFoldersChecker.check(ctScanCollection, failedOutputFile); // Decides whether to continue or not
         ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
@@ -135,4 +132,16 @@ public class Main {
         return ("./" + prepend + "_" + label + ".csv");
     }
 
+    private static void quitIfErrors(HashMap<String, ArrayList<String>> errors, String failedOutputFile,
+                                     CtScanCollection ctScanCollection) {
+        for (ArrayList<String> individualScanErrors : errors.values()) {
+            if (individualScanErrors.size() > 0) {
+                logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
+                        " file " + failedOutputFile + " for further details.");
+                fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
+                systemExit.exit(1);
+            }
+        }
+
+    }
 }

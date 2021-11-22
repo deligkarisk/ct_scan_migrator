@@ -21,12 +21,8 @@ public class DatabaseService {
     }
 
     public Boolean specimenCodeExists(String specimenCode) throws SQLException {
-
-            return databaseRepository.specimenCodeExists(specimenCode);
-
+        return databaseRepository.specimenCodeExists(specimenCode);
     }
-
-
 
 
     public String findSpeciesNameOrMorphoCodeFromSpecimenCode(String specimenCode) {
@@ -47,7 +43,6 @@ public class DatabaseService {
 
         return speciesOrMorphoCode;
     }
-
 
 
     public String findGenusFromSpecimenCode(String specimenCode) {
