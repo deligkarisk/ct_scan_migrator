@@ -1,7 +1,6 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
-import com.arilab.domain.CtScanValidator;
 import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.Config;
 import com.arilab.utils.FileUtils;
@@ -9,8 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.sql.SQLException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -27,9 +24,6 @@ class CTScanServiceTest {
 
     @Mock
     FileUtils fileUtils;
-
-    @Mock
-    CtScanValidator ctScanValidator;
 
     @Mock
     DatabaseService databaseService;
@@ -229,41 +223,5 @@ class CTScanServiceTest {
         assertEquals(EXPECTED_NEW_MAIN_FOLDER, captor.getValue());
         then(ctScan).should(times(1)).setNewDicomFolderPath(captor.capture());
         assertEquals(EXPECTED_NEW_DICOM_FOLDER, captor.getValue());
-    }
-
-
-    @Test
-    void validateStandardizedFolderAllValid() throws SQLException {
-        // given
-        CtScan ctScan = new CtScan();
-        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
-        when(ctScanValidator.standardizedFolderIsAvailable(any())).thenReturn(true);
-        //when(ctScanService.ctScanFolderExists(any())).thenReturn(false);
-        Mockito.doReturn(false).when(ctScanService).ctScanFolderExists(any());
-
-        // when
-        ctScanService.validateStandardizedFolder(ctScan);
-
-        // then
-        assertEquals(true, ctScan.getNewFolderPathAvailable());
-        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
-    }
-
-
-    @Test
-    void validateStandardizedFolderSomeInvalid() throws SQLException {
-        // given
-        CtScan ctScan = new CtScan();
-        ctScan.setNewFolderPath("folder"); // value is irrelevant as the pathUtils has been mocked.
-        when(ctScanValidator.standardizedFolderIsAvailable(any())).thenReturn(false);
-        Mockito.doReturn(false).when(ctScanService).ctScanFolderExists(any());
-
-        // when
-        ctScanService.validateStandardizedFolder(ctScan);
-
-
-        // then
-        assertEquals(false, ctScan.getNewFolderPathAvailable());
-        assertEquals(true, ctScan.getNewFolderPathAvailableIntheDatabase());
     }
 }

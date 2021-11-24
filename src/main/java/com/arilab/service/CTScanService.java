@@ -1,7 +1,6 @@
 package com.arilab.service;
 
 import com.arilab.domain.CtScan;
-import com.arilab.domain.CtScanValidator;
 import com.arilab.repository.CtScanRepository;
 import com.arilab.utils.Config;
 import com.arilab.utils.CtScanUtils;
@@ -24,38 +23,19 @@ public class CTScanService {
     FileUtils fileUtils;
     CtScanUtils ctScanUtils;
     CtScanRepository ctScanRepository;
-    CtScanValidator ctScanValidator;
     DatabaseService databaseService;
     Config config;
 
     public CTScanService(FileUtils fileUtils, CtScanUtils ctScanUtils, CtScanRepository ctScanRepository,
-                         CtScanValidator ctScanValidator, DatabaseService databaseService, Config config) {
+                          DatabaseService databaseService, Config config) {
         this.fileUtils = fileUtils;
         this.ctScanUtils = ctScanUtils;
         this.ctScanRepository = ctScanRepository;
-        this.ctScanValidator = ctScanValidator;
         this.databaseService = databaseService;
         this.config = config;
     }
 
 
-
-    private boolean allInputDataValidationsPassed(CtScan ctScan) {
-        if (ctScan.getSpecimenCodeExists() &&
-                ctScan.getWetDryCombinationIsCorrect() &&
-                ctScan.getDryMethodIsCorrect() &&
-                ctScan.getBodypartIsCorrect() &&
-                ctScan.getFolderLocationExists() &&
-                ctScan.getModelIsCorrect() &&
-                ctScan.getEthanolConcIsCorrect() &&
-                ctScan.getStainingIsCorrect() &&
-                ctScan.getAntscanCodingIsCorrect() &&
-                ctScan.getDicomFolderLocationExists() &&
-                ctScan.getDicomFolderNotAChildOfMain()) {
-            return true;
-        }
-        return false;
-    }
 
 
     public void preprocessScanFolderLocation(CtScan ctScan) {
@@ -182,16 +162,5 @@ public class CTScanService {
         return uniqueFolderID;
     }
 
-
-
-    public void validateStandardizedFolder(CtScan ctScan) throws SQLException {
-        // New folders should not exist already
-        Boolean folderIsAvailable = ctScanValidator.standardizedFolderIsAvailable(ctScan);
-        ctScan.setNewFolderPathAvailable(folderIsAvailable);
-
-        // New folders should not exist in the db either
-        Boolean noDatabaseEntryWithSameFolderExists = !ctScanFolderExists(ctScan.getNewFolderPath());
-        ctScan.setNewFolderPathAvailableIntheDatabase(noDatabaseEntryWithSameFolderExists);
-    }
 }
 

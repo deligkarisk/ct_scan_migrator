@@ -2,9 +2,9 @@ package com.arilab;
 
 import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanCollectionValidator;
-import com.arilab.domain.CtScanValidator;
-import com.arilab.domain.validator.BasicFieldValidationGroup;
-import com.arilab.domain.validator.ValidatorGroup;
+import com.arilab.domain.validator.group.BasicFieldValidationGroup;
+import com.arilab.domain.validator.group.StandardizedFoldersValidationGroup;
+import com.arilab.domain.validator.group.ValidatorGroup;
 import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
 import com.arilab.repository.CtScanRepository;
@@ -42,13 +42,11 @@ public class Main {
     public static final FileSystem filesystem = new FileSystem(config);
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
-    private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, fileUtils);
     private static final CtScanValidationService ctScanValidationService = new CtScanValidationService();
     private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
-            ctScanValidator, databaseService, config);
-    public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(systemExit, fileUtils);
+            databaseService, config);
     public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanRepository);
@@ -56,6 +54,7 @@ public class Main {
             ctScanCollectionValidator, uniqueFoldersChecker, ctScanValidationService);
     private static final ValidatorGroup basicFieldValidationGroup = new BasicFieldValidationGroup(databaseService);
 
+    private static final ValidatorGroup standardizedFoldersValidationGroup = new StandardizedFoldersValidationGroup(ctScanService);
 
     static HashMap<String, ArrayList<String>> errors = new HashMap<>();
 
@@ -91,7 +90,9 @@ public class Main {
                     ctScanCollection);
             quitIfErrors(errors, failedOutputFile, ctScanCollection);
             ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
-            ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
+            errors = ctScanCollectionService.validateCollection(standardizedFoldersValidationGroup,
+                    ctScanCollection);
+            quitIfErrors(errors, failedOutputFile, ctScanCollection);
 
 
         } catch (SQLException | IOException Exception) {
@@ -103,7 +104,7 @@ public class Main {
         }
 
 
-        standardizedFoldersChecker.check(ctScanCollection, failedOutputFile); // Decides whether to continue or not
+
         ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
 
         // Before migrating, write all information to the output file.

@@ -1,4 +1,6 @@
-package com.arilab.domain.validator;
+package com.arilab.domain.validator.group;
+
+import com.arilab.domain.validator.Validator;
 
 import java.util.ArrayList;
 import java.util.Collections;

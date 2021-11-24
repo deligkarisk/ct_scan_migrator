@@ -1,5 +1,7 @@
-package com.arilab.domain.validator;
+package com.arilab.domain.validator.group;
 
+import com.arilab.domain.validator.*;
+import com.arilab.domain.validator.group.ValidatorGroup;
 import com.arilab.service.DatabaseService;
 
 import java.util.ArrayList;

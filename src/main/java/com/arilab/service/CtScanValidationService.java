@@ -2,7 +2,7 @@ package com.arilab.service;
 
 import com.arilab.domain.CtScan;
 import com.arilab.domain.validator.Validator;
-import com.arilab.domain.validator.ValidatorGroup;
+import com.arilab.domain.validator.group.ValidatorGroup;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

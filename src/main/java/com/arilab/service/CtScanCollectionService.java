@@ -3,7 +3,7 @@ package com.arilab.service;
 import com.arilab.domain.CtScan;
 import com.arilab.domain.CtScanCollection;
 import com.arilab.domain.CtScanCollectionValidator;
-import com.arilab.domain.validator.ValidatorGroup;
+import com.arilab.domain.validator.group.ValidatorGroup;
 import com.arilab.flowcontroller.UniqueFoldersChecker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,14 +79,6 @@ public class CtScanCollectionService {
     }
 
 
-    public void validateStandardizedFolderNames(CtScanCollection ctScanCollection) throws SQLException {
-        // todo: replace with Strategy pattern
-        Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            ctScanService.validateStandardizedFolder(ctScan);
-        }
-    }
 
     public void validateAllFoldersUniqueInCollection(CtScanCollection ctScanCollection) {
         // todo: replace with Strategy pattern
