@@ -39,7 +39,7 @@ public class Main {
     public static final SystemExit systemExit = new SystemExit();
     private static final CtScanRepository ctScanRepository = new CtScanRepository(config);
 
-    public static final FileSystemUtils filesystemUtils = new FileSystemUtils();
+    public static final FileSystem filesystem = new FileSystem(config);
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
     private static final CtScanValidator ctScanValidator = new CtScanValidator(databaseService, fileUtils);
@@ -48,19 +48,15 @@ public class Main {
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
             ctScanValidator, databaseService, config);
-    public static final FilesystemConnectivityChecker filesystemConnectivityChecker =
-            new FilesystemConnectivityChecker(config, systemExit, filesystemUtils);
+
     public static final DatabaseConnectivityChecker databaseConnectivityChecker =
             new DatabaseConnectivityChecker(databaseService, systemExit);
     public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(systemExit, fileUtils);
     public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
-
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanRepository);
     private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService,
             ctScanCollectionValidator, uniqueFoldersChecker, ctScanValidationService);
-
-
     private static final ValidatorGroup basicFieldValidationGroup = new BasicFieldValidationGroup(databaseService);
 
 
@@ -68,6 +64,8 @@ public class Main {
 
 
     public static void main(String[] args) {
+
+        CtScanCollection ctScanCollection = null;
 
         argumentChecker.check(args);
 
@@ -84,15 +82,13 @@ public class Main {
         logger.info("************************** Starting app **************************");
 
 
-        filesystemConnectivityChecker.check();
-        databaseConnectivityChecker.check();
 
-
-        logger.info("Reading data from: " + ctScanDataFile);
-
-        CtScanCollection ctScanCollection = new CtScanCollection(sourceReader.readScans(ctScanDataFile));
 
         try {
+            filesystem.filesystemCheck();
+            databaseConnectivityChecker.check();
+            logger.info("Reading data from: " + ctScanDataFile);
+            ctScanCollection = new CtScanCollection(sourceReader.readScans(ctScanDataFile));
             ctScanCollectionService.preprocessData(ctScanCollection);
             errors = ctScanCollectionService.validateCollection(basicFieldValidationGroup,
                     ctScanCollection);
@@ -101,9 +97,11 @@ public class Main {
             ctScanCollectionService.validateStandardizedFolderNames(ctScanCollection);
 
 
-        } catch (SQLException sqlException) {
-            logger.error("Exception caught during migration: {}", sqlException.toString());
-            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
+        } catch (SQLException | IOException Exception) {
+            logger.error("Exception caught during migration: {}", Exception.toString());
+            if (ctScanCollection == null) {
+                fileUtils.writeBeansToFile(ctScanCollection, outputFile);
+            }
             systemExit.exit(1);
         }
 
@@ -142,6 +140,14 @@ public class Main {
                 systemExit.exit(1);
             }
         }
+    }
 
+    private static void checkConnectivityToBucketAndDatabase() {
+        try {
+            databaseService.specimenCodeExists("Test");
+        } catch (SQLException e) {
+            logger.error("Error in connecting to the database: " + e.getMessage() );
+            throw new RuntimeException("Error in connecting to the database.");
+        }
     }
 }
