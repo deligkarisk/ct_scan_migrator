@@ -48,9 +48,6 @@ public class Main {
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
             ctScanValidator, databaseService, config);
-
-    public static final DatabaseConnectivityChecker databaseConnectivityChecker =
-            new DatabaseConnectivityChecker(databaseService, systemExit);
     public static final StandardizedFoldersChecker standardizedFoldersChecker = new StandardizedFoldersChecker(systemExit, fileUtils);
     public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
@@ -86,7 +83,7 @@ public class Main {
 
         try {
             filesystem.filesystemCheck();
-            databaseConnectivityChecker.check();
+            databaseService.checkDatabaseConnectivity();
             logger.info("Reading data from: " + ctScanDataFile);
             ctScanCollection = new CtScanCollection(sourceReader.readScans(ctScanDataFile));
             ctScanCollectionService.preprocessData(ctScanCollection);

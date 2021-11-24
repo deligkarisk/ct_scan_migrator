@@ -49,5 +49,7 @@ public class DatabaseService {
         return databaseRepository.getGenusFromSpecimenCode(specimenCode);
     }
 
-
+    public void checkDatabaseConnectivity() throws SQLException {
+            specimenCodeExists("Test");
+    }
 }
