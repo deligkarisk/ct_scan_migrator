@@ -14,9 +14,9 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class DicomFolderNotInMainFolderValidatorTest {
+class DicomFolderNotInMainFolderCtScanValidatorTest {
 
-    DicomFolderNotInMainFolderValidator dicomFolderNotInMainFolderValidator = new DicomFolderNotInMainFolderValidator();
+    DicomFolderNotInMainFolderCtScanValidator dicomFolderNotInMainFolderValidator = new DicomFolderNotInMainFolderCtScanValidator();
 
     @Test
     void validateDicomFolderNotInMainFolder(@TempDir File tempdir, @TempDir File tempdir2) {

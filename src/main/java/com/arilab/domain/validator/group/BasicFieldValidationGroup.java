@@ -1,31 +1,30 @@
 package com.arilab.domain.validator.group;
 
 import com.arilab.domain.validator.*;
-import com.arilab.domain.validator.group.ValidatorGroup;
 import com.arilab.service.DatabaseService;
 
 import java.util.ArrayList;
 
-public class BasicFieldValidationGroup extends ValidatorGroup {
+public class BasicFieldValidationGroup extends ValidatorGroup<CtScanValidator> {
 
     DatabaseService databaseService;
-    ArrayList<Validator> validators = new ArrayList<>();
+
 
 
     public BasicFieldValidationGroup(DatabaseService databaseService) {
         this.databaseService = databaseService;
 
-        SpecimenCodeExistsValidator specimenCodeExistsValidator = new SpecimenCodeExistsValidator(databaseService);
-        WetDryCombinationValidator wetDryCombinationValidator = new WetDryCombinationValidator();
-        DryMethodValidator dryMethodValidator = new DryMethodValidator();
-        BodyPartValidator bodyPartValidator = new BodyPartValidator();
-        FolderLocationExistsValidator folderLocationExistsValidator = new FolderLocationExistsValidator();
-        DicomFolderLocationExistsValidator dicomFolderLocationExistsValidator = new DicomFolderLocationExistsValidator();
-        ModelValidator modelValidator = new ModelValidator();
-        StainingValidator stainingValidator = new StainingValidator();
-        EthanolConcValidator ethanolConcValidator = new EthanolConcValidator();
-        AntscanCodingValidator antscanCodingValidator = new AntscanCodingValidator();
-        DicomFolderNotInMainFolderValidator dicomFolderNotInMainFolderValidator = new DicomFolderNotInMainFolderValidator();
+        SpecimenCodeExistsCtScanValidator specimenCodeExistsValidator = new SpecimenCodeExistsCtScanValidator(databaseService);
+        WetDryCombinationCtScanValidator wetDryCombinationValidator = new WetDryCombinationCtScanValidator();
+        DryMethodCtScanValidator dryMethodValidator = new DryMethodCtScanValidator();
+        BodyPartCtScanValidator bodyPartValidator = new BodyPartCtScanValidator();
+        FolderLocationExistsCtScanValidator folderLocationExistsValidator = new FolderLocationExistsCtScanValidator();
+        DicomFolderLocationExistsCtScanValidator dicomFolderLocationExistsValidator = new DicomFolderLocationExistsCtScanValidator();
+        ModelCtScanValidator modelValidator = new ModelCtScanValidator();
+        StainingCtScanValidator stainingValidator = new StainingCtScanValidator();
+        EthanolConcCtScanValidator ethanolConcValidator = new EthanolConcCtScanValidator();
+        AntscanCodingCtScanValidator antscanCodingValidator = new AntscanCodingCtScanValidator();
+        DicomFolderNotInMainFolderCtScanValidator dicomFolderNotInMainFolderValidator = new DicomFolderNotInMainFolderCtScanValidator();
 
         validators.add(specimenCodeExistsValidator);
         validators.add(wetDryCombinationValidator);

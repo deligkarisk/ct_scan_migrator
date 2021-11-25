@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class DicomFolderLocationExistsValidator implements Validator{
+public class DicomFolderLocationExistsCtScanValidator implements CtScanValidator {
     @Override
     public Optional<String> validate(CtScan ctScan) {
         if (ctScan.getDicomFolderLocation() == null) {

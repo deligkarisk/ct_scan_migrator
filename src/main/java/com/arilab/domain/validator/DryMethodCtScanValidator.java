@@ -4,7 +4,7 @@ import com.arilab.domain.CtScan;
 
 import java.util.Optional;
 
-public class DryMethodValidator implements Validator{
+public class DryMethodCtScanValidator implements CtScanValidator {
     // todo: replace with enum
     @Override
     public Optional<String> validate(CtScan ctScan) {

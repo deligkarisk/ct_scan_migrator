@@ -1,7 +1,5 @@
 package com.arilab.domain;
 
-import com.arilab.domain.CtScan;
-import com.arilab.domain.CtScanCollectionValidator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,13 +13,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
-class CtScanCollectionValidatorTest {
+class CtScanCollectionCtScanValidatorTestDEPRECATED {
 
 
-    @InjectMocks
-    CtScanCollectionValidator ctScanCollectionValidator;
 
-    @Test
+
     void allFoldersUnique() {
 
         // given
@@ -42,10 +38,11 @@ class CtScanCollectionValidatorTest {
 
 
         // when
-        boolean returnedResult = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScanCollection);
+    //    boolean returnedResult = ctScanCollectionValidatorDEPRECATED.areAllFoldersUniqueInCollection
+        //    (ctScanCollection);
 
         // then
-        assertEquals(true, returnedResult);
+     //   assertEquals(true, returnedResult);
     }
 
 
@@ -81,10 +78,11 @@ class CtScanCollectionValidatorTest {
 
 
         // when
-        boolean returnedResult = ctScanCollectionValidator.areAllFoldersUniqueInCollection(ctScanCollection);
+    //    boolean returnedResult = ctScanCollectionValidatorDEPRECATED.areAllFoldersUniqueInCollection
+        //    (ctScanCollection);
 
         // then
-        assertEquals(false, returnedResult);
+      //  assertEquals(false, returnedResult);
     }
 
 

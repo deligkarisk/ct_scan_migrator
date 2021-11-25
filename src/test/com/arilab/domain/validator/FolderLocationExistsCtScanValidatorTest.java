@@ -9,9 +9,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class FolderLocationExistsValidatorTest {
+class FolderLocationExistsCtScanValidatorTest {
 
-    FolderLocationExistsValidator folderLocationExistsValidator = new FolderLocationExistsValidator();
+    FolderLocationExistsCtScanValidator folderLocationExistsValidator = new FolderLocationExistsCtScanValidator();
 
     @Test
     void validateFolderExists(@TempDir Path tempDir) {

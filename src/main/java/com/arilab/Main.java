@@ -1,7 +1,10 @@
 package com.arilab;
 
 import com.arilab.domain.CtScanCollection;
-import com.arilab.domain.CtScanCollectionValidator;
+import com.arilab.domain.validator.CtScanCollectionValidator;
+import com.arilab.domain.validator.CtScanValidator;
+import com.arilab.domain.validator.error.ErrorModel;
+import com.arilab.domain.validator.group.AllFoldersUniqueValidationGroup;
 import com.arilab.domain.validator.group.BasicFieldValidationGroup;
 import com.arilab.domain.validator.group.StandardizedFoldersValidationGroup;
 import com.arilab.domain.validator.group.ValidatorGroup;
@@ -18,7 +21,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import static java.lang.Boolean.FALSE;
 
@@ -43,20 +46,29 @@ public class Main {
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
     private static final CtScanValidationService ctScanValidationService = new CtScanValidationService();
-    private static final CtScanCollectionValidator ctScanCollectionValidator = new CtScanCollectionValidator();
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
             databaseService, config);
     public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanRepository);
-    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService,
-            ctScanCollectionValidator, uniqueFoldersChecker, ctScanValidationService);
-    private static final ValidatorGroup basicFieldValidationGroup = new BasicFieldValidationGroup(databaseService);
 
-    private static final ValidatorGroup standardizedFoldersValidationGroup = new StandardizedFoldersValidationGroup(ctScanService);
+    private static final CtScanCollectionValidationService ctScanCollectionValidationService =
+            new CtScanCollectionValidationService();
 
-    static HashMap<String, ArrayList<String>> errors = new HashMap<>();
+    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService, uniqueFoldersChecker, ctScanValidationService, ctScanCollectionValidationService);
+
+
+    private static final ValidatorGroup<CtScanValidator> basicFieldValidationGroup =
+            new BasicFieldValidationGroup(databaseService);
+
+    private static final ValidatorGroup<CtScanValidator> standardizedFoldersValidationGroup =
+            new StandardizedFoldersValidationGroup(ctScanService);
+
+    private static final ValidatorGroup<CtScanCollectionValidator> allFoldersUniqueValidationGroup =
+            new AllFoldersUniqueValidationGroup();
+
+    static List<ErrorModel> errors = new ArrayList<>();
 
 
     public static void main(String[] args) {
@@ -78,21 +90,24 @@ public class Main {
         logger.info("************************** Starting app **************************");
 
 
-
-
         try {
             filesystem.filesystemCheck();
             databaseService.checkDatabaseConnectivity();
             logger.info("Reading data from: " + ctScanDataFile);
             ctScanCollection = new CtScanCollection(sourceReader.readScans(ctScanDataFile));
             ctScanCollectionService.preprocessData(ctScanCollection);
-            errors = ctScanCollectionService.validateCollection(basicFieldValidationGroup,
-                    ctScanCollection);
+            errors = ctScanCollectionService.validateCollectionAtScanLevel(basicFieldValidationGroup,
+                    ctScanCollection); //todo: write test that checks that all validators run
             quitIfErrors(errors, failedOutputFile, ctScanCollection);
             ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
-            errors = ctScanCollectionService.validateCollection(standardizedFoldersValidationGroup,
-                    ctScanCollection);
+            errors = ctScanCollectionService.validateCollectionAtScanLevel(standardizedFoldersValidationGroup,
+                    ctScanCollection); //todo: write test that checks that all validators run
             quitIfErrors(errors, failedOutputFile, ctScanCollection);
+            // ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
+            errors = ctScanCollectionService.validateCollection(allFoldersUniqueValidationGroup, ctScanCollection);
+            quitIfErrors(errors, failedOutputFile, ctScanCollection);
+            // Before migrating, write all information to the output file.
+            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
 
 
         } catch (SQLException | IOException Exception) {
@@ -102,13 +117,6 @@ public class Main {
             }
             systemExit.exit(1);
         }
-
-
-
-        ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
-
-        // Before migrating, write all information to the output file.
-        fileUtils.writeBeansToFile(ctScanCollection, outputFile);
 
 
         try {
@@ -128,15 +136,13 @@ public class Main {
         return ("./" + prepend + "_" + label + ".csv");
     }
 
-    private static void quitIfErrors(HashMap<String, ArrayList<String>> errors, String failedOutputFile,
+    private static void quitIfErrors(List<ErrorModel> error, String failedOutputFile,
                                      CtScanCollection ctScanCollection) {
-        for (ArrayList<String> individualScanErrors : errors.values()) {
-            if (individualScanErrors.size() > 0) {
-                logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
-                        " file " + failedOutputFile + " for further details.");
-                fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
-                systemExit.exit(1);
-            }
+        if (!error.isEmpty()) {
+            logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
+                    " file " + failedOutputFile + " for further details.");
+            fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
+            systemExit.exit(1);
         }
     }
 
@@ -144,7 +150,7 @@ public class Main {
         try {
             databaseService.specimenCodeExists("Test");
         } catch (SQLException e) {
-            logger.error("Error in connecting to the database: " + e.getMessage() );
+            logger.error("Error in connecting to the database: " + e.getMessage());
             throw new RuntimeException("Error in connecting to the database.");
         }
     }

@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class StainingValidator implements Validator {
+public class StainingCtScanValidator implements CtScanValidator {
     // todo: replace with enum
     @Override
     public Optional<String> validate(CtScan ctScan) {

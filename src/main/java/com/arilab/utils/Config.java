@@ -80,7 +80,6 @@ public class Config {
             logger.error("Could not load configuration settings, aborting operation.");
             System.exit(1);
         }
-
     }
 
 

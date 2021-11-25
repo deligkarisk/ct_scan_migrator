@@ -4,7 +4,7 @@ import com.arilab.domain.CtScan;
 
 import java.util.Optional;
 
-public class ModelValidator implements Validator {
+public class ModelCtScanValidator implements CtScanValidator {
     // todo: replace with enum
     @Override
     public Optional<String> validate(CtScan ctScan) {

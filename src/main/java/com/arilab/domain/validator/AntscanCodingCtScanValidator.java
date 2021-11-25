@@ -4,7 +4,7 @@ import com.arilab.domain.CtScan;
 
 import java.util.Optional;
 
-public class AntscanCodingValidator implements Validator{
+public class AntscanCodingCtScanValidator implements CtScanValidator {
     @Override
     public Optional<String> validate(CtScan ctScan) {
         Boolean isCorrect = ((ctScan.getAntscan().equals("No") && ctScan.getAntscanCode() == null) || (ctScan.getAntscan().equals("Yes") && ctScan.getAntscanCode() != null));

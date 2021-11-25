@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class StandardizedPathAvailableInFilesystem implements Validator {
+public class StandardizedPathAvailableInFilesystem implements CtScanValidator {
 
     @Override
     public Optional<String> validate(CtScan ctScan) throws SQLException {

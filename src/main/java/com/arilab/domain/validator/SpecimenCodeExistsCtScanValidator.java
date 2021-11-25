@@ -6,11 +6,11 @@ import com.arilab.service.DatabaseService;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class SpecimenCodeExistsValidator implements Validator {
+public class SpecimenCodeExistsCtScanValidator implements CtScanValidator {
 
     DatabaseService databaseService;
 
-    public SpecimenCodeExistsValidator(DatabaseService databaseService) {
+    public SpecimenCodeExistsCtScanValidator(DatabaseService databaseService) {
         this.databaseService = databaseService;
     }
 

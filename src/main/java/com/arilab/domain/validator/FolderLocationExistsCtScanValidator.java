@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class FolderLocationExistsValidator implements Validator {
+public class FolderLocationExistsCtScanValidator implements CtScanValidator {
     @Override
     public Optional<String> validate(CtScan ctScan) {
         Path location = Paths.get(ctScan.getFolderLocation());

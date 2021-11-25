@@ -6,7 +6,7 @@ import com.arilab.service.CTScanService;
 import java.sql.SQLException;
 import java.util.Optional;
 
-public class StandardizedPathAvailableInDB implements Validator {
+public class StandardizedPathAvailableInDB implements CtScanValidator {
 
     CTScanService ctScanService;
 

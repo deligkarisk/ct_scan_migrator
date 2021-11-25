@@ -17,13 +17,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class SpecimenCodeExistsValidatorTest {
+class SpecimenCodeExistsCtScanValidatorTest {
 
     @Mock
     DatabaseService databaseService;
 
     @InjectMocks
-    SpecimenCodeExistsValidator specimenCodeExistsValidator;
+    SpecimenCodeExistsCtScanValidator specimenCodeExistsValidator;
 
     CtScan ctScan;
 

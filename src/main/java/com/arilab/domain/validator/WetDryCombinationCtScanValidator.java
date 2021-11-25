@@ -4,7 +4,7 @@ import com.arilab.domain.CtScan;
 
 import java.util.Optional;
 
-public class WetDryCombinationValidator implements Validator {
+public class WetDryCombinationCtScanValidator implements CtScanValidator {
     @Override
     public Optional<String> validate(CtScan ctScan) {
 

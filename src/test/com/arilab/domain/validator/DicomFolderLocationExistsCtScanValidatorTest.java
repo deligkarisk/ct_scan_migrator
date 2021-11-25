@@ -9,9 +9,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class DicomFolderLocationExistsValidatorTest {
+class DicomFolderLocationExistsCtScanValidatorTest {
 
-    DicomFolderLocationExistsValidator dicomFolderLocationExistsValidator = new DicomFolderLocationExistsValidator();
+    DicomFolderLocationExistsCtScanValidator dicomFolderLocationExistsValidator = new DicomFolderLocationExistsCtScanValidator();
 
     @Test
     void validateFolderIsNull() {

@@ -6,7 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class DicomFolderNotInMainFolderValidator implements Validator {
+public class DicomFolderNotInMainFolderCtScanValidator implements CtScanValidator {
     @Override
     public Optional<String> validate(CtScan ctScan) {
 

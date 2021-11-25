@@ -1,16 +1,15 @@
 package com.arilab.domain.validator.group;
 
-import com.arilab.domain.validator.Validator;
+import com.arilab.domain.validator.CtScanValidator;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public abstract class ValidatorGroup {
+public abstract class ValidatorGroup<T> {
 
-    private ArrayList<Validator> validators = new ArrayList<>();
+    protected ArrayList<T> validators;
 
-    public final List<Validator> getValidators() {
+    public final List<T> getValidators() {
         return List.copyOf(validators);
     }
 }
