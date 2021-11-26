@@ -1,6 +1,7 @@
 package com.arilab.domain.validator.error;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class CtScanErrorModel implements ErrorModel {
@@ -24,11 +25,16 @@ public class CtScanErrorModel implements ErrorModel {
     }
 
     @Override
-    public String[] printErrors() {
-        String[] output = new String[errors.size()];
+    public List<String> printErrors() {
+        List<String> errorsToPrint = new LinkedList<>();
         for (int i=0 ; i<errors.size(); i++) {
-            output[i] = "CtScan: " + scanId + "has the error: " + errors.get(i);
+            errorsToPrint.add("CtScan: " + scanId + " has the error: " + errors.get(i));
         }
-        return output;
+        return errorsToPrint;
+    }
+
+    @Override
+    public int getNumberOfErrors() {
+        return errors.size();
     }
 }

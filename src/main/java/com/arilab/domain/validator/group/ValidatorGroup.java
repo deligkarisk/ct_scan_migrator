@@ -7,7 +7,7 @@ import java.util.List;
 
 public abstract class ValidatorGroup<T> {
 
-    protected ArrayList<T> validators;
+    protected ArrayList<T> validators = new ArrayList<>();
 
     public final List<T> getValidators() {
         return List.copyOf(validators);

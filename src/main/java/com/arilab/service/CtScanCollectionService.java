@@ -48,18 +48,10 @@ public class CtScanCollectionService {
     }
 
 
- /*   public void validateScanData(CtScanCollection ctScanCollection) throws SQLException {
-        // todo: replace with Strategy pattern
-        Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
-        while (ctScanIterator.hasNext()) {
-            CtScan ctScan = ctScanIterator.next();
-            logger.info("Validating scan " + ctScan.getSpecimenCode() + ", " + ctScan.getFolderLocation());
-            ctScanService.validateScanData(ctScan);
-        }
-    }*/
-
     // todo: can the below two methods be refactored to an interface? We need the returned value to always be a
     //  List<ErrorModel>.
+
+    // todo: write tests for this method
     public List<ErrorModel> validateCollectionAtScanLevel(ValidatorGroup<CtScanValidator> validatorGroup,
                                                           CtScanCollection ctScanCollection) throws SQLException {
         List<ErrorModel> collectionErrors = new ArrayList<>();
@@ -75,6 +67,7 @@ public class CtScanCollectionService {
         return collectionErrors;
     }
 
+    // todo: write tests for this method
     public List<ErrorModel> validateCollection(ValidatorGroup<CtScanCollectionValidator> validatorGroup,
                                                CtScanCollection ctScanCollection) throws SQLException {
         List<ErrorModel> collectionErrors = new ArrayList<>();
@@ -86,6 +79,8 @@ public class CtScanCollectionService {
 
        return collectionErrors;
     }
+
+
     public void findStandardizedFolderNames(CtScanCollection ctScanCollection) {
         Iterator<CtScan> ctScanIterator = ctScanCollection.getCtScans().iterator();
         while (ctScanIterator.hasNext()) {

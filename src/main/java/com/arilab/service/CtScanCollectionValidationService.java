@@ -15,6 +15,7 @@ import java.util.Optional;
 public class CtScanCollectionValidationService {
 
 
+    // todo: shall we move this to the CtScanCollectionService?
     public ErrorModel validate(ValidatorGroup<CtScanCollectionValidator> validatorGroup, CtScanCollection ctScanCollection) throws SQLException {
 
         CtScanCollectionErrorModel ctScanCollectionErrorModel = new CtScanCollectionErrorModel();

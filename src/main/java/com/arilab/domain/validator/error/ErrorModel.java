@@ -1,8 +1,11 @@
 package com.arilab.domain.validator.error;
 
+import java.util.List;
+
 public interface ErrorModel {
 
     boolean hasErrors();
     void addError(String error);
-    String[] printErrors();
+    List<String> printErrors();
+    int getNumberOfErrors();
 }
