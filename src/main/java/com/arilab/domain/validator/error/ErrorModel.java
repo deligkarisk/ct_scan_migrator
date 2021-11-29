@@ -6,6 +6,8 @@ public interface ErrorModel {
 
     boolean hasErrors();
     void addError(String error);
-    List<String> printErrors();
+    List<String> printFormattedErrors();
+    List<String> getErrors();
+
     int getNumberOfErrors();
 }

@@ -109,7 +109,7 @@ public class Main {
             if (ctScanCollection == null) {
                 fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             }
-            systemExit.exit(1);
+            System.exit(1);
         }
 
 
@@ -118,7 +118,7 @@ public class Main {
         } catch (SQLException | IOException exception) {
             logger.error("Exception caught during migration: {}", exception.toString());
             fileUtils.writeBeansToFile(ctScanCollection, outputFile);
-            systemExit.exit(1);
+            System.exit(1);
         }
 
 
@@ -136,7 +136,7 @@ public class Main {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
                     " file " + failedOutputFile + " for further details.");
             fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
-            systemExit.exit(1);
+            System.exit(1);
         }
     }
 

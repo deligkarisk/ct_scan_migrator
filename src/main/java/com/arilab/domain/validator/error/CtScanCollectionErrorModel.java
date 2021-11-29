@@ -20,7 +20,7 @@ public class CtScanCollectionErrorModel implements ErrorModel {
     }
 
     @Override
-    public List<String> printErrors() {
+    public List<String> printFormattedErrors() {
         List<String> errorsToPrint = new LinkedList<>();
         for (int i=0 ; i<errors.size(); i++) {
             errorsToPrint.add("CtScan collection has the error: " + errors.get(i));
@@ -29,6 +29,10 @@ public class CtScanCollectionErrorModel implements ErrorModel {
     }
 
 
+    @Override
+    public List<String> getErrors() {
+        return List.copyOf(errors);
+    }
 
     @Override
     public int getNumberOfErrors() {

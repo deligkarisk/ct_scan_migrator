@@ -26,6 +26,7 @@ public class DatabaseService {
 
 
     public String findSpeciesNameOrMorphoCodeFromSpecimenCode(String specimenCode) {
+        // todo: replace the system exit function with an exception
         String speciesOrMorphoCode = null;
         String speciesName = databaseRepository.getSpeciesNameFromSpecimenCode(specimenCode);
         String morphoCode = databaseRepository.getMorphoCodeFromSpecimenCode(specimenCode);
