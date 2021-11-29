@@ -8,7 +8,6 @@ import com.arilab.domain.validator.group.AllFoldersUniqueValidationGroup;
 import com.arilab.domain.validator.group.BasicFieldValidationGroup;
 import com.arilab.domain.validator.group.StandardizedFoldersValidationGroup;
 import com.arilab.domain.validator.group.ValidatorGroup;
-import com.arilab.flowcontroller.*;
 import com.arilab.reader.SourceReader;
 import com.arilab.repository.CtScanRepository;
 import com.arilab.repository.DatabaseRepository;
@@ -45,18 +44,13 @@ public class Main {
     public static final FileSystem filesystem = new FileSystem(config);
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(config);
     private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
-    private static final CtScanValidationService ctScanValidationService = new CtScanValidationService();
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
             databaseService, config);
-    public static final UniqueFoldersChecker uniqueFoldersChecker = new UniqueFoldersChecker();
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanRepository);
 
-    private static final CtScanCollectionValidationService ctScanCollectionValidationService =
-            new CtScanCollectionValidationService();
-
-    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService, uniqueFoldersChecker, ctScanValidationService, ctScanCollectionValidationService);
+    private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService);
 
 
     private static final ValidatorGroup<CtScanValidator> basicFieldValidationGroup =

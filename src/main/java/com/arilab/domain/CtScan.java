@@ -15,8 +15,6 @@ public class CtScan {
     @CsvBindByName(column = "ethanol_conc", required = true)
     private String ethanolConcentration;
 
-    @CsvBindByName(column = "ethanol_correct")
-    private Boolean ethanolConcIsCorrect;
 
     @CsvBindByName(column = "wet", required = true)
     private String wet;
@@ -30,17 +28,8 @@ public class CtScan {
     @CsvBindByName(column = "folder_location", required = true)
     private String folderLocation;
 
-    @CsvBindByName(column = "folder_location_exists")
-    private Boolean folderLocationExists;
-
     @CsvBindByName(column = "dicom_folder_location")
     private String dicomFolderLocation;
-
-    @CsvBindByName(column = "dicom_folder_location_exists")
-    private Boolean dicomFolderLocationExists;
-
-    @CsvBindByName(column = "dicom_folder_not_inside_main")
-    private Boolean dicomFolderNotAChildOfMain;
 
     @CsvBindByName(column = "scan_user", required = true)
     private String scanUser;
@@ -48,14 +37,9 @@ public class CtScan {
     @CsvBindByName(column = "scan_date")
     private String scanDate;
 
-    @CsvBindByName(column = "scanDateCorrect")
-    private Boolean scanDateCorrect;
-
     @CsvBindByName(column = "staining", required = true)
     private String staining;
 
-    @CsvBindByName(column = "staining_correct")
-    private Boolean stainingIsCorrect;
 
     @CsvBindByName(column = "antscan", required = true)
     private String antscan;
@@ -63,14 +47,8 @@ public class CtScan {
     @CsvBindByName(column = "antscan_code")
     private String antscanCode;
 
-    @CsvBindByName(column = "antscanCorrect")
-    private Boolean antscanCodingIsCorrect;
-
     @CsvBindByName(column = "model", required = true)
     private String model;
-
-    @CsvBindByName(column = "model_correct")
-    private Boolean modelIsCorrect;
 
     @CsvBindByName(column = "dry_method", required = true)
     private String dryMethod;
@@ -81,35 +59,11 @@ public class CtScan {
     @CsvBindByName(column = "prep_note")
     private String prepNote;
 
-    @CsvBindByName(column = "specimen_code_exists")
-    private Boolean specimenCodeExists;
-
-    @CsvBindByName(column = "wet_dry_comb_correct")
-    private Boolean wetDryCombinationIsCorrect;
-
-    @CsvBindByName(column = "dry_method_correct")
-    private Boolean dryMethodIsCorrect;
-
-    @CsvBindByName(column = "body_part_correct")
-    private Boolean bodypartIsCorrect;
-
-    @CsvBindByName(column = "input_data_valid")
-    private Boolean AllinputDataIsValid;
-
-    @CsvBindByName(column = "derived_data_valid")
-    private Boolean derivedDataIsValid;
-
     @CsvBindByName(column = "new_folder_path")
     private String newFolderPath;
 
     @CsvBindByName(column = "new_Dicom_folder_path")
     private String newDicomFolderPath;
-
-    @CsvBindByName(column = "new_folder_available_on_bucket")
-    private Boolean newFolderPathAvailable;
-
-    @CsvBindByName(column = "new_folder_available_in_db")
-    private Boolean newFolderPathAvailableIntheDatabase;
 
     @CsvBindByName(column = "timestamp")
     private String timestamp;
@@ -119,6 +73,25 @@ public class CtScan {
 
     @CsvBindByName(column = "migration_exception")
     private String migrationException;
+
+    public CtScan(String specimenCode, String ethanolConcentration, String wet, String bodyPart,
+                  String folderLocation, String staining, String antscan, String antscanCode, String model,
+                  String dryMethod, String newFolderPath) {
+        this.specimenCode = specimenCode;
+        this.ethanolConcentration = ethanolConcentration;
+        this.wet = wet;
+        this.bodyPart = bodyPart;
+        this.folderLocation = folderLocation;
+        this.staining = staining;
+        this.antscan = antscan;
+        this.antscanCode = antscanCode;
+        this.model = model;
+        this.dryMethod = dryMethod;
+        this.newFolderPath = newFolderPath;
+    }
+
+    public CtScan() {
+    }
 
     public Boolean getMigrated() {
         return migrated;
@@ -145,21 +118,6 @@ public class CtScan {
         this.timestamp = timestamp;
     }
 
-    public Boolean getSpecimenCodeExists() {
-        return specimenCodeExists;
-    }
-
-    public void setSpecimenCodeExists(Boolean specimenCodeExists) {
-        this.specimenCodeExists = specimenCodeExists;
-    }
-
-    public Boolean getWetDryCombinationIsCorrect() {
-        return wetDryCombinationIsCorrect;
-    }
-
-    public void setWetDryCombinationIsCorrect(Boolean wetDryCombinationIsCorrect) {
-        this.wetDryCombinationIsCorrect = wetDryCombinationIsCorrect;
-    }
 
     public String getNewFolderPath() {
         return newFolderPath;
@@ -290,30 +248,6 @@ public class CtScan {
         this.prepNote = prepNote;
     }
 
-    public Boolean getDryMethodIsCorrect() {
-        return dryMethodIsCorrect;
-    }
-
-    public void setDryMethodIsCorrect(Boolean dryMethodIsCorrect) {
-        this.dryMethodIsCorrect = dryMethodIsCorrect;
-    }
-
-    public Boolean getBodypartIsCorrect() {
-        return bodypartIsCorrect;
-    }
-
-    public void setBodypartIsCorrect(Boolean bodypartIsCorrect) {
-        this.bodypartIsCorrect = bodypartIsCorrect;
-    }
-
-    public Boolean getAllinputDataIsValid() {
-        return AllinputDataIsValid;
-    }
-
-    public void setAllinputDataIsValid(Boolean allinputDataIsValid) {
-        this.AllinputDataIsValid = allinputDataIsValid;
-    }
-
     public String getDicomFolderLocation() {
         return dicomFolderLocation;
     }
@@ -328,94 +262,6 @@ public class CtScan {
 
     public void setScanDate(String scanDate) {
         this.scanDate = scanDate;
-    }
-
-    public Boolean getDerivedDataIsValid() {
-        return derivedDataIsValid;
-    }
-
-    public void setDerivedDataIsValid(Boolean derivedDataIsValid) {
-        this.derivedDataIsValid = derivedDataIsValid;
-    }
-
-    public Boolean getNewFolderPathAvailable() {
-        return newFolderPathAvailable;
-    }
-
-    public void setNewFolderPathAvailable(Boolean newFolderPathAvailable) {
-        this.newFolderPathAvailable = newFolderPathAvailable;
-    }
-
-    public Boolean getFolderLocationExists() {
-        return folderLocationExists;
-    }
-
-    public void setFolderLocationExists(Boolean folderLocationExists) {
-        this.folderLocationExists = folderLocationExists;
-    }
-
-    public Boolean getModelIsCorrect() {
-        return modelIsCorrect;
-    }
-
-    public void setModelIsCorrect(Boolean modelIsCorrect) {
-        this.modelIsCorrect = modelIsCorrect;
-    }
-
-    public Boolean getEthanolConcIsCorrect() {
-        return ethanolConcIsCorrect;
-    }
-
-    public void setEthanolConcIsCorrect(Boolean ethanolConcIsCorrect) {
-        this.ethanolConcIsCorrect = ethanolConcIsCorrect;
-    }
-
-    public Boolean getStainingIsCorrect() {
-        return stainingIsCorrect;
-    }
-
-    public void setStainingIsCorrect(Boolean stainingIsCorrect) {
-        this.stainingIsCorrect = stainingIsCorrect;
-    }
-
-    public Boolean getAntscanCodingIsCorrect() {
-        return antscanCodingIsCorrect;
-    }
-
-    public void setAntscanCodingIsCorrect(Boolean antscanCodingIsCorrect) {
-        this.antscanCodingIsCorrect = antscanCodingIsCorrect;
-    }
-
-    public Boolean getNewFolderPathAvailableIntheDatabase() {
-        return newFolderPathAvailableIntheDatabase;
-    }
-
-    public void setNewFolderPathAvailableIntheDatabase(Boolean newFolderPathAvailableIntheDatabase) {
-        this.newFolderPathAvailableIntheDatabase = newFolderPathAvailableIntheDatabase;
-    }
-
-    public Boolean getScanDateCorrect() {
-        return scanDateCorrect;
-    }
-
-    public void setScanDateCorrect(Boolean scanDateCorrect) {
-        this.scanDateCorrect = scanDateCorrect;
-    }
-
-    public Boolean getDicomFolderNotAChildOfMain() {
-        return dicomFolderNotAChildOfMain;
-    }
-
-    public void setDicomFolderNotAChildOfMain(Boolean dicomFolderNotAChildOfMain) {
-        this.dicomFolderNotAChildOfMain = dicomFolderNotAChildOfMain;
-    }
-
-    public Boolean getDicomFolderLocationExists() {
-        return dicomFolderLocationExists;
-    }
-
-    public void setDicomFolderLocationExists(Boolean dicomFolderLocationExists) {
-        this.dicomFolderLocationExists = dicomFolderLocationExists;
     }
 
     public String getNewDicomFolderPath() {
