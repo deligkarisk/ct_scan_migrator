@@ -1,7 +1,6 @@
 package com.arilab.service;
 
 import com.arilab.repository.DatabaseRepository;
-import com.arilab.system.SystemExit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,14 +9,12 @@ import java.sql.SQLException;
 public class DatabaseService {
 
     DatabaseRepository databaseRepository;
-    SystemExit systemExit;
 
     private static Logger logger = LoggerFactory.getLogger(DatabaseService.class);
 
 
-    public DatabaseService(DatabaseRepository databaseRepository, SystemExit systemExit) {
+    public DatabaseService(DatabaseRepository databaseRepository) {
         this.databaseRepository = databaseRepository;
-        this.systemExit = systemExit;
     }
 
     public Boolean specimenCodeExists(String specimenCode) throws SQLException {
@@ -50,7 +47,7 @@ public class DatabaseService {
         return databaseRepository.getGenusFromSpecimenCode(specimenCode);
     }
 
-    public void checkDatabaseConnectivity() throws SQLException {
+    public void databaseConnectivityCheck() throws SQLException {
             specimenCodeExists("Test");
     }
 }

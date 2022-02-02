@@ -40,11 +40,6 @@ public class CtScanCollectionService {
         }
     }
 
-
-    // todo: can the below two methods be refactored to an interface? We need the returned value to always be a
-    //  List<ErrorModel>.
-
-    // todo: write tests for this method
     public List<ErrorModel> validateCollectionAtScanLevel(ValidatorGroup<CtScanValidator> validatorGroup,
                                                           CtScanCollection ctScanCollection) throws SQLException {
         List<ErrorModel> collectionErrors = new ArrayList<>();

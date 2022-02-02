@@ -2,7 +2,7 @@
 
 ## Summary
 A Java application for migrating ct scans to the new standardized format. 
-The app, does the below, among others:
+The app, does the below:
 * Validates the existence and availability of folders.
 * Moves the scan folder to the new ctscan folder in bucket, with the new standardized name. The name of the old folder is irrelevant.
 * Adds an entry into the database in the ctscan table.
@@ -34,3 +34,16 @@ You need:
 See the WIKI pages for more information on these.
 
 
+## Technical note: validations
+There are three validation groups containing various validation methods (see the validator package for details).
+Below, you can see, in summary, what each validator group is doing.
+
+### Basic field validator group (first validation)
+This group of validators check that the specimen codes exist in the database,, that wet/dry combination is correct,
+that folder location exists, etc...
+
+### Standardized folders validator group (second validation)
+This group of validators checks that the standardized folder found by the software is available in the database and in bucket.
+
+### All folders unique validator group (third validation)
+This group of validators checks that all standardized folders in the collection are unique.

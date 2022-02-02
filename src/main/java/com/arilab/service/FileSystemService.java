@@ -1,5 +1,6 @@
-package com.arilab.utils;
+package com.arilab.service;
 
+import com.arilab.utils.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,15 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class FileSystem {
+public class FileSystemService {
 
     private Config config;
 
-    public FileSystem(Config config) {
+    public FileSystemService(Config config) {
         this.config = config;
     }
 
-    Logger logger = LoggerFactory.getLogger(FileSystem.class);
+    Logger logger = LoggerFactory.getLogger(FileSystemService.class);
 
 
     public void filesystemCheck() throws IOException {

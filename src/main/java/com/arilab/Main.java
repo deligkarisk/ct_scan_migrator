@@ -12,12 +12,11 @@ import com.arilab.reader.SourceReader;
 import com.arilab.repository.CtScanRepository;
 import com.arilab.repository.DatabaseRepository;
 import com.arilab.service.*;
-import com.arilab.system.SystemExit;
 import com.arilab.utils.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,30 +37,24 @@ public class Main {
     private static Config config = Config.createInstance(PROPERTIES_FILE, CREDENTIALS_FILE);
     public static final SourceReader sourceReader = new SourceReader();
     public static final ArgumentChecker argumentChecker = new ArgumentChecker();
-    public static final SystemExit systemExit = new SystemExit();
     private static final CtScanRepository ctScanRepository = new CtScanRepository(config);
 
-    public static final FileSystem filesystem = new FileSystem(config);
+    public static final FileSystemService filesystemService = new FileSystemService(config);
     private static final DatabaseRepository DATABASE_REPOSITORY = new DatabaseRepository(config);
-    private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY, systemExit);
+    private static final DatabaseService databaseService = new DatabaseService(DATABASE_REPOSITORY);
     private static final CtScanUtils ctScanUtils = new CtScanUtils(databaseService, config);
     private static final CTScanService ctScanService = new CTScanService(fileUtils, ctScanUtils, ctScanRepository,
             databaseService, config);
     private static final CTScanMigratorService ctScanMigratorService = new CTScanMigratorService(fileUtils,
             ctScanRepository);
-
     private static final CtScanCollectionService ctScanCollectionService = new CtScanCollectionService(ctScanService);
-
 
     private static final ValidatorGroup<CtScanValidator> basicFieldValidationGroup =
             new BasicFieldValidationGroup(databaseService);
-
     private static final ValidatorGroup<CtScanValidator> standardizedFoldersValidationGroup =
             new StandardizedFoldersValidationGroup(ctScanService);
-
     private static final ValidatorGroup<CtScanCollectionValidator> allFoldersUniqueValidationGroup =
             new AllFoldersUniqueValidationGroup();
-
     static List<ErrorModel> errors = new ArrayList<>();
 
 
@@ -85,39 +78,37 @@ public class Main {
 
 
         try {
-            filesystem.filesystemCheck();
-            databaseService.checkDatabaseConnectivity();
+
+            // Check filesystem and database connectivity first
+            filesystemService.filesystemCheck();
+            databaseService.databaseConnectivityCheck();
             logger.info("Reading data from: " + ctScanDataFile);
+
+            // preprocess data for use, and validate entries
             ctScanCollection = new CtScanCollection(sourceReader.readScans(ctScanDataFile));
             ctScanCollectionService.preprocessData(ctScanCollection);
             errors = ctScanCollectionService.validateCollectionAtScanLevel(basicFieldValidationGroup,
-                    ctScanCollection); //todo: write test that checks that all validators run
+                    ctScanCollection);
             quitIfErrors(errors, failedOutputFile, ctScanCollection);
+
+            // find and validate the new folders for the scans (based on the lab's standardized format)
             ctScanCollectionService.findStandardizedFolderNames(ctScanCollection);
             errors = ctScanCollectionService.validateCollectionAtScanLevel(standardizedFoldersValidationGroup,
-                    ctScanCollection); //todo: write test that checks that all validators run
+                    ctScanCollection);
             quitIfErrors(errors, failedOutputFile, ctScanCollection);
-            // ctScanCollectionService.validateAllFoldersUniqueInCollection(ctScanCollection);
             errors = ctScanCollectionService.validateCollection(allFoldersUniqueValidationGroup, ctScanCollection);
             quitIfErrors(errors, failedOutputFile, ctScanCollection);
-            // Before migrating, write all information to the output file.
-            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
 
+
+            // Before actually doing the migration, write all information to the output file.
+            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
+            ctScanMigratorService.migrateScans(ctScanCollection, DUMMY_EXECUTION);
 
         } catch (SQLException | IOException Exception) {
             logger.error("Exception caught during migration: {}", Exception.toString());
-            if (ctScanCollection == null) {
+            if (ctScanCollection != null) {
                 fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             }
-            System.exit(1);
-        }
-
-
-        try {
-            ctScanMigratorService.migrateScans(ctScanCollection, DUMMY_EXECUTION);
-        } catch (SQLException | IOException exception) {
-            logger.error("Exception caught during migration: {}", exception.toString());
-            fileUtils.writeBeansToFile(ctScanCollection, outputFile);
             System.exit(1);
         }
 
@@ -131,21 +122,23 @@ public class Main {
     }
 
     private static void quitIfErrors(List<ErrorModel> error, String failedOutputFile,
-                                     CtScanCollection ctScanCollection) {
+                                     CtScanCollection ctScanCollection) throws FileNotFoundException, UnsupportedEncodingException {
+        // todo: when quiting due to errors, the output of the validators should be exported to a file.
         if (!error.isEmpty()) {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
                     " file " + failedOutputFile + " for further details.");
             fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
+            PrintWriter errorFileWriter = new PrintWriter("errors.log", "UTF-8");
+            for (ErrorModel errorModel : error) {
+                errorFileWriter.println(errorModel.toString());
+                List<String> errors = errorModel.getErrors();
+                for (String singleError : errors) {
+                    errorFileWriter.println(singleError);
+                }
+                errorFileWriter.println();
+            }
+            errorFileWriter.close();
             System.exit(1);
-        }
-    }
-
-    private static void checkConnectivityToBucketAndDatabase() {
-        try {
-            databaseService.specimenCodeExists("Test");
-        } catch (SQLException e) {
-            logger.error("Error in connecting to the database: " + e.getMessage());
-            throw new RuntimeException("Error in connecting to the database.");
         }
     }
 }

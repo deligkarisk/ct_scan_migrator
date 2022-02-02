@@ -84,7 +84,6 @@ class CtScanCollectionServiceTest {
 
 
     @Test
-    // todo: Fix this one
     void validateCollectionAtScanLevelWithErrorsIfDataNotCorrect(@TempDir File tempDir, @TempDir File tempDir2) throws SQLException {
         // given
         int numberOfScans = 2;
@@ -155,13 +154,4 @@ class CtScanCollectionServiceTest {
 
 
 
-
-    @Test
-    void validateCollection() {
-    }
-
-    @Test
-    void findStandardizedFolderNames() {
-        fail();
-    }
 }

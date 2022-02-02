@@ -1,5 +1,6 @@
 package com.arilab.utils;
 
+import com.arilab.service.FileSystemService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -9,13 +10,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FileSystemTest {
+class FileSystemServiceTest {
 
     private static final String PROPERTIES_FILE = "./config.properties";
 
@@ -24,7 +24,7 @@ class FileSystemTest {
     Config config;
 
     @InjectMocks
-    FileSystem fileSystem;
+    FileSystemService fileSystemService;
 
 
 
@@ -34,7 +34,7 @@ class FileSystemTest {
         when(config.getTargetDirectory()).thenReturn("anotherUnmountedFolderHere");
 
         assertThrows(IOException.class, () -> {
-            fileSystem.filesystemCheck();
+            fileSystemService.filesystemCheck();
         });
     }
 
@@ -43,7 +43,7 @@ class FileSystemTest {
         when(config.getSourceDirectory()).thenReturn(sourceTempDir.toString());
         when(config.getTargetDirectory()).thenReturn(targetSourceDir.toString());
         try {
-            fileSystem.filesystemCheck();
+            fileSystemService.filesystemCheck();
         } catch (IOException e) {
             fail("Exception caught but no exception was expected.");
         }
@@ -57,6 +57,7 @@ class FileSystemTest {
         when(config.getSourceDirectory()).thenReturn(sourceTempDir.toString());
         when(config.getTargetDirectory()).thenReturn(targetSourceDir.toString());
 
-        assertThrows(IOException.class, () -> {fileSystem.filesystemCheck(); });
+        assertThrows(IOException.class, () -> {
+            fileSystemService.filesystemCheck(); });
     }
 }

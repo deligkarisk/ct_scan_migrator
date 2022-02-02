@@ -43,4 +43,9 @@ public class CtScanErrorModel implements ErrorModel {
     public int getNumberOfErrors() {
         return errors.size();
     }
+
+    @Override
+    public String toString() {
+        return scanId;
+    }
 }

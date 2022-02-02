@@ -38,4 +38,9 @@ public class CtScanCollectionErrorModel implements ErrorModel {
     public int getNumberOfErrors() {
         return errors.size();
     }
+
+    @Override
+    public String toString() {
+        return "CtScanCollection";
+    }
 }
