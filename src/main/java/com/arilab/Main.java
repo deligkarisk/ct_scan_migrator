@@ -28,7 +28,7 @@ public class Main {
     private static Boolean DUMMY_EXECUTION = true;
     private static final String PROPERTIES_FILE = "./config.properties";
     private static final String CREDENTIALS_FILE = "./credentials.properties";
-    private static final String OUTPUT_PREPEND = "programData";
+    private static final String OUTPUT_PREPEND = "program_data";
     private static final String FAILEDOUTPUTPREPEND = OUTPUT_PREPEND;
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
@@ -123,7 +123,6 @@ public class Main {
 
     private static void quitIfErrors(List<ErrorModel> error, String failedOutputFile,
                                      CtScanCollection ctScanCollection) throws FileNotFoundException, UnsupportedEncodingException {
-        // todo: when quiting due to errors, the output of the validators should be exported to a file.
         if (!error.isEmpty()) {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
                     " file errors.log for further details.");
