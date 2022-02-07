@@ -16,13 +16,14 @@ A dummy run will produce the output/validation files, but not do any migration o
 
 The DLOGGER_LABEL is necessary to produce the correct logger file, and should be similar to the 2nd argument (here, it is "2ndBatch").  
 The argument "2ndBatch.csv" denotes the file that contains the data. More information on this you can find on the Wiki pages.
-Do this first, and if all checks out in your data, run the migration.
 
 Once the program is run, two files will be created: a log file, and a csv file. The log file contains information on the program's dummy execution, while
 the csv file should contain exactly the same data as the input. This csv file can be used to check that the program has indeed read the values correctly 
 (though this should not happen and was not observed during testing, it is just an additional debug aid).
 
 If the dummy run finds errors, an errors.log file will be created detailing for each scan what needs to be fixed. Fix all of them, then run the same command again.
+If the dummy run does not find errors, go on with running the migration as shown in the next section.
+
 
 ### Migration run
 _"java -DLOGGER_LABEL="2ndBatch" -jar CTScanMigrator.jar 2ndBatch.csv 2ndBatch --do-migration"_  
