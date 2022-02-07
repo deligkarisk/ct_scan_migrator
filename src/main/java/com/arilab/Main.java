@@ -28,8 +28,8 @@ public class Main {
     private static Boolean DUMMY_EXECUTION = true;
     private static final String PROPERTIES_FILE = "./config.properties";
     private static final String CREDENTIALS_FILE = "./credentials.properties";
-    private static final String OUTPUT_PREPEND = "MigrationOutput";
-    private static final String FAILEDOUTPUTPREPEND = "ValidationFailed";
+    private static final String OUTPUT_PREPEND = "programData";
+    private static final String FAILEDOUTPUTPREPEND = OUTPUT_PREPEND;
 
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static final DirectoryMover properDirectoryMover = new DirectoryMoverProper();
@@ -126,7 +126,7 @@ public class Main {
         // todo: when quiting due to errors, the output of the validators should be exported to a file.
         if (!error.isEmpty()) {
             logger.error("Not all scans passed validation of input data, migration will not proceed. Please see the" +
-                    " file " + failedOutputFile + " for further details.");
+                    " file errors.log for further details.");
             fileUtils.writeBeansToFile(ctScanCollection, failedOutputFile);
             PrintWriter errorFileWriter = new PrintWriter("errors.log", "UTF-8");
             for (ErrorModel errorModel : error) {
