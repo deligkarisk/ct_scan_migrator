@@ -2,7 +2,7 @@
 
 ## Summary
 A Java application for migrating ct scans to the new standardized format. 
-The app, does the below:
+The app does the below:
 * Validates the existence and availability of folders.
 * Moves the scan folder to the new ctscan folder in bucket, with the new standardized name. The name of the old folder is irrelevant.
 * Adds an entry into the database in the ctscan table.
@@ -12,11 +12,17 @@ The app, does the below:
 ### Dummy run
 _"java -DLOGGER_LABEL="2ndBatch" -jar CTScanMigrator.jar 2ndBatch.csv 2ndBatch"_  
 
-The DLOGGER_LABEL is necessary to produce the correct logger file, and should be similar to the 2nd argument (here, is "2ndBatch").  
-The argument "2ndBatch.csv" denotes the file that contains the data. More information on this you can find on the Wiki pages.
 A dummy run will produce the output/validation files, but not do any migration or database edits.
+
+The DLOGGER_LABEL is necessary to produce the correct logger file, and should be similar to the 2nd argument (here, it is "2ndBatch").  
+The argument "2ndBatch.csv" denotes the file that contains the data. More information on this you can find on the Wiki pages.
 Do this first, and if all checks out in your data, run the migration.
 
+Once the program is run, two files will be created: a log file, and a csv file. The log file contains information on the program's dummy execution, while
+the csv file should contain exactly the same data as the input. This csv file can be used to check that the program has indeed read the values correctly 
+(though this should not happen and was not observed during testing, it is just an additional debug aid).
+
+If the dummy run finds errors, an errors.log file will be created detailing for each scan what needs to be fixed. Fix all of them, then run the same command again.
 
 ### Migration run
 _"java -DLOGGER_LABEL="2ndBatch" -jar CTScanMigrator.jar 2ndBatch.csv 2ndBatch --do-migration"_  
@@ -30,6 +36,8 @@ It is recommended you split your data into small batches, say 30-50 scans rather
 You need:
 * config.properties
 * credentials.properties  
+
+These need to be in the same folder as the jar file. 
 
 See the WIKI pages for more information on these.
 
