@@ -1,4 +1,5 @@
 # ctscan_migrator
+Author: Kosmas Deligkaris
 
 ## Summary
 A Java application for migrating ct scans to the new standardized format. 
